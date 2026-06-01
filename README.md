@@ -34,7 +34,7 @@ This repository documents my **60-Day Claude AI Challenge** — a structured, da
 | **Role** | Aspire Software Engineer & MLSA |
 | **University** | UET Taxila — Software Engineering, 4th Semester |
 | **Societies** | SoftDesk · GDSC · YPDC |
-| **Streak** | 100-day coding challenge — completed ✅ |
+| **Streak** | 45-day coding challenge — completed ✅ |
 | **Certificates** | 12+ from Stanford, Google, IBM, Cisco |
 
 ---
