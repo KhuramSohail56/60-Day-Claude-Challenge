@@ -1,0 +1,17 @@
+Create a high-quality, professional corporate infographic template for a LinkedIn post (1080x1080 square format). 
+
+The design must follow a highly clean, modern, minimalist tech aesthetic with a warm color palette inspired by Anthropic Claude (cream, soft beige, light tan background, and deep charcoal brown text). 
+
+The layout should feature a clear top-to-bottom grid hierarchy:
+1. At the very top, a prominent stylized badge that reads "abtalks 60 days Claude Challenge". Below it, the main title "Prompt Engineering" in a bold, elegant sans-serif headline font, followed by the sub-title "Ask Better. Get Better."
+2. The center should show a visual "Before vs After" or "Weak vs Engineered" loop layout using two symmetrical side-by-side card containers with clean borders.
+   - Left Card (Weak Pattern, muted tan background): Title reads "Weak Prompt (Vague)" with a simple message bubble showing: "Tell me about productivity." Below it, a vertical arrow pointing down to a result box titled "Basic Output (Generic)" containing generic text layout lines.
+   - Right Card (Engineered Pattern, highlighted border): Title reads "Engineered Prompt (Clear & Specific)" with a message bubble showing a detailed, longer multi-sentence coaching prompt. Below it, an arrow points down to a high-quality checklist or numbered layout titled "Better Output (Actionable)".
+3. Place a circular distinct "VS" divider node exactly centered right between the two cards.
+4. At the bottom section, create 3 horizontal metric blocks under the header "3 Benefits of Writing Better Prompts":
+   - "1. Better Results" with a line graph icon.
+   - "2. Save Time" with a minimalist clock icon.
+   - "3. Boost Productivity" with a sleek rocket icon.
+5. Finish with a solid deep brown sleek footer bar displaying the text "Better prompts. Better AI. Better you." on the left, and a neat button pill on the right that reads "Let's build the future with Claude."
+
+The overall visual must look like a real, professional human-designed digital graphic illustration with perfect typography spacing, no chaotic AI distortions, and readable, crisp English text layout.
