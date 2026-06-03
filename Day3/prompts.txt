@@ -1,0 +1,8 @@
+=== EXPERIMENT 1: NO PERSONA ===
+How should I launch a new software app?
+
+=== EXPERIMENT 2: FOUNDER PERSONA ===
+Act as a tech startup Founder. How should I launch a new software app?
+
+=== EXPERIMENT 3: DEVELOPER PERSONA ===
+Act as a Senior Software Developer. How should I launch a new software app?
