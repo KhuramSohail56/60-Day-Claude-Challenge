@@ -1,3 +1,4 @@
+# Prompt Template
 You are an AI educator teaching complete beginners.
 
 Explain Role-Based Prompting in simple language.
