@@ -9,7 +9,6 @@ Role-Based Prompting shifts the paradigm from broad-based general search queries
 * **Decision Optimization:** Simulates real-world testing lanes across multiple professional perspectives inside single prompt iterations.
 
 ---
-
 ## Section 2: Real-World Demonstration & Head-to-Head Testing
 For today's operation, I tested the baseline question: *"How should I launch a new software app?"* across separate parameter configurations:
 
