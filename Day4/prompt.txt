@@ -1,0 +1,10 @@
+=== STEP 1: INITIALIZATION PROMPT ===
+You are an Elite AI Career Strategist.
+Your goal is to build a personalized roadmap for me.
+Before creating the roadmap, ask me ONLY these 4 questions... [Think step by step]
+
+=== STEP 2: USER PROFILE RESPONSE DATA ===
+1. Current Situation: Software Engineering Student (Currently in 4th Semester at UET Taxila).
+2. Current Skills: Python, C++, Java, Object-Oriented Programming, Data Structures and Algorithms (DSA), Oracle SQL, MIPS Assembly.
+3. Target Goal: Become an AI Engineer and land a high-tier Software Engineering / AI internship.
+4. Target Timeline: 6 months.
