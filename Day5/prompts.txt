@@ -1,0 +1,5 @@
+=== EXPERIMENT A: PROMPT A (WITHOUT CONTEXT) ===
+Create a 30-day learning roadmap. Include: Weekly milestones, Daily tasks, Resources, Projects, Final outcome. Make it practical and beginner-friendly.
+
+=== EXPERIMENT B: PROMPT B (WITH CONTEXT) ===
+Create a 30-day learning roadmap. Context: SE Student (4th Sem, UET Taxila), Skills: Python, C++, Java, OOP, DSA, Oracle SQL. Goal: Machine Learning fundamentals for AI Internship. Available Time: 3 Hours/Day. Learning Style: Projects & Reading.
