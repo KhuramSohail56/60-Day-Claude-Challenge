@@ -1,4 +1,4 @@
-<img width="1024" height="1536" alt="ChatGPT Image Jun 6, 2026, 05_22_41 PM" src="https://github.com/user-attachments/assets/b93168c6-d367-4512-99a7-94de5c31f26c" /># Day 6: AI Resume Optimizer & ATS Benchmarking
+# Day 6: AI Resume Optimizer & ATS Benchmarking
 
 ## 📋 PART 1: ATS Score & Optimization Log
 * **Previous Simulated Score:** 58/100
@@ -46,20 +46,25 @@ Software Engineering student at University of Engineering and Technology Taxila 
 
 **TECHNICAL PROJECTS**
 * **Inventory Track Pro (DSA Project) | C++** 
-*Developed an Inventory Management System using C++ and core DSA concepts.
-*Implemented Hash Tables, Binary Search Trees (BST), and Stacks for efficient data management.
-*Added sorting and searching functionalities for optimized inventory operations.
-*Designed a user-friendly console interface with efficient backend processing.
+* Developed an Inventory Management System using C++ and core DSA concepts.
+* Implemented Hash Tables, Binary Search Trees (BST), and Stacks for efficient data management.
+* Added sorting and searching functionalities for optimized inventory operations.
+* Designed a user-friendly console interface with efficient backend processing.
 
 * **Grocery Store Management System | C++** 
-**Built a complete Grocery Store Management System using C++.
-*Implemented inventory tracking, product management, and billing functionalities.
-*Applied object-oriented programming concepts and file handling techniques.
+* Built a complete Grocery Store Management System using C++.
+* Implemented inventory tracking, product management, and billing functionalities.
+* Applied object-oriented programming concepts and file handling techniques.
 
 * **Grocery Store Manager | JavaFX**
-*Developed a JavaFX-based Grocery Store Management System.
-*Implemented CRUD operations and file handling for data persistence.
-*Designed an interactive GUI for managing products and store records.
+* Developed a JavaFX-based Grocery Store Management System.
+* Implemented CRUD operations and file handling for data persistence.
+* Designed an interactive GUI for managing products and store records.
+
+* **Personal Portfolio Website**
+* Designed and developed a responsive portfolio website using HTML, CSS, and JavaScript.
+* Showcased projects, technical skills, and professional profile.
+* Optimized for user experience across desktop and mobile devices.
 ---
 
 **EXPERIENCE / LEADERSHIP & COMMUNITY INVOLVEMENT**
@@ -80,6 +85,7 @@ Software Engineering student at University of Engineering and Technology Taxila 
 ---
 
 ## 🖼️ PART 3: Verification Log Captures
-* **NoteGPT Utility Extension Setup:** <img width="1024" height="1536" alt="ChatGPT Image Jun 6, 2026, 05_22_41 PM" src="https://github.com/user-attachments/assets/1dd3b3fc-36c4-4c0a-9d10-944ce2588641" />
+* **NoteGPT Utility Extension Setup:** <img width="1600" height="1019" alt="WhatsApp Image 2026-06-06 at 4 10 34 PM" src="https://github.com/user-attachments/assets/c64272a9-daed-4e3c-a00f-a5c63405334c" />
+
 
 * **Claude ATS Analytical Output:** `<img width="1024" height="1536" alt="ChatGPT Image Jun 6, 2026, 05_22_41 PM" src="https://github.com/user-attachments/assets/ee394aa9-a26c-49e4-930c-9e433f9028a3" />
