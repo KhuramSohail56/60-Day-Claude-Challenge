@@ -28,7 +28,7 @@ Software Engineering student at University of Engineering and Technology Taxila 
 **EDUCATION**
 * **Bachelor of Science in Software Engineering**
   * University of Engineering and Technology Taxila | Timeline: Aug 2024 – 2028
-  * Configuration: Current Semester: 3rd
+  * Configuration: Current Semester: 4th
 * **Intermediate (Pre-Engineering)**
   * Superior College | Timeline: May 2022 – May 2024
   * Performance Metric: Marks: 1007/1200
