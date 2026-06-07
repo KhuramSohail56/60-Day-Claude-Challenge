@@ -1,57 +1,57 @@
-# Day 7: Claude Model Selection & Reasoning Effort Allocation
+# Day 7: Claude Model Selection & Reasoning Effort Allocation Report
 
-## 📋 PART 1: Recommended Primary Model Architecture
-* **Primary Anchor Model:** Claude 3.5 Sonnet (Your Daily Driver)
-* **Strategic Justification:** Covers a wide daily surface area spanning multi-language code bases (C++, Python, Java) and abstract Data Structures (DSA) without draining message quotas prematurely like Claude 3.5 Opus. It balances optimal reasoning speed and deep mathematical analysis natively.
-
-### Granular Model Matrix:
-* ✅ **Claude Haiku (Light Tasks):** Best suited for quick syntax questions, fast compiler error lookups, technical vocabulary recall, and short standalone SQL queries.
-* 🔵 **Claude Sonnet (Recommended Workhorse):** Best for LeetCode/DSA problem solving, OOP system design, debugging compiler streams, internship portfolio preparation, and customized learning roadmaps.
-* 🧠 **Claude Opus (High-Stakes Only):** Reserved for complex multi-tier algorithm design, software architecture trade-off decisions (MVC vs SOA), and macro capstone project planning blocks.
+**Personalized For:** Khurram Sohail | 4th Semester Software Engineering, UET Taxila
+**Core Objective:** Strategizing token compute and reasoning levels (Haiku, Sonnet, Opus) based on data structure engineering complexity.
 
 ---
 
-## 🎛️ PART 2: Effort Level Guide & Quota Strategy
+## 📋 PART 1: Core Technical Key Learnings
 
-* ### 🟢 Low Effort (Quick Lookups Only)
-  * **Use Cases:** Defining standard built-in parameters (e.g., `malloc()`), checking Java loop configurations, or verifying basic Oracle SQL clause definitions.
-* ### ❇️ Standard Effort (Your Daily Workhorse)
-  * **Use Cases:** Step-by-step DSA problem walkthroughs, interactive code reviews, live bug refactoring sessions, and resume/LinkedIn drafting iterations.
-* ### 🔵 High Effort (When Accuracy Matters A Lot)
-  * **Use Cases:** Tricky dynamic programming (DP) algorithms, graph theories, multi-table database joins, and macro project structural architecture design.
-* ### 🟣 Max Effort (Reserve For Critical Moments)
-  * **Use Cases:** Final-semester capstone choices, mock technical interview preparation sprints, and production deployment pipeline configurations.
+During the execution of today's framework benchmarking, the following structural insights regarding model parameters were discovered:
+1. **Compute Resource Efficiency:** Running advanced models like Claude Opus or enabling Max Reasoning Effort for basic tasks (like plain-text syntax lookups) causes unnecessary token consumption and hits usage limits prematurely.
+2. **Context-Driven Model Alignment:** Complex problem sets—such as dynamic programming, nested data structure traversals (DSA), or relational multi-table database optimization queries—demand deeper trace steps that align best with Claude 3.5 Sonnet or Opus at High Effort.
+3. **The Power of Context Headers:** Creating a reusable prompt header containing specific user environment parameters (e.g., tech stack, goal constraints) stabilizes transformer token selection, allowing lower-tier configurations to deliver exceptionally accurate outputs.
 
 ---
 
-## 📊 PART 3: Personalized Core Workflow Matrix
+## 🧠 PART 2: Personalized Claude Usage Strategy
 
-| Task / Activity Profile | Best Model Model | Selected Effort Level | Analytical Reasoning & Contextual Logic |
+### 💻 Recommended Primary Model: Claude 3.5 Sonnet (Your Daily Driver)
+* **Strategic Justification:** It hits the optimal sweet spot for a heavy-user student developer. It reasons expertly for backend multi-language codebases (C++, Python, Java) and understands Oracle SQL database configurations without wasting the strict quota windows of higher models.
+
+---
+
+## 📊 PART 3: Personalized Task Allocation Matrix
+
+| Task Profile / Activity Domain | Best Model Choice | Optimal Effort Level | Analytical & Contextual Rationale |
 | :--- | :--- | :--- | :--- |
-| **LeetCode / DSA Problem Solving** | Sonnet | High | Requires progressive logical trace steps and edge-case validation. |
-| **C++ / Java Bug Fix & Code Review** | Sonnet | Standard | Delivers high structural code comprehension with fast iteration velocity. |
-| **Quick Syntax / Concept Lookup** | Haiku | Low | Minimizes compute allocation to preserve standard usage quotas. |
-| **Oracle SQL Query Optimization** | Sonnet | High | Evaluates multi-table join logic performance adjustments efficiently. |
-| **Python ML/AI Learning Trails** | Sonnet | Standard | Offers conceptual technical depth without token resource waste. |
-| **Resume, LinkedIn, & Interview Prep** | Sonnet | Standard | Enhances natural vocabulary quality, layout syntax, and presentation strategy. |
-| **Software Architecture Decisions** | Opus | High | Analyzes trade-offs across patterns natively (e.g., MVC, SOA, Microservices). |
-| **Interview-Style Technical Mock Q&A**| Opus | Max | High stakes testing requires rigorous, edge-case evaluation loops. |
-| **MIPS / x86 Assembly Debugging** | Sonnet | High | Low-level compiler registers tracing needs careful execution loops. |
-| **Competitive Programming Strategy** | Opus | High | Extracting optimal algorithm paths relies on heavy contextual synthesis. |
+| **LeetCode / DSA Problem Solving** | Claude Sonnet | High Effort | Requires step-by-step memory trace reasoning and edge-case validations. |
+| **C++ / Java Bug Fixing & Code Review** | Claude Sonnet | Standard Effort | High structural code comprehension with rapid iteration turnarounds. |
+| **Quick Syntax & Variable Lookup** | Claude Haiku | Low Effort | Zero deep reasoning needed; preserves usage quota flawlessly. |
+| **Oracle SQL Query Design & Tuning** | Claude Sonnet | High Effort | Evaluates relational join logic and performance indexing thoroughly. |
+| **Python ML / AI Learning Sprints** | Claude Sonnet | Standard Effort | Provides concept-level academic depth without token layout waste. |
+| **Interview Mock Prep & Q&A Checks** | Claude Opus | Max Effort | High-stakes parameters require rigorous, comprehensive evaluation loops. |
+| **MIPS / x86 Assembly Debugging** | Claude Sonnet | High Effort | Low-level compiler register tracking demands careful logical validation. |
 
 ---
 
-## ⚠️ PART 4: Architectural Pitfalls & Mistakes to Avoid
+## 🛠️ PART 4: Core Daily Workflow Execution Timeline
 
-1. 🚫 **Using Opus for Every Single Task:** Burns through message quotas fast. Opus must be reserved for complex architectural anomalies or high-stakes live interview practice.
-2. 🚫 **Sending Context-Free Prompts:** Pasting raw code blocks without explaining languages, active error exceptions, or previous debug attempts wastes processing loops.
-3. 🚫 **Asking Claude to Just "Write the Solution":** Blind copy-pasting damages actual human learning heuristics and hurts interview readiness. Always demand step-by-step logic explanations first.
-4. 🚫 **Using Max Effort for Trivial Tasks:** Running Max compute for a generic text syntax question or a simple bug is like using a high-end discrete GPU to execute Notepad—total overkill.
-5. 🚫 **Not Building a Prompt Template For Daily Trails:** Consistent context headers dramatic collapse token output variance, forcing Sonnet to behave with the structural output quality of Opus.
+1. 🌅 **Morning — Orientation (Haiku · Low Effort)**
+   * Summarize overnight task variations, prioritize upcoming engineering milestones, and map daily sprint layouts. Speed over depth.
+2. 💻 **Deep Work — Coding & Logic (Sonnet · Standard Effort)**
+   * Execute backend scripts, build logic loops, and compile data structures. Shift to High effort only if blocked by complex system errors.
+3. 🔬 **Strategic Sessions — Planning (Opus · High/Max Effort)**
+   * Pass comprehensive system context templates into the model to map architectural engineering choices that compound over time.
+4. 📂 **End of Day — Wrap-Up (Sonnet · Standard Effort)**
+   * Document code architecture modifications, execute clean git commits, push code arrays to GitHub, and layout tomorrow's target blocks.
 
 ---
 
-## 🖼️ PART 5: Visual Verification Logs
-* **Claude Usage Tracker Extension Profile Active:** <img width="1600" height="940" alt="WhatsApp Image 2026-06-07 at 1 13 36 PM" src="https://github.com/user-attachments/assets/afbc2a15-6004-4d25-874b-8315dbd973d0" />
+## 🖼️ PART 5: Visual Performance Logs & Screenshots
 
-* **Generated Architectural Strategy Output:** `<img width="1254" height="1254" alt="ChatGPT Image Jun 7, 2026, 01_47_33 PM" src="https://github.com/user-attachments/assets/13bd47e1-f808-426b-8602-72fd9c0f2c1b" />
+The system verification images tracking extension implementation and strategic output matrices have been indexed below:
+
+* **Claude Usage Tracker Utility Interface:** `<img width="1600" height="940" alt="WhatsApp Image 2026-06-07 at 1 13 36 PM" src="https://github.com/user-attachments/assets/a88357ca-ff21-4321-9da4-69da1429dbc1" />
+
+* **Generated Telemetry Strategy Analytics Dashboard:** `<img width="1254" height="1254" alt="ChatGPT Image Jun 7, 2026, 01_47_33 PM" src="https://github.com/user-attachments/assets/e371b68c-f73b-4d69-9d3b-383325bec26f" />
