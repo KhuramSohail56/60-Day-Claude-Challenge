@@ -35,5 +35,7 @@
 
 ## 🖼️ PART 4: Production Verification Captures
 
-* **Base MVP Interface State:** `![MVP Running Snapshot](./mvp_run.png)`
-* **Enhanced Engine Interface State:** `![Enhanced Production Snapshot](./final_run.png)`
+* **Base MVP Interface State:** `<img width="1536" height="1024" alt="mvp_run png" src="https://github.com/user-attachments/assets/74aff5f8-e9ef-4ec9-b9af-15af673c39a9" />
+
+* **Enhanced Engine Interface State:** <img width="1536" height="1024" alt="final_run png" src="https://github.com/user-attachments/assets/42a40c73-53e6-456e-9480-d4c2411e3d65" />
+
