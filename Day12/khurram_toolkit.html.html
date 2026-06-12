@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khurram Sohail | Professional Branding Matrix</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+  :root {
+    --bg-primary: #060913;
+    --bg-secondary: #090d1a;
+    --bg-sidebar: #05070f;
+    --bg-card: rgba(13, 20, 38, 0.45);
+    --accent: #00e5ff;
+    --accent-glow: rgba(0, 229, 255, 0.35);
+    --accent-purple: #a855f7;
+    --text-primary: #f0f6fc;
+    --text-secondary: #cdd6f4;
+    --text-muted: #6b7280;
+    --border: rgba(0, 229, 255, 0.12);
+    --font: 'Space Grotesk', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); background-color: var(--bg-primary); color: var(--text-primary); min-height: 100vh; overflow-x: hidden; display: flex; }
+  
+  /* ===== SIDEBAR HUD COMPONENT ===== */
+  .sidebar { width: 280px; background: var(--bg-sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; height: 100vh; position: fixed; left: 0; top: 0; z-index: 100; }
+  .profile-block { padding: 2rem 1.5rem; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); background: linear-gradient(180deg, rgba(0,229,255,0.03), transparent); }
+  .avatar-ring { width: 85px; height: 85px; border-radius: 50%; border: 2px solid var(--accent); margin: 0 auto 1rem; padding: 3px; box-shadow: 0 0 20px var(--accent-glow); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .avatar-inner { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+  .profile-block h2 { font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; letter-spacing: -0.5px; }
+  .profile-block p { font-size: 0.78rem; font-family: var(--mono); color: var(--text-muted); margin-bottom: 1rem; }
+  
+  /* SOCIAL LINK BUTTONS INSIDE SIDEBAR */
+  .social-links { display: flex; justify-content: center; gap: 12px; margin-top: 0.5rem; }
+  .social-icon { color: var(--text-secondary); font-size: 1.1rem; transition: color 0.2s; text-decoration: none; }
+  .social-icon:hover { color: var(--accent); }
+
+  .menu-list { flex: 1; overflow-y: auto; padding: 1rem 0.75rem; display: flex; flex-direction: column; gap: 4px; }
+  .menu-btn { width: 100%; border: none; background: transparent; padding: 12px 16px; border-radius: 10px; text-align: left; font-family: var(--font); font-size: 0.88rem; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 0.8rem; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+  .menu-btn:hover { background: rgba(0, 229, 255, 0.04); color: var(--accent); }
+  .menu-btn.active { background: linear-gradient(90deg, rgba(0, 229, 255, 0.1), transparent); color: var(--accent); border-left: 3px solid var(--accent); font-weight: 600; }
+  
+  /* ===== MAIN CONTAINER WINDOW ===== */
+  .main-content { margin-left: 280px; flex: 1; padding: 3rem 4rem; min-height: 100vh; background-image: radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.04), transparent 50%); }
+  
+  .top-meta-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; background: var(--bg-card); border: 1px solid var(--border); padding: 1.2rem 2rem; border-radius: 16px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .meta-title { font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; gap: 0.6rem; }
+  .meta-title i { color: var(--accent); }
+  .badge-row { display: flex; gap: 8px; align-items: center; }
+  .badge { font-family: var(--mono); font-size: 0.72rem; font-weight: 600; padding: 4px 12px; border-radius: 100px; background: rgba(0,229,255,0.05); color: var(--accent); border: 1px solid rgba(0,229,255,0.15); }
+  
+  /* REDIRECT ANCHOR LINK STYLING */
+  .badge-link { text-decoration: none; transition: background 0.2s, border-color 0.2s; }
+  .badge-link:hover { background: rgba(0, 229, 255, 0.15); border-color: var(--accent); }
+
+  .section-card { display: none; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 2.5rem; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); animation: stepFadeIn 0.35s ease; box-shadow: 0 30px 60px rgba(0,0,0,0.4); }
+  .section-card.visible { display: block; }
+  @keyframes stepFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  
+  .label-tag { font-family: var(--mono); font-size: 0.7rem; font-weight: 700; color: var(--accent-purple); background: rgba(168, 85, 247, 0.08); display: inline-flex; padding: 3px 10px; border-radius: 4px; margin-bottom: 0.8rem; border: 1px solid rgba(168, 85, 247, 0.15); text-transform: uppercase; letter-spacing: 0.5px; }
+  .section-card h3 { font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; color: var(--text-primary); }
+  .section-card p.desc { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 2rem; line-height: 1.6; }
+  
+  /* ===== WIDGET CONTROLS & CODE MODULES ===== */
+  .code-container { background: #04060b; border: 1px solid var(--border); border-radius: 12px; padding: 1.4rem; position: relative; margin-bottom: 1.5rem; }
+  .code-container pre { font-family: var(--mono); font-size: 0.85rem; color: var(--text-secondary); white-space: pre-wrap; line-height: 1.7; padding-right: 60px; }
+  .copy-btn { position: absolute; top: 14px; right: 14px; font-family: var(--font); font-size: 0.72rem; font-weight: 600; padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-secondary); color: var(--accent); cursor: pointer; transition: all 0.2s; }
+  .copy-btn:hover { background: var(--accent); color: var(--bg-sidebar); border-color: var(--accent); }
+  
+  /* INLINE LINK BUTTON SPECIFIC TO CARDS */
+  .card-action-bar { display: flex; gap: 10px; margin-top: -0.5rem; margin-bottom: 1.5rem; }
+  .inline-link { font-size: 0.8rem; color: var(--accent); text-decoration: none; font-family: var(--mono); display: inline-flex; align-items: center; gap: 5px; }
+  .inline-link:hover { text-decoration: underline; }
+
+  .infobox { background: rgba(0, 229, 255, 0.03); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 12px; padding: 1.1rem 1.4rem; margin-bottom: 1.5rem; font-size: 0.92rem; color: #a5f3fc; line-height: 1.6; display: flex; gap: 0.8rem; }
+  .infobox i { color: var(--accent); margin-top: 3px; }
+  
+  .grid-box { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 1.5rem; }
+  .grid-card { background: rgba(4, 6, 11, 0.4); border-radius: 12px; padding: 1.2rem; border: 1px solid rgba(255,255,255,0.02); }
+  .grid-label { font-family: var(--mono); font-size: 0.75rem; color: var(--accent); text-transform: uppercase; margin-bottom: 6px; }
+  .grid-val { font-size: 0.95rem; font-weight: 500; color: var(--text-primary); }
+  .grid-single { grid-template-columns: 1fr; }
+  
+  .row-item { display: flex; gap: 14px; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.95rem; color: var(--text-secondary); }
+  .row-item:last-child { border-bottom: none; }
+  .marker { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-top: 8px; flex-shrink: 0; box-shadow: 0 0 6px var(--accent); }
+  
+  .footer-nav { display: flex; justify-content: space-between; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.04); }
+  .nav-btn { font-family: var(--font); font-size: 0.85rem; font-weight: 600; padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-secondary); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; }
+  .nav-btn:hover { background: rgba(255,255,255,0.02); color: var(--text-primary); }
+  .nav-btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent-purple)); color: var(--bg-sidebar); border: none; font-weight: 700; }
+  
+  @media(max-width: 990px) {
+    body { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 1px solid var(--border); }
+    .main-content { margin-left: 0; padding: 2rem 1.5rem; }
+    .menu-list { flex-direction: row; flex-wrap: wrap; padding: 1rem; }
+    .menu-btn { width: calc(50% - 4px); }
+  }
+  @media(max-width: 600px) {
+    .menu-btn { width: 100%; }
+    .grid-box { grid-template-columns: 1fr; }
+    .top-meta-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===== SIDEBAR CONTROLLER NODE ===== -->
+  <aside class="sidebar">
+    <div class="profile-block">
+      <div class="avatar-ring">
+        <img src="updatepro.jpeg" alt="Khurram Sohail" class="avatar-inner">
+      </div>
+      <h2>Khurram Sohail</h2>
+      <p>BS SE Student · UET Taxila</p>
+      
+      <!-- WORKING SOCIAL LINKS IN SIDEBAR -->
+      <div class="social-links">
+        <a href="https://www.linkedin.com/in/khurram-sohail-34046832a/" target="_blank" class="social-icon" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+        <a href="https://github.com/KhuramSohail56" target="_blank" class="social-icon" title="GitHub"><i class="fab fa-github"></i></a>
+        <a href="mailto:khurramsohail1007@gmail.com" class="social-icon" title="Email"><i class="fas fa-envelope"></i></a>
+      </div>
+    </div>
+    <nav class="menu-list">
+      <button class="menu-btn active" onclick="navigate(0)"><i class="fas fa-heading"></i> 01 Profile Headlines</button>
+      <button class="menu-btn" onclick="navigate(1)"><i class="fas fa-address-card"></i> 02 About Executive</button>
+      <button class="menu-btn" onclick="navigate(2)"><i class="fas fa-cubes"></i> 03 Technology Grid</button>
+      <button class="menu-btn" onclick="navigate(3)"><i class="fas fa-code-branch"></i> 04 Project Modules</button>
+      <button class="menu-btn" onclick="navigate(4)"><i class="fas fa-envelope-open-text"></i> 05 Cover Letter</button>
+      <button class="menu-btn" onclick="navigate(5)"><i class="fas fa-paper-plane"></i> 06 Cold Outbreaks</button>
+      <button class="menu-btn" onclick="navigate(6)"><i class="fab fa-linkedin-in"></i> 07 Strategy Posts</button>
+      <button class="menu-btn" onclick="navigate(7)"><i class="fas fa-waveform"></i> 08 Elevator Pitch</button>
+      <button class="menu-btn" onclick="navigate(8)"><i class="fas fa-user-check"></i> 09 Interview Kit</button>
+      <button class="menu-btn" onclick="navigate(9)"><i class="fab fa-github"></i> 10 Repo Profile</button>
+      <button class="menu-btn" onclick="navigate(10)"><i class="fas fa-comments"></i> 11 Connection DMs</button>
+      <button class="menu-btn" onclick="navigate(11)"><i class="fas fa-route"></i> 12 30-Day Pipeline</button>
+    </nav>
+  </aside>
+
+  <!-- ===== CONTENT VIEWPORT HUB ===== -->
+  <main class="main-content">
+    
+    <header class="top-meta-header">
+      <div class="meta-title"><i class="fas fa-grip"></i> Personal Branding Matrix</div>
+      <div class="badge-row">
+        <!-- LIVE WORKING APP LINK AT THE TOP HEADER -->
+        <a href="https://khuramsohail56.github.io/my-portfolio/" target="_blank" class="badge badge-link"><i class="fas fa-globe"></i> Live Portfolio</a>
+        <span class="badge">Day 12 / 60</span>
+      </div>
+    </header>
+
+    <!-- SECTION 01 -->
+    <section class="section-card visible" id="card0">
+      <div class="label-tag">Module 01</div>
+      <h3>LinkedIn Headline Variants</h3>
+      <p class="desc">Recruiter keyword targeting matrix. Use variant vectors to match search indices.</p>
+      <div class="code-container"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>Variant A — Keyword-Optimized
+Backend &amp; Full-Stack Intern | C++ · Python · Java · SQL | DSA-Driven Builder | MLSA | 12 Certs from Stanford · Google · IBM</pre></div>
+      <div class="code-container"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>Variant B — Narrative-Led
+Software Engineer in Training | Khurram Sohail | I build systems from scratch — custom BST engines, full-stack dashboards, and production-grade CLI tools | UET Taxila '28 | MLSA</pre></div>
+      <div class="code-container"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>Variant C — Internship-Focused
+Seeking Backend / Full-Stack Internship | Khurram Sohail | C++ (Advanced) · Python · Java · SQL | Built real inventory &amp; health-tracking systems | MLSA · GDSC · SoftDesk</pre></div>
+      <div class="infobox"><i class="fas fa-info-circle"></i><div>LinkedIn indexing checks filter for terminal keys. Maintain these tags exactly to rank high on candidate search listings.</div></div>
+      <div class="footer-nav"><span></span><button class="nav-btn primary" onclick="navigate(1)">Next: About Summary →</button></div>
+    </section>
+
+    <!-- SECTION 02 -->
+    <section class="section-card" id="card1">
+      <div class="label-tag">Module 02</div>
+      <h3>LinkedIn "About" Summary</h3>
+      <p class="desc">A conversion-focused about layout containing structural text proofs.</p>
+      <div class="code-container"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>I don't just write code — I build systems that hold.
+
+My name is Khurram Sohail, and I'm a 4th-semester BS Software Engineering student at UET Taxila, actively building toward a career in backend and full-stack engineering. While most of my peers are still studying data structures in theory, I've already implemented them in production-grade projects: a custom Binary Search Tree–powered inventory engine, a JavaFX application with persistent file CRUD, and live client-side dashboards tracking real environmental and nutritional data for Pakistani cities.
+
+Technical snapshot:
+• Name Profile: Khurram Sohail
+• Languages: C++ (Advanced), Python, Java, SQL (MySQL / SQL Server)
+• Core DSA: Hash Tables, BST, Stacks, Merge Sort, Quick Sort — implemented from scratch, not imported
+• Web: HTML, CSS, JavaScript — single-file full-stack apps deployed and live
+• Certifications: 12 verified credentials from Stanford (Machine Learning), Google, IBM, and Cisco
+
+Beyond the code, I'm a Microsoft Learn Student Ambassador, an active member of SoftDesk, GDSC, and YPDC, and currently documenting a #60DayClaudeChallenge on LinkedIn — building AI-powered tools daily and writing about what I learn.
+
+What I'm looking for: a backend or full-stack internship where I can contribute real engineering work, not just shadow seniors. I'm available for remote and hybrid roles based out of Pakistan, and I move fast on assignments.
+
+📩 Open to: Backend Intern · Full-Stack Intern · Associate Software Engineer
+🏫 Khurram Sohail · UET Taxila · BS Software Engineering · Class of 2028</pre></div>
+      <div class="footer-nav"><button class="nav-btn" onclick="navigate(0)">← Prev</button><button class="nav-btn primary" onclick="navigate(2)">Next: Skills Matrix →</button></div>
+    </section>
+
+    <!-- SECTION 03 -->
+    <section class="section-card" id="card2">
+      <div class="label-tag">Module 03</div>
+      <h3>ATS-Ready Skills Matrix</h3>
+      <p class="desc">Defensible skills matrix matching verified portfolio benchmarks.</p>
+      <div class="grid-box">
+        <div class="grid-card"><div class="grid-label">Advanced</div><div class="grid-val">C++, Data Structures & Algorithms, Object-Oriented Programming</div></div>
+        <div class="grid-card"><div class="grid-label">Proficient</div><div class="grid-val">Python, Java, SQL (MySQL, SQL Server), JavaFX, File I/O</div></div>
+        <div class="grid-card"><div class="grid-label">Working Knowledge</div><div class="grid-val">HTML, CSS, JavaScript, Chart.js, Git/GitHub</div></div>
+        <div class="grid-card"><div class="grid-label">Concepts</div><div class="grid-val">Machine Learning (Stanford), Cloud Fundamentals (IBM), Prompt Engineering</div></div>
+      </div>
+      <div class="footer-nav"><button class="nav-btn" onclick="navigate(1)">← Prev</button><button class="nav-btn primary" onclick="navigate(3)">Next: Project Bullets →</button></div>
+    </section>
+
+    <!-- SECTION 04 -->
+    <section class="section-card" id="card3">
+      <div class="label-tag">Module 04</div>
+      <h3>Resume Project Highlights</h3>
+      <p class="desc">Action-impact matrices mapped directly to target ATS parameters.</p>
+      
+      <div class="code-container"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>Inventory Track Pro — C++ Systems Project
+• Engineered a custom inventory management engine in C++ using self-implemented BST, Stack, and Hash Table structures — no STL containers — demonstrating full command of low-level memory and algorithmic design
+• Designed a CLI interface supporting real-time item search (O(log n) BST lookup), undo-history via stack operations, and O(1) category lookups via hash tables</pre></div>
+      <!-- LIVE LINK FOR PROJECT 1 -->
+      <div class="card-action-bar">
+        <a href="https://github.com/KhuramSohail56" target="_blank" class="inline-link"><i class="fab fa-github"></i> View Repository</a>
+      </div>
+
+      <div class="code-container"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>Grocery Store Manager — JavaFX Capstone
+• Built a full JavaFX desktop application with persistent file-based CRUD, handling product catalog management, transaction logs, and a user-facing GUI — end-to-end, solo
+• Implemented a data layer using binary file I/O, enabling create, read, update, and delete operations across application restarts</pre></div>
+      <!-- LIVE LINK FOR PROJECT 2 -->
+      <div class="card-action-bar">
+        <a href="https://github.com/KhuramSohail56" target="_blank" class="inline-link"><i class="fab fa-github"></i> View Repository</a>
+      </div>
+
+      <div class="code-container"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>Environmental Health &amp; Nutrition Dashboards — #60DayClaudeChallenge
+• Developed two standalone single-file HTML/JS dashboards with live client-side telemetry: an Environmental Health Analyzer with real AQI/PM2.5 data for 8 Pakistani cities, and NutriScope, a nutrition tracker with an expanded South Asian food database
+• Integrated Chart.js for real-time visualizations (bar, radar, doughnut charts) and built full CRUD meal-planning and risk-scoring logic in vanilla JavaScript</pre></div>
+      <!-- LIVE LINK FOR CHALLENGE -->
+      <div class="card-action-bar">
+        <a href="https://claudeai60dayschallange.netlify.app" target="_blank" class="inline-link"><i class="fas fa-external-link-alt"></i> View Live App</a>
+      </div>
+
+      <div class="footer-nav"><button class="nav-btn" onclick="navigate(2)">← Prev</button><button class="nav-btn primary" onclick="navigate(4)">Next: Cover Letter →</button></div>
+    </section>
+
+    <!-- SECTION 05 -->
+    <section class="section-card" id="card4">
+      <div class="label-tag">Module 05</div>
+      <h3>Universal Cover Letter Template</h3>
+      <p class="desc">Professional baseline optimized for full-stack and systems intern roles.</p>
+      <div class="code-container"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>Dear Hiring Team at [Company],
+
+I'm a 4th-semester Software Engineering student at UET Taxila applying for the [Role] position. My name is Khurram Sohail, and I'll be direct about why I'm a strong fit: I've already built the kind of systems this role typically asks interns to learn from scratch.
+
+My most technically rigorous project — Inventory Track Pro — required implementing a custom Binary Search Tree, Stack, and Hash Table in C++ without standard library shortcuts. That's not coursework; that's deliberate engineering practice. I've also built a full-stack JavaFX desktop application with persistent file CRUD, and two live web dashboards (environmental health tracking, nutrition analysis) using Chart.js and vanilla JavaScript — both shipped as single-file, zero-dependency apps.
+
+Respectfully,
+Khurram Sohail</pre></div>
+      <div class="footer-nav"><button class="nav-btn" onclick="navigate(3)">← Prev</button><button class="nav-btn primary" onclick="navigate(5)">Next: Cold Email →</button></div>
+    </section>
+
+    <!-- SECTION 06 -->
+    <section class="section-card" id="card5">
+      <div class="label-tag">Module 06</div>
+      <h3>Cold Outreach Email Engines</h3>
+      <p class="desc">Short, metric-driven communication layers for engineers and recruiters.</p>
+      <div class="code-container"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>To Team Lead:
+Subject: SE student with C++/Python systems background — open to internship chat?
+
+Hi [Name],
+
+My name is Khurram Sohail, a software engineering student at UET Taxila. I've built several systems from scratch — a C++ BST-powered inventory engine, a JavaFX full-stack desktop app, and live web dashboards deployed as part of a public 60-day AI engineering challenge.
+
+Would you be open to a 15-minute call?</pre></div>
+      <div class="footer-nav"><button class="nav-btn" onclick="navigate(4)">← Prev</button><button class="nav-btn primary" onclick="navigate(6)">Next: LinkedIn Strategy →</button></div>
+    </section>
+
+    <!-- SECTION 07 -->
+    <section class="section-card" id="card6">
+      <div class="label-tag">Module 07</div>
+      <h3>LinkedIn Post Blueprints</h3>
+      <p class="desc">High-engagement outlines optimized to build in public.</p>
+      <div class="code-container"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>I am Khurram Sohail, and I built a live environmental health dashboard for Pakistani cities in a single HTML file.
+No framework. No backend. Just Chart.js, vanilla JS, and real AQI/PM2.5 data.
+
+This is Day [X] of my #60DayClaudeChallenge — 60 days of building real tools with AI.
+
+#BuildInPublic #WebDev #SoftwareEngineering</pre></div>
+      <div class="footer-nav"><button class="nav-btn" onclick="navigate(5)">← Prev</button><button class="nav-btn primary" onclick="navigate(7)">Next: Elevator Pitch →</button></div>
+    </section>
+
+    <!-- SECTION 08 -->
+    <section class="section-card" id="card7">
+      <div class="label-tag">Module 08</div>
+      <h3>Elevator Pitch Scripts</h3>
+      <p class="desc">Calibrated pitches for events, panels, or direct screening loops.</p>
+      <div class="code-container"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>60-Second Variant:
+"I'm Khurram Sohail, a 4th-semester Software Engineering student at UET Taxila, targeting backend and full-stack internship roles. My strongest language is C++ — I used it to build a full inventory system from scratch using custom Binary Search Trees and Hash Tables, not library abstractions. I've also built in Java, Python, and JavaScript, and I hold 12 certifications from Stanford, Google, and IBM. Right now I'm running a 60-day public AI engineering challenge. I'm looking for a team where I can contribute real engineering work from day one."</pre></div>
+      <div class="footer-nav"><button class="nav-btn" onclick="navigate(6)">← Prev</button><button class="nav-btn primary" onclick="navigate(8)">Next: Interview Prep →</button></div>
+    </section>
+
+    <!-- SECTION 09 -->
+    <section class="section-card" id="card8">
+      <div class="label-tag">Module 09</div>
+      <h3>Interview Preparation Kit</h3>
+      <p class="desc">Factual framework answers based on actual project metrics.</p>
+      <div class="row-item"><div class="marker"></div><div><strong>Q — Tell me about yourself.</strong><br>"I'm Khurram Sohail, a systems student at UET Taxila. I focus on backend optimization paths using C++, Java, and SQL."</div></div>
+      <div class="row-item"><div class="marker"></div><div><strong>Q — Explain a hard technical challenge.</strong><br>Optimizing C++ memory blocks and pointer arithmetic constraints inside Inventory Track Pro.</div></div>
+      <div class="footer-nav"><button class="nav-btn" onclick="navigate(7)">← Prev</button><button class="nav-btn primary" onclick="navigate(9)">Next: GitHub README →</button></div>
+    </section>
+
+    <!-- SECTION 10 -->
+    <section class="section-card" id="card9">
+      <div class="label-tag">Module 10</div>
+      <h3>GitHub Profile README</h3>
+      <p class="desc">Engineered markdown template optimized for personal repositories.</p>
+      <div class="code-container"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>## Hi, I'm Khurram Sohail 👋
+
+**BS Software Engineering · UET Taxila (2024–2028)**
+**Microsoft Learn Student Ambassador | SoftDesk · GDSC · YPDC**
+
+I build backend systems and full-stack tools — from C++ data structure engines to live web dashboards.
+
+### Featured Projects
+* **[Inventory Track Pro](https://github.com/KhuramSohail56)** — Custom BST and Hash tracking engine by Khurram Sohail.
+* **[Grocery Store Manager](https://github.com/KhuramSohail56)** — JavaFX persistent binary CRUD application. Solo-built.</pre></div>
+      <div class="footer-nav"><button class="nav-btn" onclick="navigate(8)">← Prev</button><button class="nav-btn primary" onclick="navigate(10)">Next: Connection DMs →</button></div>
+    </section>
+
+    <!-- SECTION 11 -->
+    <section class="section-card" id="card10">
+      <div class="label-tag">Module 11</div>
+      <h3>LinkedIn Connection DMs</h3>
+      <p class="desc">High-leverage outreach templates kept under strict micro-limits.</p>
+      <div class="code-container"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre>To Senior Engineers:
+"Hi [Name] — I'm Khurram Sohail, a software engineering student at UET Taxila, building toward backend and full-stack roles. I read your post on [topic] and found your engineering insights genuinely useful. Would love to connect and follow your work."</pre></div>
+      <div class="footer-nav"><button class="nav-btn" onclick="navigate(9)">← Prev</button><button class="nav-btn primary" onclick="navigate(11)">Next: 30-Day Pipeline →</button></div>
+    </section>
+
+    <!-- SECTION 12 -->
+    <section class="section-card" id="card11">
+      <div class="label-tag">Module 12</div>
+      <h3>30-Day Job Search Execution Plan</h3>
+      <p class="desc">Quantitative milestones mapped across weekly tracking nodes.</p>
+      <div class="grid-box grid-single">
+        <div class="grid-card"><div class="grid-label">Week 1 — Foundation</div><div class="grid-val">Update LinkedIn headline and About summary layers. Target 20 premier software houses across Pakistan (Systems, Arbisoft, Devsinc, 10Pearls).</div></div>
+        <div class="grid-card"><div class="grid-label">Week 2 — Outreach</div><div class="grid-val">Emit 10 systematic cold outreach emails and connect with 5 target lead engineers daily.</div></div>
+      </div>
+      <div class="footer-nav"><button class="nav-btn" onclick="navigate(10)">← Prev</button><button class="nav-btn primary" onclick="navigate(0)">↩ Return Home</button></div>
+    </section>
+
+  </main>
+
+  <!-- ===== ENGINE CONTROLLER SCRIPT ===== -->
+  <script>
+    let activeCard = 0;
+    const maxSections = 12;
+    
+    function navigate(index) {
+      document.getElementById('card' + activeCard).classList.remove('visible');
+      document.querySelectorAll('.menu-btn')[activeCard].classList.remove('active');
+      
+      activeCard = index;
+      
+      document.getElementById('card' + activeCard).classList.add('visible');
+      document.querySelectorAll('.menu-btn')[activeCard].classList.add('active');
+      
+      document.getElementById('pf').style.width = (((index + 1) / maxSections) * 100) + '%';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    function copyCode(button) {
+      const dataText = button.closest('.code-container').querySelector('pre');
+      navigator.clipboard.writeText(dataText.textContent.trim()).then(() => {
+        button.textContent = '✓ Copied';
+        button.style.background = '#00e5ff';
+        button.style.color = '#05070f';
+        setTimeout(() => { 
+          button.textContent = 'Copy';
+          button.style.background = '#090d1a';
+          button.style.color = '#00e5ff';
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
