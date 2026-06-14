@@ -5,6 +5,8 @@
 * **Input Target Evaluated:** Entry-Level Hybrid Backend Internship Variant.
 * **Overall Risk Evaluation Score:** 68% (Apply with Caution Profile).
 * **Master System HUD Reference:**
+* <img width="1536" height="1024" alt="ChatGPT Image Jun 14, 2026, 07_47_41 PM" src="https://github.com/user-attachments/assets/5215b0b7-e2ec-492a-aee3-a4cc4b4d921d" />
+
 
 
   
