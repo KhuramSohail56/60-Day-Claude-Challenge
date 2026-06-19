@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Brain Dump</title>
+    <style>
+        :root {
+            --bg-body: #060913;
+            --bg-container: #0b1322;
+            --bg-panel: #0e1726;
+            --border-grid: #1e293b;
+            --text-white: #ffffff;
+            --text-grey: #475569;
+            --text-light: #94a3b8;
+            --blue-highlight: #38bdf8;
+            
+            --status-red-bg: rgba(239, 68, 68, 0.1);
+            --status-red-text: #f87171;
+            --status-red-border: rgba(239, 68, 68, 0.2);
+            
+            --status-amber-bg: rgba(245, 158, 11, 0.08);
+            --status-amber-text: #fbbf24;
+            --status-amber-border: rgba(245, 158, 11, 0.2);
+
+            --status-green-bg: rgba(16, 185, 129, 0.08);
+            --status-green-text: #34d399;
+            --status-green-border: rgba(16, 185, 129, 0.2);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-light);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            width: 100%;
+            max-width: 760px;
+            background-color: var(--bg-container);
+            border-radius: 8px;
+            padding: 24px;
+            border: 1px solid var(--border-grid);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .meta-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid var(--border-grid);
+            padding-bottom: 16px;
+        }
+
+        .meta-title-area { display: flex; align-items: flex-start; gap: 12px; }
+        .meta-icon { font-size: 1.5rem; line-height: 1; margin-top: 2px; }
+        .meta-title-area h2 { color: var(--text-white); font-size: 1.15rem; font-weight: 600; letter-spacing: -0.2px; }
+        .meta-title-area p { font-size: 0.8rem; color: var(--text-grey); margin-top: 4px; }
+        .meta-title-area p strong { color: var(--text-light); font-weight: 500; }
+
+        .meta-timing-area { text-align: right; font-size: 0.78rem; color: var(--text-grey); line-height: 1.5; }
+        .meta-timing-area strong { color: var(--text-light); font-weight: 500; }
+
+        .grid-half {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .panel {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-grid);
+            border-radius: 6px;
+            padding: 18px;
+        }
+
+        .panel-heading {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-grey);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .summary-body {
+            font-size: 0.85rem;
+            line-height: 1.55;
+            color: #cbd5e1;
+        }
+        .summary-body span { color: var(--blue-highlight); font-weight: 400; }
+
+        .takeaways-items { list-style: none; }
+        .takeaways-items li {
+            position: relative;
+            padding-left: 16px;
+            font-size: 0.82rem;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            color: #cbd5e1;
+        }
+        .takeaways-items li span { color: var(--blue-highlight); }
+        .takeaways-items li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            font-size: 1rem;
+            top: -1px;
+        }
+        .takeaways-items li.b-blue::before { color: var(--blue-highlight); }
+        .takeaways-items li.b-amber::before { color: #f59e0b; }
+        .takeaways-items li.b-purple::before { color: #c084fc; }
+        .takeaways-items li.b-grey::before { color: var(--text-grey); }
+
+        .table-container { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        th { color: #475569; font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 8px; border-bottom: 1px solid var(--border-grid); }
+        td { padding: 12px 8px; border-bottom: 1px solid rgba(30, 41, 59, 0.4); color: #cbd5e1; vertical-align: middle; }
+        
+        .id-column { color: #475569; font-weight: 500; font-size: 0.78rem; width: 30px; }
+        .task-text { color: #ffffff; transition: all 0.2s; }
+        .task-text span { color: #cbd5e1; font-weight: 400; }
+
+        .row-action-check {
+            cursor: pointer; width: 14px; height: 14px; accent-color: var(--blue-highlight);
+            margin-right: 8px; vertical-align: middle; background: transparent; border: 1px solid var(--border-grid);
+        }
+        tr.completed-row-state .task-text {
+            text-decoration: line-through; color: var(--text-grey) !important;
+        }
+
+        .user-tag {
+            background-color: rgba(56, 189, 248, 0.08);
+            color: var(--blue-highlight);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .user-tag:hover { background-color: rgba(56, 189, 248, 0.15); }
+        .user-tag.unassigned { background-color: transparent; color: #475569; padding: 0; cursor: default; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.15s ease;
+        }
+        .sb-red { background-color: var(--status-red-bg); color: var(--status-red-text); border: 1px solid var(--status-red-border); }
+        .sb-amber { background-color: var(--status-amber-bg); color: var(--status-amber-text); border: 1px solid var(--status-amber-border); }
+        .sb-green { background-color: var(--status-green-bg); color: var(--status-green-text); border: 1px solid var(--status-green-border); }
+
+        .open-question-box { cursor: pointer; padding: 4px; }
+        .open-question-box h4 { color: #cbd5e1; font-size: 0.85rem; font-weight: 500; line-height: 1.5; margin-bottom: 8px; }
+        .open-question-meta { font-size: 0.75rem; color: #475569; }
+        .open-question-meta span { color: #f43f5e; font-weight: 600; }
+
+        .alert-card-panel {
+            background-color: #141f32;
+            border-radius: 4px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--border-line);
+        }
+        .alert-card-panel h5 { color: var(--border-line); font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; }
+        .alert-card-panel p { font-size: 0.75rem; color: var(--text-light); line-height: 1.45; }
+
+        @media(max-width: 640px) { .grid-half { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+
+    <div class="meta-header">
+        <div class="meta-title-area">
+            <div class="meta-icon">📄</div>
+            <div>
+                <h2>Project Brain Dump</h2>
+                <p>Participants: <strong>Khurram Sohail</strong> & <strong>Mudassir Hussain</strong></p>
+            </div>
+        </div>
+        <div class="meta-timing-area">
+            Date: <strong>June 19, 2026</strong><br>
+            Session: <strong>Quick Sync Alignment</strong>
+        </div>
+    </div>
+
+    <div class="grid-half">
+        <div class="panel">
+            <div class="panel-heading">Summary</div>
+            <p class="summary-body">
+                A quick sync between Khurram Sohail and Mudassir Hussain on June 19, 2026. The session covered deployment of <span>day18.md</span> documentation workspace logs to the main repository, a risk around expiring challenge portal access tokens, a pending skill properties verification task, and an unresolved question on video file configuration placement.
+            </p>
+        </div>
+
+        <div class="panel">
+            <div class="panel-heading">Key Takeaways</div>
+            <ul class="takeaways-items">
+                <li class="b-blue"><span>day18.md</span> must be deployed to the main repository by tomorrow — Khurram owns this at high priority.</li>
+                <li class="b-amber">Challenge portal access tokens may expire; no workaround exists yet — flagged as a minor blocker.</li>
+                <li class="b-purple">Active skill properties verification inside custom parameters is pending with no defined timeline.</li>
+                <li class="b-grey">No conflicting timelines were identified in the session.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-heading">Action Items</div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">#</th>
+                        <th style="width: 320px;">Task</th>
+                        <th>Owner</th>
+                        <th>Deadline</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id="row-1">
+                        <td><input type="checkbox" class="row-action-check" onclick="toggleRow('row-1')"> <span class="id-column">01</span></td>
+                        <td><div class="task-text">Deploy <span>day18.md</span> documentation workspace logs to the main repository</div></td>
+                        <td><span class="user-tag">Khurram Sohail</span></td>
+                        <td>June 20, 2026<br><span style="color:var(--text-grey); font-size:0.75rem;">(Tomorrow)</span></td>
+                        <td><span class="status-badge sb-red" onclick="cycleRowBadge(this)">● High Priority</span></td>
+                    </tr>
+                    <tr id="row-2">
+                        <td><input type="checkbox" class="row-action-check" onclick="toggleRow('row-2')"> <span class="id-column">02</span></td>
+                        <td><div class="task-text">Map active skill properties verification inside custom parameters</div></td>
+                        <td><span class="user-tag">Khurram Sohail</span></td>
+                        <td><span style="color:#475569; font-style:italic;">Not specified</span></td>
+                        <td><span class="status-badge sb-amber" onclick="cycleRowBadge(this)">⏳ Pending</span></td>
+                    </tr>
+                    <tr id="row-3">
+                        <td><input type="checkbox" class="row-action-check" onclick="toggleRow('row-3')"> <span class="id-column">03</span></td>
+                        <td><div class="task-text">Identify a workaround for challenge portal access token expiry</div></td>
+                        <td><span class="user-tag unassigned">Not assigned</span></td>
+                        <td><span style="color:#475569; font-style:italic;">Not specified</span></td>
+                        <td><span class="status-badge sb-amber" onclick="cycleRowBadge(this)">⏳ Pending</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="grid-half">
+        <div class="panel">
+            <div class="panel-heading">Open Questions</div>
+            <div class="open-question-box" onclick="toggleQuestionState(this)">
+                <h4 id="q-txt-element">Should video file configurations be included in the source note, or merged later?</h4>
+                <div class="open-question-meta">
+                    Asked by: Mudassir Hussain - Status: <span class="q-status" id="q-status-badge">❓ Unresolved</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-heading">Risks / Blockers / Conflicts</div>
+            
+            <div class="alert-card-panel" style="--border-line: #f59e0b;">
+                <h5>⚠ Challenge Portal Access Tokens</h5>
+                <p>Tokens risk expiring with no workaround currently identified. Flagged as a <strong>minor blocker</strong> by Mudassir Hussain.</p>
+            </div>
+
+            <div class="alert-card-panel" style="--border-line: #10b981;">
+                <h5>✅ No Timeline Conflicts</h5>
+                <p>No conflicting timelines were found across the discussed tasks.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function toggleRow(id) {
+        const row = document.getElementById(id);
+        row.classList.toggle('completed-row-state');
+        const badge = row.querySelector('.status-badge');
+        
+        if (row.classList.contains('completed-row-state')) {
+            badge.className = "status-badge sb-green";
+            badge.innerText = "✅ Completed";
+        } else {
+            if (id === 'row-1') {
+                badge.className = "status-badge sb-red";
+                badge.innerText = "● High Priority";
+            } else {
+                badge.className = "status-badge sb-amber";
+                badge.innerText = "⏳ Pending";
+            }
+        }
+    }
+
+    function cycleRowBadge(badge) {
+        if (badge.classList.contains('sb-red')) {
+            badge.className = "status-badge sb-amber";
+            badge.innerText = "⏳ Pending";
+        } else if (badge.classList.contains('sb-amber')) {
+            badge.className = "status-badge sb-green";
+            badge.innerText = "✅ Completed";
+            badge.parentElement.parentElement.querySelector('.row-action-check').checked = true;
+            badge.parentElement.parentElement.classList.add('completed-row-state');
+        } else {
+            badge.className = "status-badge sb-red";
+            badge.innerText = "● High Priority";
+            badge.parentElement.parentElement.querySelector('.row-action-check').checked = false;
+            badge.parentElement.parentElement.classList.remove('completed-row-state');
+        }
+    }
+
+    function toggleQuestionState(element) {
+        const badge = document.getElementById('q-status-badge');
+        const text = document.getElementById('q-txt-element');
+        if (badge.innerText === "❓ Unresolved") {
+            badge.innerText = "✅ Resolved";
+            badge.style.color = "#34d399";
+            text.style.color = "var(--text-grey)";
+        } else {
+            badge.innerText = "❓ Unresolved";
+            badge.style.color = "#f43f5e";
+            text.style.color = "var(--text-white)";
+        }
+    }
+</script>
+</body>
+</html>
