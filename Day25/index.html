@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Startup Pitch Simulator & Analytics Dashboard</title>
+<style>
+  /* ── CORE GENERAL RESETS (100% VIDEO STYLE) ── */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  body {
+    background: #09090b;
+    color: #fff;
+    padding-bottom: 60px;
+  }
+
+  header {
+    padding: 25px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #222;
+  }
+
+  .logo {
+    font-size: 30px;
+    font-weight: bold;
+    color: #6366f1;
+  }
+
+  button {
+    background: #6366f1;
+    border: none;
+    padding: 12px 24px;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: opacity 0.2s;
+  }
+
+  button:hover {
+    opacity: 0.9;
+  }
+
+  .hero {
+    padding: 80px 20px;
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-size: 55px;
+    margin-bottom: 15px;
+  }
+
+  .hero p {
+    color: #999;
+    font-size: 18px;
+  }
+
+  .container {
+    width: 1100px;
+    max-width: 95%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  /* ── INTERACTIVE STECTIONS DYNAMIC CORES ── */
+  .app-step-section {
+    display: none; /* Pehle se hidden rahega */
+    animation: fadeIn 0.4s ease-in-out forwards;
+  }
+
+  .app-step-section.active-step {
+    display: block; /* Sirf active screen dikhegi */
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── PHASE 1: ALL 6 INPUT BOXES GRID (EXACTLY YOURS) ── */
+  .card {
+    background: #161616;
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid #2d2d2d;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 15px;
+    background: #0d0d0d;
+    border: 1px solid #333;
+    border-radius: 10px;
+    color: white;
+  }
+
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: #6366f1;
+  }
+
+  textarea {
+    height: 130px;
+    resize: none;
+  }
+
+  .full {
+    grid-column: 1 / 3;
+  }
+
+  .start {
+    margin-top: 30px;
+    width: 100%;
+    padding: 18px;
+    font-size: 18px;
+  }
+
+  /* ── ROSTER JURY TILES ── */
+  .investors {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .investor {
+    background: #1d1d1d;
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    transition: .3s;
+    border: 1px solid rgba(255, 255, 255, 0.02);
+  }
+
+  .investor:hover { transform: translateY(-5px); }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #6366f1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    margin: auto;
+    margin-bottom: 15px;
+  }
+
+  /* ── CHAT ROUND WINDOW ── */
+  .chat {
+    background: #161616;
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid #2d2d2d;
+  }
+
+  .message {
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+    line-height: 1.4;
+  }
+
+  .ai { background: #292929; }
+  .user { background: #4f46e5; text-align: right; }
+
+  /* ── PART 3: AI ANALYTICS DASHBOARD ── */
+  .dashboard {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 30px;
+  }
+
+  .scoreCard {
+    background: #161616;
+    border: 1px solid #2f2f35;
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .circle {
+    width: 220px;
+    height: 220px;
+    margin: auto;
+    border-radius: 50%;
+    background: conic-gradient(#6366f1 0deg, #6366f1 295deg, #2a2a2a 295deg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .inner {
+    width: 170px;
+    height: 170px;
+    background:#09090b;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .inner h1 { font-size: 58px; }
+  .inner span { color: #999; }
+
+  .result {
+    margin-top: 25px;
+    padding: 12px;
+    background: #1e293b;
+    border-radius: 10px;
+    font-weight: bold;
+    width: 100%;
+  }
+
+  .analysis {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .panel {
+    background: #161616;
+    border: 1px solid #2f2f35;
+    border-radius: 15px;
+    padding: 25px;
+  }
+
+  .panel h3 { margin-bottom: 18px; }
+
+  .progressBar {
+    height: 12px;
+    background: #2a2a2a;
+    border-radius: 30px;
+    overflow: hidden;
+    margin-top: 8px;
+    margin-bottom: 20px;
+  }
+
+  .progressBar div {
+    height: 100%;
+    background: #6366f1;
+  }
+
+  .strength { color: #22c55e; margin-bottom: 10px; font-weight: 600; }
+  .warning { color: #f59e0b; margin-bottom: 10px; font-weight: 600; }
+  .risk { color: #ef4444; font-weight: 600; }
+
+  .summary {
+    margin-top: 30px;
+    background: #161616;
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid #2f2f35;
+  }
+  .summary p { line-height: 1.8; color: #cfcfcf; }
+
+  /* ── PART 4: LEADERBOARD + FINAL DECISION ── */
+  .finalArea {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 25px;
+  }
+
+  .leaderboard, .decision {
+    background: #161616;
+    border: 1px solid #2f2f35;
+    border-radius: 18px;
+    padding: 25px;
+  }
+
+  .lbRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid #2b2b2b;
+  }
+
+  .rank {
+    width: 40px;
+    height: 40px;
+    background: #6366f1;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+  }
+
+  .player { display: flex; align-items: center; gap: 15px; }
+  .scoreValue { font-weight: bold; font-size: 20px; }
+
+  .decisionBox { text-align: center; padding: 30px 15px; }
+  .bigIcon { font-size: 90px; margin-bottom: 15px; }
+  .status { font-size: 34px; font-weight: bold; margin-bottom: 15px; }
+  .pass { color: #ef4444; }
+  .invest { color: #22c55e; }
+  .reason { color: #bdbdbd; line-height: 1.8; margin-bottom: 30px; }
+
+  .action { display: flex; gap: 15px; }
+  .action button {
+    flex: 1; padding: 15px; border: none; border-radius: 12px;
+    cursor: pointer; font-size: 16px; font-weight: bold;
+  }
+  .restart { background: #374151; color: white; }
+  .download { background: #6366f1; color: white; }
+
+  footer { padding: 40px; text-align: center; color: #888; }
+
+  @media(max-width: 900px){
+    .grid, .investors, .dashboard, .analysis, .finalArea { grid-template-columns: 1fr; }
+    .full { grid-column: auto; }
+    .hero h1 { font-size: 38px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🚀 Startup Simulator</div>
+  <button>AI Mode</button>
+</header>
+
+<section class="hero">
+  <h1>Startup Pitch Simulator</h1>
+  <p>Practice your startup pitch and receive simulated investor feedback.</p>
+</section>
+
+<div class="container">
+
+  <div id="step-form-block" class="app-step-section active-step">
+    <div class="card">
+      <h2>Startup Information</h2>
+      <br>
+      <div class="grid">
+        <input placeholder="Startup Name" id="form-name">
+        <input placeholder="Founder Name" id="form-founder">
+        <input placeholder="Industry" id="form-industry">
+        <input placeholder="Funding Ask" id="form-ask">
+        <div class="full">
+          <textarea placeholder="Describe your startup" id="form-desc"></textarea>
+        </div>
+        <div class="full">
+          <textarea placeholder="What problem does it solve?" id="form-prob"></textarea>
+        </div>
+      </div>
+      <button class="start" onclick="processToChatRound()">Continue to Investor Chat Round →</button>
+    </div>
+  </div>
+
+  <div id="step-chat-block" class="app-step-section">
+    <div class="investors">
+      <div class="investor"><div class="avatar">👩</div><h3>Emma</h3><p>Technology</p></div>
+      <div class="investor"><div class="avatar">👨</div><h3>David</h3><p>Finance</p></div>
+      <div class="investor"><div class="avatar">👩</div><h3>Sophia</h3><p>Marketing</p></div>
+      <div class="investor"><div class="avatar">👨</div><h3>Michael</h3><p>Investment</p></div>
+    </div>
+
+    <div class="chat">
+      <h2>Investor Questions</h2>
+      <div id="message-log">
+        <div class="message ai">What problem are you solving?</div>
+        <div class="message user">We automate inventory using AI.</div>
+      </div>
+      <input id="answer" placeholder="Type your defense answer here...">
+      <br><br>
+      <button onclick="triggerMetricsReveal()">Send Answer & View Analysis →</button>
+    </div>
+  </div>
+
+  <div id="step-analytics-block" class="app-step-section">
+    
+    <section class="dashboard">
+      <div class="scoreCard">
+        <div class="circle">
+          <div class="inner"><h1 id="overallScore">82</h1><span>/100</span></div>
+        </div>
+        <div class="result" id="potential-badge">✅ Investment Potential : HIGH</div>
+      </div>
+
+      <div>
+        <div class="analysis">
+          <div class="panel">
+            <h3>Innovation</h3>
+            <div class="progressBar"><div style="width:92%"></div></div>
+            <h3>Market Demand</h3>
+            <div class="progressBar"><div style="width:85%"></div></div>
+            <h3>Execution</h3>
+            <div class="progressBar"><div style="width:78%"></div></div>
+          </div>
+          <div class="panel">
+            <div class="strength">✔ Strong Product Vision</div>
+            <div class="strength">✔ Large Target Market</div>
+            <div class="warning">⚠ Revenue Model Needs Validation</div>
+            <div class="risk">✖ Customer Acquisition Cost Unknown</div>
+          </div>
+        </div>
+
+        <div class="summary">
+          <h2>AI Evaluation</h2>
+          <br>
+          <p>
+            Your startup demonstrates a promising product idea with good scalability.
+            The innovation score is strong and the target market appears attractive.
+            To improve investor confidence, clearly explain customer acquisition strategy.
+          </p>
+          <br>
+          <button onclick="recalculateScores()">Recalculate Score</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="finalArea">
+      <div class="leaderboard">
+        <h2>🏆 Startup Leaderboard</h2>
+        <br>
+        <div class="lbRow">
+          <div class="player"><div class="rank">1</div><div><strong>AI Health</strong><br><span>Healthcare</span></div></div>
+          <div class="scoreValue">95</div>
+        </div>
+        <div class="lbRow">
+          <div class="player"><div class="rank">2</div><div><strong>Smart Retail</strong><br><span>Retail AI</span></div></div>
+          <div class="scoreValue">91</div>
+        </div>
+        <div class="lbRow">
+          <div class="player"><div class="rank">3</div><div><strong>Your Startup</strong><br><span>Current Pitch</span></div></div>
+          <div class="scoreValue" id="finalScore">82</div>
+        </div>
+      </div>
+
+      <div class="decision">
+        <div class="decisionBox">
+          <div class="bigIcon" id="icon">💰</div>
+          <div class="status invest" id="status">INVEST</div>
+          <div class="reason" id="reason">
+            Our AI investors believe your startup has strong market potential, scalable technology, and a compelling founder vision.
+          </div>
+          <div class="action">
+            <button class="restart" onclick="location.reload()">Restart</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</div>
+
+<footer>
+  © 2026 Startup Pitch Simulator
+</footer>
+
+<script>
+  function processToChatRound() {
+    const name = document.getElementById('form-name').value.trim();
+    if(name == "") {
+      alert("Please enter your Startup Name to initialize the workspace.");
+      return;
+    }
+    // Form block ko hide karke chat show karna
+    document.getElementById('step-form-block').classList.remove('active-step');
+    document.getElementById('step-chat-block').classList.add('active-step');
+  }
+
+  function triggerMetricsReveal() {
+    let log = document.getElementById("message-log");
+    let input = document.getElementById("answer");
+    if(input.value.trim() == "") return;
+
+    let userDiv = document.createElement("div");
+    userDiv.className = "message user";
+    userDiv.innerHTML = input.value;
+    log.appendChild(userDiv);
+    input.value = "";
+
+    setTimeout(function(){
+      let aiDiv = document.createElement("div");
+      aiDiv.className = "message ai";
+      aiDiv.innerHTML = "Strategic response parsed. Comprehensive scoring layers generated below.";
+      log.appendChild(aiDiv);
+
+      // Final analytics show karna
+      document.getElementById('step-analytics-block').classList.add('active-step');
+      
+      let finalCalculatedScore = Math.floor(Math.random() * 12 + 83);
+      syncScores(finalCalculatedScore);
+      
+      document.getElementById('step-analytics-block').scrollIntoView({ behavior: 'smooth' });
+    }, 600);
+  }
+
+  function recalculateScores() {
+    let score = Math.floor(Math.random() * 16) + 81;
+    syncScores(score);
+  }
+
+  function syncScores(val) {
+    document.getElementById("overallScore").innerHTML = val;
+    document.getElementById("finalScore").innerHTML = val;
+    
+    let status = document.getElementById("status");
+    let icon = document.getElementById("icon");
+    let reason = document.getElementById("reason");
+
+    if(val >= 86) {
+      status.innerHTML = "INVEST";
+      status.className = "status invest";
+      icon.innerHTML = "💰";
+      reason.innerHTML = "The board recommends moving into execution integration setup tracks.";
+    } else {
+      status.innerHTML = "PASS";
+      status.className = "status pass";
+      icon.innerHTML = "❌";
+      reason.innerHTML = "Additional target transactional benchmarks required before proceeding.";
+    }
+  }
+</script>
+</body>
+</html>
