@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prior Authorization Workflow Simulator</title>
+<style>
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0f1e;
+    --surface: #111827;
+    --surface2: #1a2337;
+    --surface3: #1e2d48;
+    --border: #2a3a5c;
+    --blue-pale: #bfdbfe;
+    --blue-light: #60a5fa;
+    --blue-mid: #3b82f6;
+    --blue-deep: #1d4ed8;
+    --blue-dark: #1e3a8a;
+    --accent: #38bdf8;
+    --green: #34d399;
+    --yellow: #fbbf24;
+    --red: #f87171;
+    --purple: #a78bfa;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #64748b;
+    --radius: 10px;
+    --radius-lg: 16px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+    --glow: 0 0 20px rgba(59,130,246,0.3);
+  }
+
+  html { font-size: 15px; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== CONFETTI CANVAS ===== */
+  #confetti-canvas {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none; z-index: 9999;
+    display: none;
+  }
+
+  /* ===== HEADER ===== */
+  #app-header {
+    background: linear-gradient(135deg, #0d1b3e 0%, #0f2660 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex; align-items: center; gap: 16px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.5);
+  }
+  #app-header .logo {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--blue-mid), var(--accent));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+    box-shadow: var(--glow);
+  }
+  #app-header h1 { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+  #app-header .subtitle { font-size: 0.75rem; color: var(--text-dim); margin-top: 1px; }
+  #app-header .spacer { flex: 1; }
+  #header-stats {
+    display: flex; gap: 20px; align-items: center;
+  }
+  .hstat {
+    text-align: center;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 14px;
+  }
+  .hstat-val { font-size: 1.2rem; font-weight: 700; color: var(--accent); }
+  .hstat-lbl { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  #btn-new-patient {
+    background: linear-gradient(135deg, var(--blue-mid), var(--blue-deep));
+    color: #fff; border: none; border-radius: 8px;
+    padding: 8px 18px; font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(59,130,246,0.4);
+  }
+  #btn-new-patient:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(59,130,246,0.5); }
+
+  /* ===== PROGRESS TRACKER ===== */
+  #progress-section {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+  }
+  #progress-label {
+    font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;
+    letter-spacing: 0.08em; margin-bottom: 10px;
+  }
+  #progress-steps {
+    display: flex; align-items: center; gap: 0;
+    overflow-x: auto; padding-bottom: 2px;
+  }
+  .pstep {
+    display: flex; align-items: center; flex-shrink: 0;
+    position: relative;
+  }
+  .pstep-dot {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700;
+    border: 2px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-muted);
+    transition: all 0.3s; position: relative;
+  }
+  .pstep.done .pstep-dot { background: var(--blue-deep); border-color: var(--blue-mid); color: #fff; }
+  .pstep.active .pstep-dot {
+    background: linear-gradient(135deg, var(--blue-mid), var(--accent));
+    border-color: var(--accent); color: #fff;
+    box-shadow: 0 0 12px rgba(56,189,248,0.5);
+    animation: pulse-dot 2s infinite;
+  }
+  @keyframes pulse-dot {
+    0%,100% { box-shadow: 0 0 8px rgba(56,189,248,0.4); }
+    50% { box-shadow: 0 0 20px rgba(56,189,248,0.8); }
+  }
+  .pstep-line {
+    width: 40px; height: 2px;
+    background: var(--border); transition: all 0.3s;
+  }
+  .pstep.done + .pstep .pstep-line,
+  .pstep.done .pstep-line { background: var(--blue-mid); }
+  .pstep-name {
+    position: absolute; top: 38px; left: 50%; transform: translateX(-50%);
+    white-space: nowrap; font-size: 0.6rem; color: var(--text-muted);
+    text-align: center;
+  }
+  .pstep.active .pstep-name, .pstep.done .pstep-name { color: var(--blue-light); }
+  #progress-bar-wrap {
+    margin-top: 28px;
+    height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;
+  }
+  #progress-bar-fill {
+    height: 100%; background: linear-gradient(90deg, var(--blue-mid), var(--accent));
+    border-radius: 2px; transition: width 0.5s ease;
+    box-shadow: 0 0 8px rgba(56,189,248,0.6);
+  }
+
+  /* ===== MAIN LAYOUT WITH TWO PANEL GRIDS ===== */
+  #main-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 20px;
+    padding: 20px 24px;
+  }
+
+  /* ===== SIDE CONTROL PANEL ===== */
+  #control-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: fit-content;
+  }
+  .panel-section-title {
+    font-size: 0.85rem; font-weight: 700; color: var(--accent);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border); padding-bottom: 6px;
+  }
+  .form-group {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .form-group label { font-size: 0.78rem; color: var(--text-dim); }
+  .form-group input, .form-group select {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); border-radius: 6px; padding: 8px 10px;
+    font-size: 0.85rem; outline: none;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--blue-mid); }
+  
+  .btn-submit-patient {
+    background: linear-gradient(135deg, var(--green), #059669);
+    color: #fff; border: none; border-radius: 6px;
+    padding: 10px; font-size: 0.85rem; font-weight: 700;
+    cursor: pointer; transition: all 0.2s;
+    text-align: center;
+  }
+  .btn-submit-patient:hover { transform: translateY(-1px); filter: brightness(1.1); }
+
+  /* ===== LANES & BOARDS ===== */
+  #lanes {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; margin-bottom: 20px;
+  }
+  .lane {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden; min-height: 250px;
+    transition: border-color 0.2s;
+  }
+  .lane-header {
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .lane-icon { font-size: 1.4rem; }
+  .lane-title { font-size: 0.9rem; font-weight: 700; }
+  .lane-sub { font-size: 0.7rem; color: var(--text-muted); margin-top: 1px; }
+  .lane-count {
+    margin-left: auto; background: var(--surface3);
+    border-radius: 12px; padding: 2px 10px;
+    font-size: 0.7rem; color: var(--text-dim); font-weight: 600;
+  }
+
+  .lane-patient .lane-header { background: rgba(96,165,250,0.08); }
+  .lane-patient { border-top: 3px solid var(--blue-mid); }
+  .lane-provider .lane-header { background: rgba(56,189,248,0.08); }
+  .lane-provider { border-top: 3px solid var(--accent); }
+  .lane-payer .lane-header { background: rgba(167,139,250,0.08); }
+  .lane-payer { border-top: 3px solid var(--purple); }
+
+  .lane-body { padding: 12px; display: flex; flex-direction: column; gap: 10px; min-height: 180px; }
+
+  /* ===== CASE CARD ===== */
+  .case-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+    position: relative;
+  }
+  .case-card:hover {
+    border-color: var(--blue-mid);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  }
+  .case-card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .case-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0; font-weight: 700;
+  }
+  .case-name { font-size: 0.85rem; font-weight: 600; }
+  .case-type { font-size: 0.7rem; color: var(--text-muted); }
+  .case-status-badge {
+    margin-left: auto; border-radius: 6px; padding: 2px 8px;
+    font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+  }
+  .badge-review { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+
+  .case-meta { display: flex; gap: 12px; font-size: 0.7rem; color: var(--text-muted); flex-direction: column; gap: 4px; }
+  .case-meta span { display: flex; align-items: center; gap: 4px; }
+  
+  .click-hint {
+    text-align: center; padding: 6px;
+    color: var(--accent); font-size: 0.72rem;
+    border: 1px dashed rgba(56, 189, 248, 0.4); border-radius: 6px;
+    margin-top: 8px; font-weight: 600;
+  }
+
+  /* ===== ACTION PANEL ===== */
+  #action-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden; margin-bottom: 20px;
+  }
+  #action-panel-header {
+    padding: 14px 20px;
+    background: linear-gradient(90deg, rgba(29,78,216,0.2), rgba(56,189,248,0.1));
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  #action-panel-header h2 { font-size: 0.95rem; font-weight: 700; }
+  #action-panel-header .step-badge {
+    background: linear-gradient(135deg, var(--blue-mid), var(--accent));
+    color: #fff; border-radius: 6px; padding: 2px 10px;
+    font-size: 0.7rem; font-weight: 700;
+  }
+  #action-body { padding: 20px; }
+  #action-description {
+    font-size: 0.875rem; color: var(--text-dim); line-height: 1.6;
+    margin-bottom: 16px; background: var(--surface2);
+    border-left: 3px solid var(--blue-mid);
+    padding: 12px 16px; border-radius: 0 8px 8px 0;
+  }
+  
+  .action-btn {
+    border: none; border-radius: 8px;
+    padding: 10px 20px; font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--blue-mid), var(--blue-deep)); color: #fff;
+  }
+
+  /* ===== CHECKLISTS ===== */
+  #doc-checklist, #med-nec-form, #outcome-choices { display: none; margin-bottom: 16px; }
+  #doc-checklist h4, #med-nec-form h4, #outcome-choices h4 { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 10px; font-weight: 600; }
+  
+  .mnf-row { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-bottom: 6px; }
+  .mnf-check-row { display: flex; align-items: center; gap: 10px; }
+  .mnf-check { width: 18px; height: 18px; border: 2px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; }
+  .mnf-check.checked { background: var(--blue-mid); border-color: var(--blue-mid); color: #fff; }
+
+  .doc-item { display: flex; align-items: center; gap: 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-bottom: 6px; cursor: pointer; }
+  .doc-check { width: 18px; height: 18px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; }
+  .doc-item.collected { border-color: var(--green); }
+  .doc-item.collected .doc-check { background: var(--green); border-color: var(--green); color: #fff; }
+  .doc-name { font-size: 0.8rem; font-weight: 600; }
+  .doc-desc { font-size: 0.7rem; color: var(--text-muted); }
+
+  .outcome-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .outcome-opt { background: var(--surface2); border: 2px solid var(--border); border-radius: 8px; padding: 12px; cursor: pointer; text-align: center; font-size: 0.8rem; font-weight: 700; }
+
+  /* ===== EVENT LOG ===== */
+  #event-log-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+  #event-log-header { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 0.85rem; font-weight: 700; }
+  #event-log { max-height: 140px; overflow-y: auto; padding: 10px 16px; font-size: 0.78rem; }
+  .log-entry { display: flex; gap: 10px; padding: 4px 0; color: var(--text-dim); }
+
+  /* ===== SUMMARY MODAL ===== */
+  #summary-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 500; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+  #summary-overlay.open { display: flex; }
+  #summary-modal { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 32px; max-width: 500px; width: 90%; text-align: center; }
+  .sm-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; }
+  .sm-stat { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+  .sm-stat-val { font-size: 1.4rem; font-weight: 800; color: var(--accent); }
+  .sm-stat-lbl { font-size: 0.7rem; color: var(--text-muted); }
+  #btn-sm-close { width: 100%; background: linear-gradient(135deg, var(--blue-mid), var(--blue-deep)); color: #fff; border: none; border-radius: 10px; padding: 12px; font-weight: 700; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<header id="app-header">
+  <div class="logo">🏥</div>
+  <div>
+    <h1>Prior Authorization Simulator</h1>
+    <div class="subtitle">US Healthcare PA Workflow Training</div>
+  </div>
+  <div class="spacer"></div>
+  <div id="header-stats">
+    <div class="hstat"><div class="hstat-val" id="stat-days">0</div><div class="hstat-lbl">Days Elapsed</div></div>
+    <div class="hstat"><div class="hstat-val" id="stat-score">100%</div><div class="hstat-lbl">Efficiency</div></div>
+    <div class="hstat"><div class="hstat-val" id="stat-cases">0</div><div class="hstat-lbl">Cases Done</div></div>
+  </div>
+  <button id="btn-new-patient" onclick="resetSimulator()">↺ Reset All</button>
+</header>
+
+<div id="progress-section">
+  <div id="progress-label">Workflow Progress</div>
+  <div id="progress-steps"></div>
+  <div id="progress-bar-wrap"><div id="progress-bar-fill" style="width:0%"></div></div>
+</div>
+
+<div id="main-grid">
+  
+  <div id="control-panel">
+    <div class="panel-section-title">➕ Add New Patient</div>
+    
+    <div class="form-group">
+      <label>Quick Presets (Optional):</label>
+      <select id="preset-select" onchange="loadPresetScenario()">
+        <option value="">-- Choose Preset or Enter Custom --</option>
+        <option value="knee">Margaret H. (Knee Replacement)</option>
+        <option value="mri">James T. (MRI Brain)</option>
+        <option value="biologic">Rosa L. (Biologic Therapy)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Patient Full Name:</label>
+      <input type="text" id="p-name" placeholder="e.g. John Doe">
+    </div>
+    <div class="form-group">
+      <label>Age:</label>
+      <input type="number" id="p-age" placeholder="e.g. 45">
+    </div>
+    <div class="form-group">
+      <label>Insurance Provider:</label>
+      <input type="text" id="p-ins" placeholder="e.g. BlueCross PPO">
+    </div>
+    <div class="form-group">
+      <label>Requested Medical Service:</label>
+      <input type="text" id="p-service" placeholder="e.g. MRI Lumbar Spine">
+    </div>
+    <div class="form-group">
+      <label>Diagnosis / ICD-10:</label>
+      <input type="text" id="p-diag" placeholder="e.g. Low Back Pain (M54.5)">
+    </div>
+
+    <button class="btn-submit-patient" onclick="createCustomPatient()">🚀 Add Patient to List</button>
+  </div>
+
+  <div>
+    <div id="lanes">
+      <div class="lane lane-patient">
+        <div class="lane-header"><span class="lane-icon">👤</span><div><div class="lane-title">Patient</div><div class="lane-sub">Intake</div></div><div class="lane-count" id="count-patient">0</div></div>
+        <div class="lane-body" id="body-patient"></div>
+      </div>
+      <div class="lane lane-provider">
+        <div class="lane-header"><span class="lane-icon">🩺</span><div><div class="lane-title">Provider</div><div class="lane-sub">Evaluation</div></div><div class="lane-count" id="count-provider">0</div></div>
+        <div class="lane-body" id="body-provider"></div>
+      </div>
+      <div class="lane lane-payer">
+        <div class="lane-header"><span class="lane-icon">🏦</span><div><div class="lane-title">Payer</div><div class="lane-sub">Review</div></div><div class="lane-count" id="count-payer">0</div></div>
+        <div class="lane-body" id="body-payer"></div>
+      </div>
+    </div>
+
+    <div id="action-panel">
+      <div id="action-panel-header">
+        <h2 id="action-title">No Active Patient</h2>
+        <div class="step-badge" id="action-step-badge">Step —</div>
+      </div>
+      <div id="action-body">
+        <div id="action-description">Please enter details on the left panel and click "Add Patient to List" to trigger simulator workflow channels.</div>
+        
+        <div id="med-nec-form"><h4>📋 Criteria Validation Checklist</h4></div>
+        <div id="doc-checklist"><h4>📁 Packet Files Collection</h4></div>
+        <div id="outcome-choices">
+          <h4>⚖️ Select Payer Review Outcome</h4>
+          <div class="outcome-grid" id="outcome-grid"></div>
+        </div>
+        <div id="action-buttons"></div>
+      </div>
+    </div>
+
+    <div id="event-log-section">
+      <div id="event-log-header">📋 Activity Log</div>
+      <div id="event-log"></div>
+    </div>
+  </div>
+</div>
+
+<div id="summary-overlay">
+  <div id="summary-modal">
+    <h2>🏁 Case Complete</h2>
+    <div id="sm-patient-name" style="margin: 5px 0 15px; color: var(--text-dim);"></div>
+    <div class="sm-stats">
+      <div class="sm-stat"><div class="sm-stat-val" id="sm-days">0</div><div class="sm-stat-lbl">Days</div></div>
+      <div class="sm-stat"><div class="sm-stat-val" id="sm-steps">0</div><div class="sm-stat-lbl">Steps</div></div>
+      <div class="sm-stat"><div class="sm-stat-val" id="sm-eff">100%</div><div class="sm-stat-lbl">Efficiency</div></div>
+    </div>
+    <button id="btn-sm-close" onclick="closeSummary()">Close & Clear Board</button>
+  </div>
+</div>
+
+<script>
+const PRESETS = {
+  knee: { name: 'Margaret H.', age: 62, ins: 'BlueCross PPO', service: 'Total Right Knee Arthroplasty', diag: 'Severe osteoarthritis (M17.11)' },
+  mri: { name: 'James T.', age: 44, ins: 'Aetna HMO', service: 'MRI Brain with contrast', diag: 'Chronic migraine (G43.109)' },
+  biologic: { name: 'Rosa L.', age: 38, ins: 'United Healthcare', service: 'Adalimumab Infusion Therapy', diag: 'Plaque psoriasis (L40.0)' }
+};
+
+const WORKFLOW_STEPS = [
+  { id: 'intake',    label: 'Intake',      lane: 'patient',   name: 'Patient Intake & Setup' },
+  { id: 'eval',      label: 'Eval',        lane: 'provider',  name: 'Medical Necessity Eval' },
+  { id: 'docs',      label: 'Docs',        lane: 'provider',  name: 'Document Collection' },
+  { id: 'submit',    label: 'Submit',      lane: 'provider',  name: 'PA Submission Package' },
+  { id: 'review',    label: 'Review',      lane: 'payer',     name: 'Payer Admin Review' },
+  { id: 'outcome',   label: 'Outcome',     lane: 'payer',     name: 'Final Decision' },
+  { id: 'complete',  label: 'Complete',    lane: 'payer',     name: 'Case Finished' }
+];
+
+let state = {
+  activePatient: null,
+  currentStep: -1,
+  daysElapsed: 0,
+  efficiencyScore: 100,
+  stepsTaken: 0,
+  completedCases: 0,
+  mnChecks: {},
+  docsCollected: {},
+  selectedOutcome: null
+};
+
+function init() {
+  renderProgressSteps();
+  addLog('📢', 'System ready. Waiting for input records creation events.');
+}
+
+function loadPresetScenario() {
+  const code = document.getElementById('preset-select').value;
+  if(!code) return;
+  const p = PRESETS[code];
+  document.getElementById('p-name').value = p.name;
+  document.getElementById('p-age').value = p.age;
+  document.getElementById('p-ins').value = p.ins;
+  document.getElementById('p-service').value = p.service;
+  document.getElementById('p-diag').value = p.diag;
+}
+
+function createCustomPatient() {
+  const name = document.getElementById('p-name').value.trim();
+  const age = document.getElementById('p-age').value.trim();
+  const ins = document.getElementById('p-ins').value.trim();
+  const service = document.getElementById('p-service').value.trim();
+  const diag = document.getElementById('p-diag').value.trim();
+
+  if(!name || !service) {
+    alert("Please fill at least Patient Name and Requested Service fields.");
+    return;
+  }
+
+  state.activePatient = {
+    name, age: age || 'N/A', ins: ins || 'Self-Pay', service, diag: diag || 'Unspecified',
+    initials: name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0,2),
+    color: '#3b82f6'
+  };
+
+  state.currentStep = 0;
+  state.daysElapsed = 0;
+  state.efficiencyScore = 100;
+  state.stepsTaken = 0;
+  state.mnChecks = {};
+  state.docsCollected = {};
+  state.selectedOutcome = null;
+
+  addLog('👤', `New custom record safely parsed: <strong>${name}</strong>`);
+  
+  updateStats();
+  renderProgress();
+  renderLanes();
+  showActionPanel();
+}
+
+function renderLanes() {
+  ['patient', 'provider', 'payer'].forEach(lane => {
+    document.getElementById(`body-${lane}`).innerHTML = '';
+    document.getElementById(`count-${lane}`).textContent = '0';
+  });
+
+  if (state.currentStep < 0 || !state.activePatient) return;
+
+  const step = WORKFLOW_STEPS[state.currentStep];
+  const activeLane = step.lane;
+  const body = document.getElementById(`body-${activeLane}`);
+
+  const card = document.createElement('div');
+  card.className = 'case-card';
+  card.innerHTML = `
+    <div class="case-card-top">
+      <div class="case-avatar" style="background:${state.activePatient.color}22;color:${state.activePatient.color}">${state.activePatient.initials}</div>
+      <div>
+        <div class="case-name">${state.activePatient.name}</div>
+        <div class="case-type">${state.activePatient.ins} (Age: ${state.activePatient.age})</div>
+      </div>
+      <div class="case-status-badge badge-review">${step.label}</div>
+    </div>
+    <div class="case-meta">
+      <span><strong>Rx:</strong> ${state.activePatient.service}</span>
+      <span><strong>Dx:</strong> ${state.activePatient.diag}</span>
+    </div>
+    <div class="click-hint">☝️ Click Card to Advance Workflow</div>
+  `;
+
+  card.onclick = () => { handleCardClick(); };
+  body.appendChild(card);
+  document.getElementById(`count-${activeLane}`).textContent = '1';
+}
+
+function handleCardClick() {
+  const step = WORKFLOW_STEPS[state.currentStep];
+  if (step.id === 'eval' || step.id === 'docs' || step.id === 'outcome') {
+    addLog('ℹ️', 'Please satisfy the interface metrics options inside the Action Panel structure first.');
+    return;
+  }
+  advanceStep();
+}
+
+function renderProgressSteps() {
+  const container = document.getElementById('progress-steps');
+  container.innerHTML = '';
+  WORKFLOW_STEPS.forEach((step, i) => {
+    const div = document.createElement('div');
+    div.className = 'pstep';
+    div.id = `pstep-${i}`;
+    div.innerHTML = `<div class="pstep-dot">${i+1}<span class="pstep-name">${step.label}</span></div>`;
+    if (i < WORKFLOW_STEPS.length - 1) {
+      const line = document.createElement('div');
+      line.className = 'pstep-line';
+      div.appendChild(line);
+    }
+    container.appendChild(div);
+  });
+}
+
+function renderProgress() {
+  WORKFLOW_STEPS.forEach((step, i) => {
+    const el = document.getElementById(`pstep-${i}`);
+    if (!el) return;
+    el.className = 'pstep';
+    if (state.currentStep >= 0 && i < state.currentStep) el.classList.add('done');
+    if (state.currentStep >= 0 && i === state.currentStep) el.classList.add('active');
+  });
+  const pct = state.currentStep >= 0 ? (state.currentStep / (WORKFLOW_STEPS.length - 1)) * 100 : 0;
+  document.getElementById('progress-bar-fill').style.width = pct + '%';
+}
+
+function showActionPanel() {
+  if(state.currentStep < 0) return;
+  const step = WORKFLOW_STEPS[state.currentStep];
+  document.getElementById('action-title').textContent = step.name;
+  document.getElementById('action-step-badge').textContent = `Step ${state.currentStep+1}/${WORKFLOW_STEPS.length}`;
+
+  document.getElementById('med-nec-form').style.display = 'none';
+  document.getElementById('doc-checklist').style.display = 'none';
+  document.getElementById('outcome-choices').style.display = 'none';
+
+  switch(step.id) {
+    case 'intake':
+      document.getElementById('action-description').innerHTML = `Validate pipeline parameters for patient entry <strong>${state.activePatient.name}</strong>.`;
+      setButtons([{ label: '✅ Confirm Entry Eligibility', cls: 'btn-primary', fn: advanceStep }]);
+      break;
+    case 'eval':
+      document.getElementById('action-description').textContent = 'Check and match criteria requirements.';
+      const form = document.getElementById('med-nec-form');
+      form.style.display = 'block';
+      form.innerHTML = `
+        <h4>📋 Criteria Validation Checklist</h4>
+        <div class="mnf-row"><div class="mnf-check-row"><div class="mnf-check" id="mn1" onclick="toggleMN('mn1')"></div><div class="mnf-check-lbl">Symptom duration & severity criteria met</div></div></div>
+        <div class="mnf-row"><div class="mnf-check-row"><div class="mnf-check" id="mn2" onclick="toggleMN('mn2')"></div><div class="mnf-check-lbl">Conservative treatment pathways exhausted</div></div></div>
+      `;
+      setButtons([{ label: '✅ Core Criteria Satisfied', cls: 'btn-primary', fn: advanceStep }]);
+      break;
+    case 'docs':
+      document.getElementById('action-description').textContent = 'Synthesize files packets.';
+      const checklist = document.getElementById('doc-checklist');
+      checklist.style.display = 'block';
+      checklist.innerHTML = `
+        <h4>📁 Packet Files Collection</h4>
+        <div class="doc-item" id="d1" onclick="toggleDoc('d1')"><div class="doc-check"></div><div><div class="doc-name">Physician Clinical Chart Notes</div></div></div>
+        <div class="doc-item" id="d2" onclick="toggleDoc('d2')"><div class="doc-check"></div><div><div class="doc-name">Signed Medical Necessity Document</div></div></div>
+      `;
+      setButtons([{ label: '📤 Secure Package Synthesis', cls: 'btn-primary', fn: advanceStep }]);
+      break;
+    case 'submit':
+      document.getElementById('action-description').textContent = 'Transmit generated file packets securely.';
+      setButtons([{ label: '📨 Transmit Secure Channel Stream', cls: 'btn-primary', fn: advanceStep }]);
+      break;
+    case 'review':
+      document.getElementById('action-description').textContent = 'System admins are parsing data indices.';
+      setButtons([{ label: '⬇ Check Gateway Decision Logs', cls: 'btn-primary', fn: advanceStep }]);
+      break;
+    case 'outcome':
+      document.getElementById('action-description').textContent = 'Select terminal status resolution pathways.';
+      const choices = document.getElementById('outcome-choices');
+      choices.style.display = 'block';
+      document.getElementById('outcome-grid').innerHTML = `
+        <div class="outcome-opt" style="border-color:var(--green);" onclick="state.selectedOutcome='Approved';alert('Selected: Approved')">✅ Approved</div>
+        <div class="outcome-opt" style="border-color:var(--red);" onclick="state.selectedOutcome='Denied';alert('Selected: Denied')">❌ Denied</div>
+      `;
+      setButtons([{ label: '✔ Complete Authorization Transaction', cls: 'btn-primary', fn: advanceStep }]);
+      break;
+    case 'complete':
+      document.getElementById('action-description').textContent = 'Task state machine cleared execution successfully.';
+      setButtons([{ label: '🏁 Show Execution Metrics Summary', cls: 'btn-primary', fn: showSummary }]);
+      break;
+  }
+}
+
+function toggleMN(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('checked');
+  el.textContent = el.classList.contains('checked') ? '✓' : '';
+}
+
+function toggleDoc(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('collected');
+  el.querySelector('.doc-check').textContent = el.classList.contains('collected') ? '✓' : '';
+}
+
+function setButtons(btns) {
+  const wrap = document.getElementById('action-buttons');
+  wrap.innerHTML = '';
+  btns.forEach(b => {
+    const btn = document.createElement('button');
+    btn.className = `action-btn ${b.cls}`;
+    btn.textContent = b.label;
+    btn.onclick = b.fn;
+    wrap.appendChild(btn);
+  });
+}
+
+function advanceStep() {
+  state.stepsTaken++;
+  state.daysElapsed += Math.floor(Math.random() * 2) + 1;
+  
+  if (state.currentStep < WORKFLOW_STEPS.length - 1) {
+    addLog('✅', `Completed Step: <strong>${WORKFLOW_STEPS[state.currentStep].name}</strong>`);
+    state.currentStep++;
+    renderProgress();
+    renderLanes();
+    showActionPanel();
+  } else {
+    state.completedCases++;
+    showSummary();
+  }
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('stat-days').textContent = state.daysElapsed;
+  document.getElementById('stat-score').textContent = state.efficiencyScore + '%';
+  document.getElementById('stat-cases').textContent = state.completedCases;
+}
+
+function addLog(icon, text) {
+  const log = document.getElementById('event-log');
+  log.innerHTML += `<div class="log-entry"><span>${icon}</span><span>${text}</span></div>`;
+  log.scrollTop = log.scrollHeight;
+}
+
+function showSummary() {
+  document.getElementById('sm-patient-name').textContent = state.activePatient ? state.activePatient.name : '';
+  document.getElementById('sm-days').textContent = state.daysElapsed;
+  document.getElementById('sm-steps').textContent = state.stepsTaken;
+  document.getElementById('summary-overlay').classList.add('open');
+}
+
+function closeSummary() {
+  document.getElementById('summary-overlay').classList.remove('open');
+  clearBoard();
+}
+
+function clearBoard() {
+  state.activePatient = null;
+  state.currentStep = -1;
+  renderProgress();
+  renderLanes();
+  document.getElementById('action-title').textContent = "No Active Patient";
+  document.getElementById('action-step-badge').textContent = "Step —";
+  document.getElementById('action-description').textContent = 'Please enter details on the left panel and click "Add Patient to List" to trigger simulator workflow channels.';
+  document.getElementById('action-buttons').innerHTML = '';
+  document.getElementById('med-nec-form').style.display = 'none';
+  document.getElementById('doc-checklist').style.display = 'none';
+  document.getElementById('outcome-choices').style.display = 'none';
+  
+  // Clear inputs
+  document.getElementById('p-name').value = '';
+  document.getElementById('p-age').value = '';
+  document.getElementById('p-ins').value = '';
+  document.getElementById('p-service').value = '';
+  document.getElementById('p-diag').value = '';
+  document.getElementById('preset-select').value = '';
+}
+
+function resetSimulator() {
+  clearBoard();
+  state.completedCases = 0;
+  updateStats();
+  document.getElementById('event-log').innerHTML = '';
+  addLog('🔄', 'Simulator reset back to default empty state channels.');
+}
+
+window.onload = () => { init(); };
+</script>
+</body>
+</html>
