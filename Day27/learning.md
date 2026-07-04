@@ -1,0 +1,5 @@
+## 💡 Key Operational Learnings
+* **Branching Conversational UX:** Discovered that converting static corporate training manuals into game-like conversational simulators dramatically improves learning retention and operational engagement compared to traditional layout grids.
+* **DOM Security & Performance:** Mastered safe DOM manipulations by completely standardizing on append-only node streams, which eliminates code execution vectors and increases rendering stability during heavy interface state resets.
+* **Resolving Healthcare Friction Points:** Learnt the structural value of downstream optimization mechanics, such as the direct **Peer-to-Peer (P2P)** review framework, which empowers requesting doctors to immediately contest and overturn tech rejections via one-on-one medical director consultations.
+* **Fault-Tolerant State Management:** Successfully resolved pipeline state loops inside complex custom engines by implementing clean memory hooks, ensuring that invoking the system engine reset completely purges active streams, rolls trackers to zero, and restarts scene configurations instantly.
