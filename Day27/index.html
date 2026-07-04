@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prior Authorization Story Simulator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at 50% 0%, #0d1226 0%, #050711 70%);
+        }
+        
+        .cyber-font {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* Smooth Futuristic Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.3); }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #3b82f6, #a855f7); border-radius: 20px; }
+
+        /* Neumorphic Glassmorphism with Cyber Border */
+        .cyber-card {
+            background: rgba(10, 15, 30, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+        }
+
+        /* Interactive Dynamic Glowing Borders Animation */
+        @keyframes cyber-pulse {
+            0%, 100% { border-color: rgba(59, 130, 246, 0.2); box-shadow: 0 0 20px rgba(59, 130, 246, 0.05); }
+            50% { border-color: rgba(168, 85, 247, 0.4); box-shadow: 0 0 30px rgba(168, 85, 247, 0.15); }
+        }
+        .main-frame {
+            animation: cyber-pulse 6s infinite ease-in-out;
+        }
+
+        /* Cinematic Chat Entry Slide */
+        @keyframes message-slide {
+            from { opacity: 0; transform: translateY(25px) scale(0.97); filter: blur(4px); }
+            to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+        .message-animate {
+            animation: message-slide 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Shimmer Effect for Avatar Rings */
+        @keyframes avatar-glow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .glowing-ring::before {
+            content: ''; position: absolute; inset: -3px;
+            background: linear-gradient(0deg, #3b82f6, #a855f7, #10b981);
+            border-radius: 50%; z-index: -1;
+            animation: avatar-glow 3s linear infinite;
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col p-3 md:p-6 justify-center items-center relative overflow-x-hidden">
+
+    <!-- DECORATIVE BACKGROUND LIGHT HOLOGRAMS -->
+    <div class="absolute -top-40 -left-40 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none"></div>
+    <div class="absolute bottom-10 -right-40 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[140px] pointer-events-none"></div>
+
+    <!-- MAIN APP WRAPPER GRID -->
+    <div class="max-w-5xl w-full flex flex-col gap-5 z-10">
+        
+        <!-- HIGH LEVEL INTERACTIVE GRID ROW -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 items-center">
+            <!-- HEADER INFO CARD -->
+            <header class="lg:col-span-2 cyber-card p-5 rounded-2xl relative overflow-hidden flex flex-col justify-center h-full">
+                <div class="absolute top-0 left-0 h-[2px] w-1/3 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+                <h1 class="text-xl md:text-2xl font-black tracking-wider cyber-font bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent uppercase">
+                    Prior Auth Story Simulator
+                </h1>
+                <p class="text-[10px] font-bold text-slate-400 tracking-widest uppercase mt-1">Healthcare Education Design System</p>
+            </header>
+
+            <!-- TRACKING HUD INTERFACE -->
+            <div class="cyber-card p-4 rounded-2xl flex flex-col justify-between h-full gap-2">
+                <div class="flex justify-between items-center text-[10px] font-extrabold tracking-widest uppercase text-slate-400 cyber-font">
+                    <span id="chapter-title" class="text-blue-400">Scene 1: Doctor Visit</span>
+                    <span id="chapter-count" class="bg-purple-500/10 text-purple-400 border border-purple-500/20 px-2 py-0.5 rounded">Progress: 1 / 8</span>
+                </div>
+                <div class="w-full h-1.5 bg-slate-950/80 rounded-full overflow-hidden p-[1px] border border-white/5 mt-1">
+                    <div id="progress-fill" class="h-full w-[12.5%] bg-gradient-to-r from-blue-500 via-purple-500 to-emerald-400 rounded-full transition-all duration-500 shadow-[0_0_15px_rgba(168,85,247,0.5)]"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW MAIN CHAT INTERFACE COCKPIT -->
+        <main class="cyber-card main-frame rounded-3xl overflow-hidden flex flex-col min-h-[540px] relative">
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 pointer-events-none"></div>
+            
+            <!-- CHAT FEED HUB -->
+            <div class="p-6 md:p-8 flex-1 overflow-y-auto flex flex-col gap-6 h-[440px] relative z-10" id="chatContainer">
+                <!-- Programmatically generated streaming nodes render here -->
+            </div>
+
+            <!-- INTERACTIVE OPERATIONAL ACTIONS DOCK -->
+            <div class="bg-[#070b18]/90 border-t border-blue-500/10 p-5 md:p-6 relative z-10">
+                <div class="text-center text-[10px] font-black uppercase tracking-widest text-slate-400 cyber-font flex items-center justify-center gap-2 mb-4" id="choiceHeader">
+                    <span class="w-1.5 h-1.5 rounded-full bg-purple-500 animate-ping"></span>
+                    Pending Network Pathway Decision Check
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="choicesGrid">
+                    <!-- High level options grid links inject here -->
+                </div>
+                <button id="resetButton" class="hidden mx-auto bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 hover:from-blue-500 hover:to-purple-500 text-white font-black text-xs uppercase tracking-widest py-4 px-8 rounded-xl transition-all shadow-lg shadow-purple-500/10 hover:shadow-purple-500/20 transform active:scale-95 border border-white/10 cyber-font" onclick="restartSimulation()">
+                    ↺ Reset Authorization Lifecycle Engine
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const SIMULATOR_STORY = [
+            {
+                scene: 1,
+                title: "Scene 1: Doctor Visit",
+                narrator: "Nouman visits City Medical Center due to severe joint pain. Dr. Patel diagnoses him with Rheumatoid Arthritis and prescribes Humira.",
+                rahul: "My hands are constantly stiff and painful, Dr. Patel. I hope this Humira prescription helps me get back to normal soon.",
+                priya: "Hi Nouman! I'm Khuram, a healthcare operations specialist. Dr. Patel is great, but before you get that medication, StarCare Health (your insurance plan) requires an administrative step called Prior Authorization.",
+                choices: [
+                    { text: "Ask Dr. Patel's office to initiate the PA process with StarCare Health.", next: 2 },
+                    { text: "Inquire why insurance processes manage prescription approvals.", next: 2 }
+                ]
+            },
+            {
+                scene: 2,
+                title: "Scene 2: Insurance Roadblock",
+                narrator: "Dr. Patel's office submits the PA request directly to StarCare Health. No third-party pharmacy is involved yet. The operational chain is: Provider ➔ PA Request ➔ Payer.",
+                rahul: "Why does StarCare Health need to check Dr. Patel's decision? He is the expert doctor here!",
+                priya: "Exactly. The provider drives the request directly to the payer. Once StarCare Health approves it, the permanent authorization will be logged on file.",
+                choices: [
+                    { text: "Inquire about what checks StarCare Health performs during the review.", next: 3 },
+                    { text: "Ask Khuram to explain the core purpose of the PA system in simple terms.", next: 3 }
+                ]
+            },
+            {
+                scene: 3,
+                title: "Scene 3: What is PA?",
+                narrator: "Khuram explains the concept using beginner-friendly language.",
+                rahul: "So this is just typical corporate bureaucracy designed to save them money?",
+                priya: "Not entirely, but there is a major catch. While it regulates treatment paths, according to the 'AMA 2023 PA Survey: PA causes treatment delays in the majority of cases.' For aggressive diagnoses like Rheumatoid Arthritis, these delays can severely affect disease progression.",
+                choices: [
+                    { text: "Review the checklist of metrics StarCare Health evaluates.", next: 4 },
+                    { text: "Ask how long a typical review loop takes.", next: 4 }
+                ]
+            },
+            {
+                scene: 4,
+                title: "Scene 4: Insurance Review",
+                narrator: "Khuram walks through the exact parameters StarCare Health reviews.",
+                rahul: "What exactly are they searching for inside my private chart records?",
+                priya: "StarCare Health checks plan eligibility, clinical documentation, an exact ICD-10 diagnosis match, and your step therapy history. Each matters because missing data triggers immediate rejections.",
+                choices: [
+                    { text: "Proceed to receive StarCare Health's initial review decision.", next: 5 },
+                    { text: "Ask what happens if step therapy documentation is incomplete.", next: 5 }
+                ]
+            },
+            {
+                scene: 5,
+                title: "Scene 5: Denial",
+                narrator: "StarCare Health issues an official denial: Missing step therapy documentation.",
+                rahul: "I knew it! They denied my coverage! Am I completely out of options now?",
+                priya: "Don't panic! A denial is NOT permanent. However, it takes a heavy toll behind the scenes: 'PA denials cost physician offices 2+ staff hours to resolve' just to fix administrative gaps.",
+                choices: [
+                    { text: "Coordinate with Dr. Patel's office to file a formal appeal.", next: 6 },
+                    { text: "Ask Khuram what structural paperwork is needed for an appeal.", next: 6 }
+                ]
+            },
+            {
+                scene: 6,
+                title: "Scene 6: Appeal",
+                narrator: "Dr. Patel's team initiates the denial management pipeline.",
+                rahul: "What documents are we sending this time to overturn StarCare Health's decision?",
+                priya: "We are gathering comprehensive clinical proofs, an explicit Letter of Medical Necessity from Dr. Patel, and completing the formal appeal filing parameters.",
+                choices: [
+                    { text: "Submit the complete appeal package to StarCare Health.", next: 7 },
+                    { text: "Double-check the step therapy records before transmission.", next: 7 }
+                ]
+            },
+            {
+                scene: 7,
+                title: "Scene 7: Approval",
+                narrator: "Success! StarCare Health reviews the appeal and marks the PA as APPROVED.",
+                rahul: "Wow, I finally got my approval confirmation! Will I have to repeat this painful cycle next month?",
+                priya: "Great news, no! The PA is saved on file permanently with a unique reference number. No repeat PA is needed for Humira as long as your treatment plan remains active.",
+                choices: [
+                    { text: "Review the final educational takeaways from this workflow journey.", next: 8 },
+                    { text: "Celebrate the successful transaction resolution.", next: 8 }
+                ]
+            },
+            {
+                scene: 8,
+                title: "Scene 8: Takeaways",
+                narrator: "The case finishes, providing clear operational summaries from two distinct perspectives.",
+                rahul: "I learned that as a patient, I must track my records proactively and understand my insurance guidelines.",
+                priya: "And from the system perspective, healthcare systems closely track metrics like the denial rate, appeal success rate, and total resolution time to optimize these workflows.",
+                choices: []
+            }
+        ];
+
+        let activeSceneIndex = 0;
+
+        function runSimulation() {
+            const container = document.getElementById('chatContainer');
+            container.innerHTML = '';
+            document.getElementById('resetButton').classList.add('hidden');
+            document.getElementById('choiceHeader').classList.remove('hidden');
+            renderActiveScene(0);
+        }
+
+        function createTextNode(text, styles) {
+            const p = document.createElement('p');
+            p.className = styles;
+            p.textContent = text;
+            return p;
+        }
+
+        function renderActiveScene(index) {
+            activeSceneIndex = index;
+            const sceneData = SIMULATOR_STORY[index];
+
+            document.getElementById('chapter-title').textContent = sceneData.title;
+            document.getElementById('chapter-count').textContent = `Progress: ${sceneData.scene} / 8`;
+            document.getElementById('progress-fill').style.width = ((sceneData.scene / 8) * 100) + '%';
+
+            const container = document.getElementById('chatContainer');
+
+            // 1. Narrative Logs Block
+            if(sceneData.narrator) {
+                const nEl = createTextNode(sceneData.narrator, "text-center text-xs md:text-[13px] italic text-blue-300/80 my-2 bg-gradient-to-r from-blue-500/5 via-blue-500/10 to-transparent py-3 px-5 rounded-2xl border-l-2 border-blue-500/50 max-w-2xl mx-auto w-full backdrop-blur-md message-animate");
+                container.appendChild(nEl);
+            }
+
+            // 2. Left Side Hologram Node (Nouman)
+            if(sceneData.rahul) {
+                const wrapper = document.createElement('div');
+                wrapper.className = "flex items-start self-start max-w-[85%] gap-4 message-animate";
+                
+                const avatarFrame = document.createElement('div');
+                avatarFrame.className = "relative w-10 h-10 rounded-full glowing-ring flex-shrink-0 mt-1";
+                
+                const img = document.createElement('img');
+                img.src = "nouman.png";
+                img.className = "w-full h-full rounded-full object-cover bg-slate-900 border border-black";
+                img.onerror = function() { this.style.display = 'none'; };
+                avatarFrame.appendChild(img);
+                
+                const msgContent = document.createElement('div');
+                msgContent.className = "flex flex-col";
+                
+                const label = createTextNode("👦 Nouman (Patient)", "text-[9px] font-black text-amber-400 tracking-widest uppercase pl-1 mb-1.5 cyber-font");
+                const bubble = createTextNode(sceneData.rahul, "bg-gradient-to-br from-[#1c140d] to-[#120d08] border border-amber-500/30 text-slate-200 p-4 rounded-2xl rounded-tl-none text-xs md:text-sm leading-relaxed shadow-lg border-l-2 border-l-amber-500");
+                
+                msgContent.appendChild(label);
+                msgContent.appendChild(bubble);
+                wrapper.appendChild(avatarFrame);
+                wrapper.appendChild(msgContent);
+                container.appendChild(wrapper);
+            }
+
+            // 3. Right Side Hologram Node (Khuram)
+            if(sceneData.priya) {
+                setTimeout(() => {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = "flex items-start self-end max-w-[85%] gap-4 message-animate";
+                    
+                    const msgContent = document.createElement('div');
+                    msgContent.className = "flex flex-col items-end w-full";
+                    
+                    const label = createTextNode("👨‍💻 Khuram (Ops Expert)", "text-[9px] font-black text-purple-400 tracking-widest uppercase pr-1 mb-1.5 cyber-font");
+                    const bubble = createTextNode(sceneData.priya, "bg-gradient-to-br from-[#1a0f30] to-[#0f091c] border border-purple-500/30 text-slate-200 p-4 rounded-2xl rounded-tr-none text-xs md:text-sm leading-relaxed text-left shadow-lg border-r-2 border-r-purple-500");
+                    
+                    const avatarFrame = document.createElement('div');
+                    avatarFrame.className = "relative w-10 h-10 rounded-full glowing-ring flex-shrink-0 mt-1 order-last ml-4";
+                    
+                    const img = document.createElement('img');
+                    img.src = "updatepro.jpeg";
+                    img.className = "w-full h-full rounded-full object-cover bg-slate-900 border border-black";
+                    img.onerror = function() { this.style.display = 'none'; };
+                    avatarFrame.appendChild(img);
+                    
+                    const messageFlexWrapper = document.createElement('div');
+                    messageFlexWrapper.className = "flex items-start justify-end w-full";
+                    messageFlexWrapper.appendChild(msgContent);
+                    messageFlexWrapper.appendChild(avatarFrame);
+
+                    msgContent.appendChild(label);
+                    msgContent.appendChild(bubble);
+                    
+                    wrapper.appendChild(messageFlexWrapper);
+                    container.appendChild(wrapper);
+                    container.scrollTop = container.scrollHeight;
+                }, 450);
+            }
+
+            // Render Dynamic Controls Options
+            const grid = document.getElementById('choicesGrid');
+            grid.innerHTML = '';
+
+            if(sceneData.choices.length > 0) {
+                sceneData.choices.forEach(ch => {
+                    const btn = document.createElement('button');
+                    btn.className = "bg-slate-950/40 hover:bg-gradient-to-r hover:from-blue-900/30 hover:to-purple-900/20 text-slate-300 text-left p-4 rounded-2xl border border-blue-500/10 hover:border-blue-500/50 text-xs md:text-sm transition-all duration-300 flex items-center gap-3 cursor-pointer shadow-md active:scale-[0.99] group/btn";
+                    
+                    const arrow = document.createElement('span');
+                    arrow.textContent = "❯";
+                    arrow.className = "text-blue-500 font-black group-hover/btn:translate-x-1 transition-transform text-xs cyber-font";
+                    
+                    const txt = document.createElement('span');
+                    txt.textContent = ch.text;
+
+                    btn.appendChild(arrow);
+                    btn.appendChild(txt);
+                    btn.onclick = () => renderActiveScene(ch.next - 1);
+                    grid.appendChild(btn);
+                });
+            } else {
+                document.getElementById('choiceHeader').classList.add('hidden');
+                document.getElementById('resetButton').classList.remove('hidden');
+
+                const summaryWrapper = document.createElement('div');
+                summaryWrapper.className = "mt-4 border border-emerald-500/20 bg-gradient-to-br from-[#04120b] to-[#020a06] p-5 rounded-2xl shadow-xl message-animate w-full";
+                
+                const summaryTitle = document.createElement('h4');
+                summaryTitle.className = "text-emerald-400 font-bold text-xs uppercase tracking-wider mb-2 flex items-center gap-2 cyber-font";
+                summaryTitle.innerHTML = "<span class='w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse'></span> Core System Evaluation Complete";
+                
+                const summaryBody = document.createElement('p');
+                summaryBody.className = "text-slate-300/90 text-xs leading-relaxed";
+                summaryBody.innerHTML = "You have successfully traced the entire prior authorization trajectory using <strong>StarCare Health</strong> as a structural simulation asset. By engaging downstream tools like medical appeals and peer review mechanics, administrative delays can be successfully resolved.";
+                
+                summaryWrapper.appendChild(summaryTitle);
+                summaryWrapper.appendChild(summaryBody);
+                container.appendChild(summaryWrapper);
+            }
+            
+            setTimeout(() => { container.scrollTop = container.scrollHeight; }, 550);
+        }
+
+        function restartSimulation() {
+            runSimulation();
+        }
+
+        window.onload = runSimulation;
+    </script>
+</body>
+</html>
