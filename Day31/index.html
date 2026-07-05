@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Supply Chain Control Tower</title>
+    <style>
+        :root {
+            --bg-base: #0b0f19;
+            --bg-card: #131a26;
+            --bg-card-hover: #1c2638;
+            --color-text: #e2e8f0;
+            --color-muted: #94a3b8;
+            --color-blue: #3b82f6;
+            --color-cyan: #06b6d4;
+            --color-red: #ef4444;
+            --color-green: #10b981;
+            --color-orange: #f97316;
+            --glow-cyan: rgba(6, 182, 212, 0.2);
+            --glow-red: rgba(239, 68, 68, 0.2);
+            --glow-orange: rgba(249, 115, 22, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--color-text);
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* Layout Structure */
+        header {
+            background-color: #0f172a;
+            border-bottom: 1px solid #1e293b;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .brand-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-section h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.025em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .brand-section h1 span {
+            color: var(--color-cyan);
+            text-shadow: 0 0 10px var(--glow-cyan);
+        }
+
+        .brand-subtitle {
+            font-size: 0.8rem;
+            color: var(--color-muted);
+        }
+
+        .controls-top {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn {
+            background: #1e293b;
+            color: #fff;
+            border: 1px solid #334155;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: #334155;
+            border-color: #475569;
+        }
+
+        .btn-primary {
+            background: var(--color-blue);
+            border-color: #2563eb;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        /* Dashboard Container */
+        .dashboard-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* KPIs Ribbon */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 1.25rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--color-blue);
+        }
+
+        .kpi-card.accent-cyan::before { background: var(--color-cyan); }
+        .kpi-card.accent-green::before { background: var(--color-green); }
+        .kpi-card.accent-orange::before { background: var(--color-orange); }
+        .kpi-card.accent-red::before { background: var(--color-red); }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* Main View Split */
+        .main-workspace {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        @media (max-width: 1024px) {
+            .main-workspace {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Feed/Alerts Column */
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .panel-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alerts-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            min-height: 400px;
+        }
+
+        .alert-card {
+            background: var(--bg-card);
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+            transition: all 0.3s;
+        }
+
+        .alert-card:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(15px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Priority Coding & Pulses */
+        .alert-card.priority-high {
+            border-left: 5px solid var(--color-red);
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.05);
+        }
+        .alert-card.priority-medium {
+            border-left: 5px solid var(--color-orange);
+        }
+        .alert-card.priority-low {
+            border-left: 5px solid var(--color-blue);
+        }
+
+        .pulse-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+        }
+        .priority-high .pulse-indicator {
+            background-color: var(--color-red);
+            animation: pulseGlowRed 1.5s infinite;
+        }
+        .priority-medium .pulse-indicator {
+            background-color: var(--color-orange);
+        }
+        .priority-low .pulse-indicator {
+            background-color: var(--color-blue);
+        }
+
+        @keyframes pulseGlowRed {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .alert-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: var(--color-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .badge {
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        .badge-red { background: rgba(239, 68, 68, 0.15); color: var(--color-red); }
+        .badge-orange { background: rgba(249, 115, 22, 0.15); color: var(--color-orange); }
+        .badge-blue { background: rgba(59, 130, 246, 0.15); color: var(--color-blue); }
+
+        .alert-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .alert-desc {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+
+        .alert-impact {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-bottom: 1.25rem;
+            font-size: 0.85rem;
+            border: 1px solid #1e293b;
+        }
+
+        .impact-item {
+            display: inline-block;
+            margin-right: 1rem;
+            color: #94a3b8;
+        }
+        .impact-item span {
+            color: #f1f5f9;
+            font-weight: 500;
+        }
+
+        /* Action Triggers Grid */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            background: #1e293b;
+            color: #e2e8f0;
+            border: 1px solid #334155;
+            padding: 0.6rem;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .action-btn:hover {
+            background: #3b82f6;
+            border-color: #60a5fa;
+            color: #fff;
+        }
+
+        .action-btn.btn-passive {
+            background: #0f172a;
+            color: #94a3b8;
+        }
+        .action-btn.btn-passive:hover {
+            background: #1e293b;
+            color: #f1f5f9;
+        }
+
+        /* Timer Progress Bar in Cards */
+        .card-timer-bar {
+            height: 3px;
+            background: #334155;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            overflow: hidden;
+        }
+
+        .card-timer-fill {
+            height: 100%;
+            background: var(--color-cyan);
+            width: 100%;
+            transition: width 1s linear;
+        }
+
+        .priority-high .card-timer-fill {
+            background: var(--color-red);
+        }
+
+        /* Sidebar: Logs & Insights */
+        .sidebar-panel {
+            background: var(--bg-card);
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .log-container {
+            max-height: 350px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            padding-right: 0.25rem;
+        }
+
+        .log-entry {
+            padding: 0.5rem;
+            border-radius: 4px;
+            background: #0f172a;
+            border-left: 3px solid #475569;
+        }
+        .log-entry.success { border-left-color: var(--color-green); }
+        .log-entry.danger { border-left-color: var(--color-red); }
+        .log-entry.warn { border-left-color: var(--color-orange); }
+
+        .log-time {
+            color: var(--color-muted);
+            margin-right: 0.5rem;
+            font-family: monospace;
+        }
+
+        /* Modal Overlay System */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid #334155;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #fff;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 0.5rem;
+        }
+
+        .modal-body {
+            font-size: 0.95rem;
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-body p { margin-bottom: 1rem; }
+        .modal-body ul { margin-left: 1.5rem; margin-bottom: 1rem; }
+        .modal-body li { margin-bottom: 0.25rem; }
+
+        .hidden { display: none !important; }
+
+        /* End Screen Grid Metrics */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .summary-item {
+            background: #0f172a;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid #1e293b;
+        }
+
+        .grade-badge {
+            font-size: 3.5rem;
+            font-weight: 900;
+            text-align: center;
+            color: var(--color-cyan);
+            margin: 1rem 0;
+            text-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+        }
+
+        /* Utilities */
+        .empty-state {
+            text-align: center;
+            color: var(--color-muted);
+            padding: 3rem;
+            border: 2px dashed #1e293b;
+            border-radius: 12px;
+            background: rgba(19, 26, 38, 0.3);
+        }
+
+        .img-ref-container {
+            margin-top: 1rem;
+            border-top: 1px solid #1e293b;
+            padding-top: 1rem;
+            font-size: 0.75rem;
+            color: var(--color-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Banner / Navigation -->
+    <header>
+        <div class="brand-section">
+            <h1>AI Supply Chain <span>Control Tower</span></h1>
+            <div class="brand-subtitle">Enterprise Command Center • Version 4.8</div>
+        </div>
+        <div class="controls-top">
+            <button class="btn" id="btn-help">Instructions</button>
+            <button class="btn" id="btn-sound">Sound: On</button>
+            <button class="btn" id="btn-pause" disabled>Pause</button>
+            <button class="btn btn-primary" id="btn-start">Initialize Simulation</button>
+        </div>
+    </header>
+
+    <!-- Main Content Workspace Grid -->
+    <main class="dashboard-container">
+        
+        <!-- Live KPI Ribbon Displays -->
+        <section class="kpi-grid">
+            <div class="kpi-card accent-cyan">
+                <div class="kpi-label">Service Level (SLA)</div>
+                <div class="kpi-value" id="kpi-sla">100%</div>
+            </div>
+            <div class="kpi-card accent-green">
+                <div class="kpi-label">Customer Sat (CSAT)</div>
+                <div class="kpi-value" id="kpi-csat">95%</div>
+            </div>
+            <div class="kpi-card accent-blue">
+                <div class="kpi-label">Inventory Health</div>
+                <div class="kpi-value" id="kpi-inventory">90%</div>
+            </div>
+            <div class="kpi-card accent-orange">
+                <div class="kpi-label">Transport Efficiency</div>
+                <div class="kpi-value" id="kpi-transport">88%</div>
+            </div>
+            <div class="kpi-card accent-red">
+                <div class="kpi-label">Operating Cost Offset</div>
+                <div class="kpi-value" id="kpi-cost">$10k</div>
+            </div>
+            <div class="kpi-card accent-cyan">
+                <div class="kpi-label">Revenue Protected</div>
+                <div class="kpi-value" id="kpi-revenue">$0k</div>
+            </div>
+            <div class="kpi-card accent-green">
+                <div class="kpi-label">Global Score</div>
+                <div class="kpi-value" id="kpi-score">0</div>
+            </div>
+            <div class="kpi-card accent-red" style="background: rgba(239,68,68,0.05)">
+                <div class="kpi-label">Time Remaining</div>
+                <div class="kpi-value" id="kpi-timer">03:00</div>
+            </div>
+        </section>
+
+        <!-- Dynamic Workspace Layout split into primary feed and side activity stream -->
+        <section class="main-workspace">
+            
+            <!-- Left: Active Live Operational Alerts Column -->
+            <div>
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span>⚡</span> Incident Resolution Stack
+                    </div>
+                    <div style="font-size: 0.85rem; color: var(--color-muted);" id="active-count-label">
+                        0 disruptions requiring action
+                    </div>
+                </div>
+                
+                <div class="alerts-feed" id="alerts-feed-container">
+                    <!-- Placeholder view when game hasn't started or no alerts exist -->
+                    <div class="empty-state">
+                        <h3>Tower Offline / Secure</h3>
+                        <p style="margin-top: 0.5rem; font-size: 0.9rem;">Initialize the simulation system from the top dashboard panel to receive live telemetry streams and operational exceptions.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Secondary System Monitoring Analytics Log -->
+            <div class="sidebar-panel">
+                <div class="panel-title">
+                    <span>📋</span> Real-time Event Log Stream
+                </div>
+                <div class="log-container" id="log-container-stream">
+                    <div class="log-entry">System waiting for initialization sequence...</div>
+                </div>
+                
+                <div class="img-ref-container">
+                    <p>Internal Blueprint Images Mapped:</p>
+                    <p style="font-family:monospace; margin-top:0.25rem;">image_528a0a.png / image_5309d1.png</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- UI Modal Container: Instruction Dashboard Help -->
+    <div class="modal-overlay hidden" id="modal-help">
+        <div class="modal-content">
+            <div class="modal-header">Operational Directives & Framework</div>
+            <div class="modal-body">
+                <p>Welcome, <strong>Head of Operations</strong>. You are in command of the premium enterprise Control Tower console.</p>
+                <p>Your objective is to mitigate emergent structural exceptions across our global supply networks:</p>
+                <ul>
+                    <li><strong>Real-time Streaming Matrix:</strong> Disruptions drop into your panel continuously. Frequency increases dramatically over the 3-minute lifecycle.</li>
+                    <li><strong>Resource Impact Trade-offs:</strong> Every decision has multi-point effects. Mitigating a structural delay might optimize SLAs but drastically hike Operational Costs.</li>
+                    <li><strong>Response Window:</strong> High priority cards flash critically. Ignoring an event entirely before its window closes drops major penalties.</li>
+                    <li><strong>Delayed Chain Penalties:</strong> Selecting "Delay Decision" creates buffer space but triggers downstream systemic risks.</li>
+                </ul>
+                <p>Maintain strategic balances to ensure peak overall organizational efficiency grades.</p>
+            </div>
+            <div style="text-align: right;">
+                <button class="btn btn-primary" id="modal-help-close">Acknowledge Command</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- UI Modal Container: End Game Summary Report -->
+    <div class="modal-overlay hidden" id="modal-gameover">
+        <div class="modal-content">
+            <div class="modal-header">Operational Summary Performance Review</div>
+            <div class="grade-badge" id="end-grade">A+</div>
+            <div class="modal-body">
+                <p id="end-summary-text">Summary metrics report processing...</p>
+                
+                <div class="summary-grid">
+                    <div class="summary-item"><strong>Final Score:</strong> <span id="end-score" style="float:right;">0</span></div>
+                    <div class="summary-item"><strong>Total Resolved:</strong> <span id="end-resolved" style="float:right;">0</span></div>
+                    <div class="summary-item"><strong>Correct Steps:</strong> <span id="end-correct" style="float:right; color:var(--color-green);">0</span></div>
+                    <div class="summary-item"><strong>Suboptimal Decisions:</strong> <span id="end-wrong" style="float:right; color:var(--color-red);">0</span></div>
+                </div>
+
+                <div style="border-top: 1px solid #1e293b; padding-top: 1rem;">
+                    <p><strong>Final Node Standing Metrics:</strong></p>
+                    <ul style="list-style-type: none; margin-left: 0; display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;">
+                        <li>SLA: <span id="end-sla" style="font-weight:bold;">100%</span></li>
+                        <li>CSAT: <span id="end-csat" style="font-weight:bold;">100%</span></li>
+                        <li>Inventory Health: <span id="end-inv" style="font-weight:bold;">100%</span></li>
+                        <li>Transport Eff: <span id="end-trans" style="font-weight:bold;">100%</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <button class="btn btn-primary" id="btn-restart" style="width:100%; justify-content:center;">Initiate Next Deployment Shift</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Engine Logic Scripts -->
+    <script>
+        // Game Engine Configuration States
+        let state = {
+            gameActive: false,
+            paused: false,
+            soundOn: true,
+            timeLeft: 180, // 3 Minutes total
+            score: 0,
+            metrics: {
+                sla: 95,
+                csat: 90,
+                inventory: 85,
+                transport: 88,
+                cost: 50, // displayed in thousands
+                revenue: 0
+            },
+            stats: {
+                resolved: 0,
+                correct: 0,
+                wrong: 0
+            },
+            activeAlerts: [],
+            nextAlertId: 1,
+            alertSpawnInterval: 6000 // starts at 6s, goes lower
+        };
+
+        const alertBlueprints = [
+            {
+                title: "Port Congestion Blockade",
+                type: "Port Congestion",
+                desc: "An unexpected maritime strike has brought incoming vessel unloads to an absolute halt.",
+                priority: "high",
+                duration: 18,
+                impact: { sla: -15, csat: -10, cost: 25 },
+                actions: [
+                    { name: "Approve Air Freight", effect: { sla: 10, csat: 8, cost: 40, transport: -5, score: 20 }, success: true, log: "Air freight approved. Network delivery saved, but logistics expenses skyrocketed." },
+                    { name: "Reroute Trucks to Alternate Port", effect: { sla: 5, transport: 10, cost: 15, score: 15 }, success: true, log: "Truck configurations changed to secondary gateway docks." },
+                    { name: "Ignore Warning", effect: { sla: -20, csat: -15, inventory: -10, score: -25 }, success: false, log: "Port alert ignored. Severe supply deficit incurred across delivery networks." }
+                ]
+            },
+            {
+                title: "Tier-1 Supplier Failure",
+                type: "Supplier Delay",
+                desc: "Primary microchip fabricator missed production window due to extreme weather disruptions.",
+                priority: "high",
+                duration: 20,
+                impact: { inventory: -20, sla: -10, revenue: -30 },
+                actions: [
+                    { name: "Activate Backup Supplier", effect: { inventory: 15, cost: 20, score: 25 }, success: true, log: "Secondary component supply contracts pulled into active rotation." },
+                    { name: "Transfer Safety Stock", effect: { inventory: 10, transport: -10, score: 10 }, success: true, log: "Inter-warehouse buffer stocks adjusted to support continuous assembly lines." },
+                    { name: "Delay Decision", effect: { inventory: -5, cost: 10, delayedTrigger: true }, success: false, log: "Decision delayed. Component shortages leaked into downline nodes." }
+                ]
+            },
+            {
+                title: "Midwest Hauler Breakdown",
+                type: "Truck Breakdown",
+                desc: "A massive multi-unit shipping convoy suffered major mechanical faults along a critical route.",
+                priority: "medium",
+                duration: 15,
+                impact: { transport: -15, csat: -5 },
+                actions: [
+                    { name: "Reroute Regional Trucks", effect: { transport: 15, cost: 10, score: 15 }, success: true, log: "On-demand routing engine deployed hotfixes to backup delivery drivers." },
+                    { name: "Expedite Delivery Node", effect: { transport: 10, sla: 5, cost: 15, score: 10 }, success: true, log: "Expedite dispatch issued to local courier fleets." },
+                    { name: "Ignore", effect: { transport: -20, csat: -10, score: -15 }, success: false, log: "Truck failure caused customer drop-offs to log massive delivery delays." }
+                ]
+            },
+            {
+                title: "Critical Warehouse Stock Runout",
+                type: "Warehouse Running Out of Stock",
+                desc: "High velocity SKU demand patterns tracking well above standard safety storage profiles.",
+                priority: "high",
+                duration: 16,
+                impact: { inventory: -25, csat: -15 },
+                actions: [
+                    { name: "Increase Production Rate", effect: { inventory: 25, cost: 15, score: 20 }, success: true, log: "Manufacturing facilities spun up secondary high-yield shifts." },
+                    { name: "Transfer Inventory Nodes", effect: { inventory: 15, transport: -5, score: 15 }, success: true, log: "Balanced inventory counts by pulling excess stock profiles from quiet regions." },
+                    { name: "Ignore Exception", effect: { inventory: -30, csat: -20, score: -25 }, success: false, log: "Stock depleted completely. E-commerce portals forced to reject custom orders." }
+                ]
+            },
+            {
+                title: "Customs Compliance Audits",
+                type: "Customs Inspection",
+                desc: "Border protection agencies flag multiple trans-continental freight containers for random verification.",
+                priority: "medium",
+                duration: 22,
+                impact: { transport: -10, sla: -10 },
+                actions: [
+                    { name: "Approve Premium Customs Broker", effect: { transport: 12, cost: 15, score: 15 }, success: true, log: "Premium compliance consultants accelerated cross-border inspection workflows." },
+                    { name: "Delay Decision Matrix", effect: { transport: -5, sla: -5, delayedTrigger: true }, success: false, log: "Customs hold delayed. Containers moved back into deep storage queues." }
+                ]
+            },
+            {
+                title: "Factory Line Core Assembly Halt",
+                type: "Factory Machine Failure",
+                desc: "Main robotics system suffered a controller hardware failure, pausing final item builds.",
+                priority: "high",
+                duration: 15,
+                impact: { inventory: -20, cost: 30 },
+                actions: [
+                    { name: "Expedite Repair Teams", effect: { inventory: 15, cost: 25, score: 20 }, success: true, log: "Emergency certified mechanical crews flew out directly to site lines." },
+                    { name: "Use Alternative Production Facility", effect: { inventory: 10, transport: 10, cost: 20, score: 15 }, success: true, log: "Rerouted regional raw materials to active secondary manufacturing centers." },
+                    { name: "Ignore Fault", effect: { inventory: -25, cost: 40, score: -20 }, success: false, log: "System breakdown caused production lines to completely stagnate." }
+                ]
+            }
+        ];
+
+        // UI Target Cache
+        const alertsContainer = document.getElementById("alerts-feed-container");
+        const logsContainer = document.getElementById("log-container-stream");
+        const btnStart = document.getElementById("btn-start");
+        const btnPause = document.getElementById("btn-pause");
+        const btnSound = document.getElementById("btn-sound");
+        const btnHelp = document.getElementById("btn-help");
+        const modalHelp = document.getElementById("modal-help");
+        const modalHelpClose = document.getElementById("modal-help-close");
+        const modalGameover = document.getElementById("modal-gameover");
+        const activeCountLabel = document.getElementById("active-count-label");
+
+        // Game Clocks
+        let primaryTicker = null;
+        let generatorTicker = null;
+
+        // Sound Toggle Mock State Change
+        btnSound.addEventListener("click", () => {
+            state.soundOn = !state.soundOn;
+            btnSound.textContent = `Sound: ${state.soundOn ? 'On' : 'Off'}`;
+        });
+
+        // Help Modal Visibility triggers
+        btnHelp.addEventListener("click", () => { modalHelp.classList.remove("hidden"); });
+        modalHelpClose.addEventListener("click", () => { modalHelp.classList.add("hidden"); });
+
+        // Start/Reset Simulation Hook
+        btnStart.addEventListener("click", () => {
+            if (!state.gameActive) {
+                initializeSimulation();
+            }
+        });
+
+        document.getElementById("btn-restart").addEventListener("click", () => {
+            modalGameover.classList.add("hidden");
+            initializeSimulation();
+        });
+
+        btnPause.addEventListener("click", () => {
+            if (!state.gameActive) return;
+            state.paused = !state.paused;
+            btnPause.textContent = state.paused ? "Resume" : "Pause";
+            pushSystemLog(state.paused ? "Operations Control Tower suspended." : "Operations Control Tower resumed.", "warn");
+        });
+
+        function initializeSimulation() {
+            state.gameActive = true;
+            state.paused = false;
+            state.timeLeft = 180;
+            state.score = 0;
+            state.metrics = { sla: 96, csat: 94, inventory: 89, transport: 91, cost: 20, revenue: 150 };
+            state.stats = { resolved: 0, correct: 0, wrong: 0 };
+            state.activeAlerts = [];
+            state.nextAlertId = 1;
+            state.alertSpawnInterval = 6000;
+
+            btnStart.textContent = "Simulation Hot";
+            btnStart.disabled = true;
+            btnPause.disabled = false;
+            btnPause.textContent = "Pause";
+
+            alertsContainer.innerHTML = "";
+            logsContainer.innerHTML = "";
+            
+            pushSystemLog("System Online. Synchronizing global logistics nodes...", "success");
+            
+            // Fire off immediate first event
+            spawnAlert();
+
+            // Set Engine Time Loops
+            if (primaryTicker) clearInterval(primaryTicker);
+            if (generatorTicker) clearInterval(generatorTicker);
+
+            primaryTicker = setInterval(gameEngineTick, 1000);
+            startAdaptiveGenerator();
+            updateUIMetrics();
+        }
+
+        function startAdaptiveGenerator() {
+            if (generatorTicker) clearTimeout(generatorTicker);
+            
+            if (!state.gameActive || state.paused) {
+                generatorTicker = setTimeout(startAdaptiveGenerator, 1000);
+                return;
+            }
+
+            spawnAlert();
+
+            // Difficulty Curve Scalar: Shrink intervals down to a floor value as clock runs out
+            let progressionFactor = (180 - state.timeLeft) / 180; // 0 to 1
+            state.alertSpawnInterval = Math.max(2200, 6000 - (progressionFactor * 4000));
+
+            generatorTicker = setTimeout(startAdaptiveGenerator, state.alertSpawnInterval);
+        }
+
+        // Main Core Tick Logic Matrix
+        function gameEngineTick() {
+            if (!state.gameActive || state.paused) return;
+
+            state.timeLeft--;
+            
+            // Tick active alerts and check for timeouts
+            for (let i = state.activeAlerts.length - 1; i >= 0; i--) {
+                let alert = state.activeAlerts[i];
+                alert.timeRemaining--;
+
+                // Update UI DOM component directly
+                const fillBar = document.getElementById(`bar-fill-${alert.id}`);
+                if (fillBar) {
+                    let percent = (alert.timeRemaining / alert.maxDuration) * 100;
+                    fillBar.style.width = `${percent}%`;
+                }
+
+                if (alert.timeRemaining <= 0) {
+                    // Alert timed out without user intervention
+                    applyAlertConsequences(alert.impact);
+                    pushSystemLog(`EXPIRED Critical Penalty: ${alert.title} unresolved. Network nodes degraded.`, "danger");
+                    state.stats.wrong++;
+                    
+                    // Remove elements
+                    state.activeAlerts.splice(i, 1);
+                    const cardNode = document.getElementById(`alert-card-${alert.id}`);
+                    if (cardNode) cardNode.remove();
+                }
+            }
+
+            // Sync metrics updates
+            updateUIMetrics();
+
+            if (state.timeLeft <= 0) {
+                triggerSimulationEnd();
+            }
+        }
+
+        function spawnAlert() {
+            if (!state.gameActive || state.paused) return;
+
+            // Pick a blueprint template randomly
+            const baseBlueprint = alertBlueprints[Math.floor(Math.random() * alertBlueprints.length)];
+            
+            // Build unique copy instance
+            const newAlert = {
+                id: state.nextAlertId++,
+                title: baseBlueprint.title,
+                type: baseBlueprint.type,
+                desc: baseBlueprint.desc,
+                priority: baseBlueprint.priority,
+                timeRemaining: baseBlueprint.duration,
+                maxDuration: baseBlueprint.duration,
+                impact: { ...baseBlueprint.impact },
+                actions: JSON.parse(JSON.stringify(baseBlueprint.actions))
+            };
+
+            state.activeAlerts.push(newAlert);
+            renderAlertCard(newAlert);
+            pushSystemLog(`ALERT STREAM: Emergent ${newAlert.type} registered. Actions required.`, "warn");
+        }
+
+        function renderAlertCard(alert) {
+            // Remove empty state text placeholder if present
+            const emptyEl = alertsContainer.querySelector(".empty-state");
+            if (emptyEl) emptyEl.remove();
+
+            const card = document.createElement("div");
+            card.className = `alert-card priority-${alert.priority}`;
+            card.id = `alert-card-${alert.id}`;
+
+            let actionsHtml = "";
+            alert.actions.forEach((act, idx) => {
+                actionsHtml += `<button class="action-btn ${act.name === 'Ignore' || act.name === 'Delay Decision' ? 'btn-passive' : ''}" onclick="processUserAction(${alert.id}, ${idx})">${act.name}</button>`;
+            });
+
+            card.innerHTML = `
+                <div class="pulse-indicator"></div>
+                <div class="alert-meta">
+                    <span class="badge ${alert.priority === 'high' ? 'badge-red' : 'badge-orange'}">${alert.priority.toUpperCase()} PRIORITY</span>
+                    <span>System Node Group: <strong>${alert.type}</strong></span>
+                </div>
+                <div class="alert-title">${alert.title}</div>
+                <div class="alert-desc">${alert.desc}</div>
+                <div class="alert-impact">
+                    <div class="impact-item">Potential SLA Impact: <span>${alert.impact.sla || 0}%</span></div>
+                    <div class="impact-item">Inventory Delta: <span>${alert.impact.inventory || 0}%</span></div>
+                </div>
+                <div class="actions-grid">
+                    ${actionsHtml}
+                </div>
+                <div class="card-timer-bar">
+                    <div class="card-timer-fill" id="bar-fill-${alert.id}"></div>
+                </div>
+            `;
+
+            alertsContainer.insertBefore(card, alertsContainer.firstChild);
+            activeCountLabel.textContent = `${state.activeAlerts.length} disruptions requiring action`;
+        }
+
+        // Handle Active Selection Triggers
+        window.processUserAction = function(alertId, actionIndex) {
+            if (!state.gameActive || state.paused) return;
+
+            const alertIdx = state.activeAlerts.findIndex(a => a.id === alertId);
+            if (alertIdx === -1) return;
+
+            const alert = state.activeAlerts[alertIdx];
+            const action = alert.actions[actionIndex];
+
+            // Evaluate chosen paths
+            if (action.success) {
+                state.stats.correct++;
+                state.score += action.effect.score || 10;
+            } else {
+                state.stats.wrong++;
+                state.score = Math.max(0, state.score - 15);
+            }
+
+            // Apply direct modification shifts to metrics variables
+            if (action.effect) {
+                if (action.effect.sla) state.metrics.sla = Math.min(100, Math.max(0, state.metrics.sla + action.effect.sla));
+                if (action.effect.csat) state.metrics.csat = Math.min(100, Math.max(0, state.metrics.csat + action.effect.csat));
+                if (action.effect.inventory) state.metrics.inventory = Math.min(100, Math.max(0, state.metrics.inventory + action.effect.inventory));
+                if (action.effect.transport) state.metrics.transport = Math.min(100, Math.max(0, state.metrics.transport + action.effect.transport));
+                if (action.effect.cost) state.metrics.cost += action.effect.cost;
+                
+                // Track revenue protections
+                if (action.effect.score) state.metrics.revenue += Math.floor(action.effect.score * 1.5);
+            }
+
+            // Handle unique structural delayed consequence flags
+            if (action.effect.delayedTrigger) {
+                pushSystemLog(`Action Note: Decision delayed. Buffers handling overflow, checking feedback loops in 5s...`, "warn");
+                setTimeout(() => {
+                    if (state.gameActive && !state.paused) {
+                        state.metrics.cost += 20;
+                        state.metrics.csat = Math.max(0, state.metrics.csat - 10);
+                        pushSystemLog(`Delayed Consequence: Buffered backlog items timed out. Costs raised.`, "danger");
+                        updateUIMetrics();
+                    }
+                }, 5000);
+            }
+
+            state.stats.resolved++;
+            pushSystemLog(action.log || `Incident resolved via custom command configurations.`, action.success ? "success" : "danger");
+
+            // Strip from stack array tracking systems
+            state.activeAlerts.splice(alertIdx, 1);
+            const element = document.getElementById(`alert-card-${alertId}`);
+            if (element) element.remove();
+
+            activeCountLabel.textContent = `${state.activeAlerts.length} disruptions requiring action`;
+            updateUIMetrics();
+        };
+
+        function applyAlertConsequences(impact) {
+            if (impact.sla) state.metrics.sla = Math.max(0, state.metrics.sla + impact.sla);
+            if (impact.csat) state.metrics.csat = Math.max(0, state.metrics.csat + impact.csat);
+            if (impact.inventory) state.metrics.inventory = Math.max(0, state.metrics.inventory + impact.inventory);
+            if (impact.transport) state.metrics.transport = Math.max(0, state.metrics.transport + impact.transport);
+            if (impact.cost) state.metrics.cost += impact.cost;
+            state.score = Math.max(0, state.score - 20);
+        }
+
+        function updateUIMetrics() {
+            document.getElementById("kpi-sla").textContent = `${state.metrics.sla}%`;
+            document.getElementById("kpi-csat").textContent = `${state.metrics.csat}%`;
+            document.getElementById("kpi-inventory").textContent = `${state.metrics.inventory}%`;
+            document.getElementById("kpi-transport").textContent = `${state.metrics.transport}%`;
+            document.getElementById("kpi-cost").textContent = `$${state.metrics.cost}k`;
+            document.getElementById("kpi-revenue").textContent = `$${state.metrics.revenue}k`;
+            document.getElementById("kpi-score").textContent = state.score;
+
+            // Timer display format conversion
+            let mins = Math.floor(state.timeLeft / 60);
+            let secs = state.timeLeft % 60;
+            document.getElementById("kpi-timer").textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function pushSystemLog(message, type = "") {
+            const entry = document.createElement("div");
+            entry.className = `log-entry ${type}`;
+            
+            let d = new Date();
+            let timestamp = `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}:${d.getSeconds().toString().padStart(2,'0')}`;
+            
+            entry.innerHTML = `<span class="log-time">[${timestamp}]</span>${message}`;
+            logsContainer.insertBefore(entry, logsContainer.firstChild);
+        }
+
+        function triggerSimulationEnd() {
+            state.gameActive = false;
+            clearInterval(primaryTicker);
+            clearTimeout(generatorTicker);
+
+            btnStart.disabled = false;
+            btnStart.textContent = "Re-Initialize Tower";
+            btnPause.disabled = true;
+
+            // Generate Grade Logic
+            let grade = "C";
+            if (state.score >= 250) grade = "A+";
+            else if (state.score >= 180) grade = "A";
+            else if (state.score >= 120) grade = "B";
+            else if (state.score >= 60) grade = "C";
+            else grade = "D";
+
+            // Map and bind final fields
+            document.getElementById("end-grade").textContent = grade;
+            document.getElementById("end-score").textContent = state.score;
+            document.getElementById("end-resolved").textContent = state.stats.resolved;
+            document.getElementById("end-correct").textContent = state.stats.correct;
+            document.getElementById("end-wrong").textContent = state.stats.wrong;
+            
+            document.getElementById("end-sla").textContent = `${state.metrics.sla}%`;
+            document.getElementById("end-csat").textContent = `${state.metrics.csat}%`;
+            document.getElementById("end-inv").textContent = `${state.metrics.inventory}%`;
+            document.getElementById("end-trans").textContent = `${state.metrics.transport}%`;
+
+            let commentary = "";
+            if (grade.includes("A")) {
+                commentary = "Outstanding execution vector. Your predictive interventions minimized global infrastructure bottleneck leakage and cleanly optimized bottom-line margins.";
+            } else if (grade === "B") {
+                commentary = "Stable shift operation. Though certain high-yield lanes recorded backlog increases, core logistics SLAs stayed safely within target thresholds.";
+            } else {
+                commentary = "Critical delivery disruptions breached network capacity limits. Overdue exceptions created heavy structural cost cascades across regional nodes.";
+            }
+            document.getElementById("end-summary-text").textContent = commentary;
+
+            modalGameover.classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>
