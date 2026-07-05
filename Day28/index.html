@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Admission Readiness Simulator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at 50% 0%, #0c1020 0%, #04060d 80%);
+        }
+        
+        .cyber-font {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .glass-panel {
+            background: rgba(13, 19, 36, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.3); }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #2563eb, #7c3aed); border-radius: 10px; }
+    </style>
+</head>
+<body class="text-slate-200 min-h-screen flex flex-col p-4 md:p-6 tracking-wide relative">
+
+    <!-- TOP DECORATIVE GLOW BACKGROUNDS -->
+    <div class="absolute top-0 left-1/3 w-96 h-96 bg-blue-600/10 rounded-full blur-[130px] pointer-events-none"></div>
+    <div class="absolute top-20 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[130px] pointer-events-none"></div>
+
+    <!-- MAIN CONTAINER CONTROLLER -->
+    <div class="max-w-6xl w-full mx-auto flex flex-col gap-6 z-10 my-auto">
+        
+        <!-- APPLICATION PRESET HEADER -->
+        <header class="w-full glass-panel p-5 rounded-2xl text-center shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 left-0 h-[2px] w-full bg-gradient-to-r from-transparent via-blue-500 to-transparent"></div>
+            <h1 class="text-2xl md:text-3xl font-black tracking-wider cyber-font bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent uppercase">
+                Hospital Admission Readiness Simulator
+            </h1>
+            <p class="text-[10px] font-bold text-slate-400 tracking-widest uppercase mt-1">Healthcare Simulation Design System · Day 28</p>
+        </header>
+
+        <!-- STAGE 1: INTAKE SETUP MODULE (TASK-FIRST PARADIGM) -->
+        <section id="setupStage" class="w-full glass-panel p-6 md:p-8 rounded-2xl shadow-2xl border border-blue-500/10">
+            <div class="border-b border-white/10 pb-3 mb-6">
+                <h2 class="text-sm font-bold tracking-widest text-blue-400 uppercase cyber-font">📋 Admission Case Intake Stream</h2>
+                <p class="text-xs text-slate-400 mt-1">Initialize patient criteria to analyze system coordination tracks.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-xs font-semibold text-slate-300">Provider Facility Name:</label>
+                    <input type="text" id="providerName" value="City Medical Center" class="bg-slate-950/60 border border-white/10 rounded-xl p-3 text-sm focus:border-blue-500 outline-none transition-all text-slate-300">
+                    <span class="text-[10px] text-slate-500 italic">Illustrative training data only</span>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-xs font-semibold text-slate-300">Attending Physician:</label>
+                    <input type="text" id="attendingName" value="Dr. Sarah Patel, MD" class="bg-slate-950/60 border border-white/10 rounded-xl p-3 text-sm focus:border-blue-500 outline-none transition-all text-slate-300">
+                    <span class="text-[10px] text-slate-500 italic">Illustrative training data only</span>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-xs font-semibold text-slate-300">Diagnosis Variant:</label>
+                    <select id="diagnosis" onchange="checkTriggers()" class="bg-slate-950/60 border border-white/10 rounded-xl p-3 text-sm focus:border-blue-500 outline-none transition-all text-slate-300">
+                        <option value="Acute MI">Acute MI</option>
+                        <option value="CHF">CHF</option>
+                        <option value="Pneumonia">Pneumonia</option>
+                        <option value="Elective Surgery">Elective Surgery</option>
+                        <option value="Hip Fracture">Hip Fracture</option>
+                    </select>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-xs font-semibold text-slate-300">Admission Type Designation:</label>
+                    <select id="admissionType" onchange="checkTriggers()" class="bg-slate-950/60 border border-white/10 rounded-xl p-3 text-sm focus:border-blue-500 outline-none transition-all text-slate-300">
+                        <option value="Inpatient">Inpatient</option>
+                        <option value="Observation">Observation</option>
+                        <option value="Emergency">Emergency</option>
+                        <option value="ICU">ICU</option>
+                        <option value="Same-Day Surgery">Same-Day Surgery</option>
+                    </select>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-xs font-semibold text-slate-300">Initial Prior Auth (PA) Status:</label>
+                    <select id="paStatus" class="bg-slate-950/60 border border-white/10 rounded-xl p-3 text-sm focus:border-blue-500 outline-none transition-all text-slate-300">
+                        <option value="Approved">Approved</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Denied">Denied</option>
+                    </select>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-xs font-semibold text-slate-300">Admission Target Date:</label>
+                    <input type="date" id="admissionDate" value="2026-07-10" class="bg-slate-950/60 border border-white/10 rounded-xl p-3 text-sm focus:border-blue-500 outline-none transition-all text-slate-300">
+                </div>
+            </div>
+
+            <!-- CONDITIONAL DESIGN CRITERIA NOTES BOX -->
+            <div id="conditionalNote" class="mt-6 p-4 rounded-xl hidden bg-blue-950/20 border border-blue-500/30 text-xs leading-relaxed transition-all duration-300"></div>
+
+            <button onclick="analyzeAdmissionReady()" class="w-full mt-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-xl hover:shadow-indigo-500/20 active:scale-[0.99] cursor-pointer cyber-font text-sm uppercase tracking-wider">
+                🏥 Analyze Admission Readiness
+            </button>
+        </section>
+
+        <!-- STAGE 2: WORKSPACE COCKPIT DISPLAY -->
+        <section id="workspaceStage" class="hidden w-full flex flex-col gap-6">
+            
+            <!-- COCKPIT HEADBOARD STATUS METRICS -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="glass-panel p-4 rounded-2xl text-center flex flex-col justify-center">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Readiness Score</span>
+                    <span id="scoreDisplay" class="text-3xl font-black text-blue-400 cyber-font mt-1">0%</span>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl text-center flex flex-col justify-center">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Risk Profile Status</span>
+                    <span id="riskProfileDisplay" class="text-sm font-bold mt-2 text-amber-400 uppercase tracking-widest cyber-font">Evaluating</span>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl text-center flex flex-col justify-center">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Case Target Path</span>
+                    <span id="caseDesignationDisplay" class="text-xs font-semibold mt-2 text-slate-300 truncate"></span>
+                </div>
+            </div>
+
+            <!-- TIMELINE HORIZON PROGRESS PANEL -->
+            <div class="glass-panel p-5 rounded-2xl">
+                <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 cyber-font">Operational Progress Track</div>
+                <div class="flex items-center justify-between overflow-x-auto gap-4 pb-2 text-center" id="timelineRow">
+                    <!-- Steps injected dynamically by JS loop -->
+                </div>
+            </div>
+
+            <!-- WORKSPACE SPLIT WORKSTATIONS GRID -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- COCKPIT PANELS COMPONENT LIST (LEFT 2 COLS) -->
+                <div class="lg:col-span-2 flex flex-col gap-6">
+                    
+                    <!-- ACTION ENGINE COMMAND CONSOLE -->
+                    <div class="glass-panel p-5 rounded-2xl">
+                        <h3 class="text-xs font-extrabold tracking-wider text-blue-400 uppercase cyber-font mb-4">🛠️ Coordination Actions Console</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="actionButtonsGrid">
+                            <!-- Populated on startup -->
+                        </div>
+
+                        <!-- EXCLUSIVE DYNAMIC PRIOR AUTH RUNTIME CONTROLS BLOCK -->
+                        <div id="paControlSection" class="mt-4 p-4 rounded-xl bg-purple-950/20 border border-purple-500/20 hidden flex-col gap-3">
+                            <h4 class="text-xs font-bold text-purple-400 uppercase cyber-font">⚠️ Prior Auth Operational Resolution Channel</h4>
+                            <p class="text-xs text-slate-300" id="paSectionMsg"></p>
+                            <div class="flex flex-wrap gap-2" id="paActionButtons"></div>
+                        </div>
+                    </div>
+
+                    <!-- DYNAMIC VERIFICATION PARAMETERS STATUS MATRIX -->
+                    <div class="glass-panel p-5 rounded-2xl">
+                        <h3 class="text-xs font-extrabold tracking-wider text-blue-400 uppercase cyber-font mb-4">📊 System Validation Telemetry Matrix</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4" id="matrixContainer"></div>
+                    </div>
+
+                    <!-- CLINICAL GOVERNANCE METRICS SUMMARY BANNER -->
+                    <div id="governanceBanner" class="glass-panel p-5 rounded-2xl border border-emerald-500/20 bg-emerald-950/5 hidden flex-col gap-1 text-xs leading-relaxed animate-pulse">
+                        <h4 class="font-bold text-emerald-400 uppercase tracking-wide cyber-font">🏛️ System Governance Snapshot Benchmarks</h4>
+                        <p class="text-slate-300">Industry benchmarks (estimates only): PA turnaround 3–5 days · Inpatient denial rate ~8–10% (CMS) · PA rework cost ~$11/transaction (CAQH)</p>
+                    </div>
+                </div>
+
+                <!-- COORDINATION CARDS & RISK INTERFACE (RIGHT 1 COL) -->
+                <div class="flex flex-col gap-6">
+                    
+                    <!-- CARE COORDINATION HUD CARDS LIST -->
+                    <div class="glass-panel p-5 rounded-2xl flex flex-col gap-4">
+                        <h3 class="text-xs font-extrabold tracking-wider text-blue-400 uppercase cyber-font">👥 Care Coordination Teams</h3>
+                        <div class="flex flex-col gap-2.5" id="coordinationCards"></div>
+                    </div>
+
+                    <!-- TRACKED RISKS RISK PROFILE COMPONENT -->
+                    <div class="glass-panel p-5 rounded-2xl flex flex-col gap-4">
+                        <h3 class="text-xs font-extrabold tracking-wider text-blue-400 uppercase cyber-font">🚨 Tracked Operational Risk Factors</h3>
+                        <div class="flex flex-col gap-3" id="riskGrid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TERMINAL DISPOSITION DISCLOSURE VIEW CARD -->
+            <div class="glass-panel p-6 rounded-2xl border border-white/10 flex flex-col text-center items-center justify-center min-h-[160px]" id="finalDecisionSection">
+                <!-- Evaluation results populate dynamically -->
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // System Data Parameters Storage Block
+        const TIMELINE_MILESTONES = [
+            "PA Review", "Insurance Verification", "Bed Assignment", "Documentation", 
+            "Consent", "Patient Arrival", "Registration", "Clinical Assessment", "Admission Complete"
+        ];
+
+        const WORKFLOW_ACTIONS = [
+            { id: "bed", label: "Assign Bed", field: "Bed", weight: 10 },
+            { id: "insurance", label: "Verify Insurance", field: "Insurance", weight: 15 },
+            { id: "docs", label: "Upload Documentation", field: "Documentation", weight: 20 },
+            { id: "consent", label: "Complete Consent", field: "Consent", weight: 10 },
+            { id: "physician", label: "Contact Physician", field: "Physician Orders", weight: 20 },
+            { id: "nursing", label: "Notify Nursing", milestoneIndex: 6, weight: 0 },
+            { id: "arrival", label: "Prepare Patient Arrival", field: "Patient Arrival", milestoneIndex: 5, weight: 0 }
+        ];
+
+        // Core App Memory States Management
+        let appState = {
+            provider: '', attending: '', diagnosis: '', admissionType: '', paStatus: '', date: '',
+            readinessScore: 0,
+            milestoneIndex: 0,
+            validations: {
+                "PA": false, "Insurance": false, "Bed": false, 
+                "Documentation": false, "Physician Orders": false, "Consent": false
+            },
+            risks: { "Documentation Risk": 25, "Insurance Risk": 20, "Bed Risk": 15, "Clinical Risk": 10 }
+        };
+
+        // UI Initial Configuration Node Triggers Checked
+        function checkTriggers() {
+            const diag = document.getElementById('diagnosis').value;
+            const adm = document.getElementById('admissionType').value;
+            const noteBox = document.getElementById('conditionalNote');
+            
+            let noteContent = "";
+
+            if (adm === "Observation") {
+                noteContent += "⚠️ <strong>Observation Status Notice:</strong> CMS 2-Midnight Rule applies — different cost-sharing, SNF eligibility, and billing than inpatient. Medicare patients require written MOON notification.<br>";
+            }
+            if (diag === "Acute MI" || diag === "CHF") {
+                noteContent += "📋 <strong>Clinical Criteria Standard:</strong> InterQual/Milliman thresholds apply — ensure documentation meets medical necessity standards before UR review.";
+            }
+
+            if(noteContent) {
+                noteBox.innerHTML = noteContent;
+                noteBox.classList.remove('hidden');
+            } else {
+                noteBox.classList.add('hidden');
+            }
+        }
+
+        // Run Initial Analysis Metrics Channels
+        function analyzeAdmissionReady() {
+            // Map configuration fields inputs
+            appState.provider = document.getElementById('providerName').value;
+            appState.attending = document.getElementById('attendingName').value;
+            appState.diagnosis = document.getElementById('diagnosis').value;
+            appState.admissionType = document.getElementById('admissionType').value;
+            appState.paStatus = document.getElementById('paStatus').value;
+            appState.date = document.getElementById('admissionDate').value;
+
+            // Generate initial randomized state weighting metrics bounds (30-60%)
+            appState.readinessScore = Math.floor(Math.random() * 31) + 30;
+
+            // Map standard default validations state parameters mapping
+            appState.validations["PA"] = (appState.paStatus === "Approved");
+            appState.validations["Insurance"] = false;
+            appState.validations["Bed"] = false;
+            appState.validations["Documentation"] = false;
+            appState.validations["Physician Orders"] = false;
+            appState.validations["Consent"] = false;
+
+            // Evaluate clinical risk modifiers weights
+            if (["Acute MI", "CHF"].includes(appState.diagnosis) || appState.admissionType === "ICU") {
+                appState.risks["Clinical Risk"] = 45; // Weighted higher for critical paths
+            } else {
+                appState.risks["Clinical Risk"] = 15;
+            }
+
+            // Move Workspace view state models
+            document.getElementById('setupStage').classList.add('hidden');
+            document.getElementById('workspaceStage').classList.remove('hidden');
+
+            // Boot render execution pipelines
+            document.getElementById('caseDesignationDisplay').textContent = `${appState.diagnosis} ➔ ${appState.admissionType}`;
+            buildActionConsole();
+            recalculateTelemetry();
+        }
+
+        // Build Action Button Controllers Grid
+        function buildActionConsole() {
+            const grid = document.getElementById('actionButtonsGrid');
+            grid.innerHTML = '';
+
+            WORKFLOW_ACTIONS.forEach(act => {
+                const btn = document.createElement('button');
+                btn.className = "bg-slate-900/80 hover:bg-slate-800 text-slate-300 text-left px-4 py-3 rounded-xl border border-white/5 hover:border-blue-500/50 text-xs font-semibold transition-all cursor-pointer active:scale-[0.98]";
+                btn.innerHTML = `⚙️ ${act.label}`;
+                btn.onclick = () => runWorkflowAction(act);
+                grid.appendChild(btn);
+            });
+        }
+
+        // Run Action Click Evaluation Cycle
+        function runWorkflowAction(action) {
+            if (action.field) {
+                appState.validations[action.field] = true;
+                
+                // Reduce matching administrative parameters metrics risk profiles
+                const riskKey = `${action.field} Risk`;
+                if(appState.risks[riskKey]) appState.risks[riskKey] = Math.max(0, appState.risks[riskKey] - 15);
+            }
+            
+            if (action.id === "nursing") appState.risks["Clinical Risk"] = Math.max(0, appState.risks["Clinical Risk"] - 10);
+            if (action.id === "arrival") appState.milestoneIndex = Math.max(appState.milestoneIndex, 5);
+
+            recalculateTelemetry();
+        }
+
+        // Recalculate Scoring Matrix Logic parameters
+        function recalculateTelemetry() {
+            // Apply standard explicit score weighting rules metrics
+            let calculatedScore = 0;
+
+            if (appState.validations["PA"]) calculatedScore += 25;
+            if (appState.validations["Documentation"]) calculatedScore += 20;
+            if (appState.validations["Physician Orders"]) calculatedScore += 20;
+            if (appState.validations["Insurance"]) calculatedScore += 15;
+            if (appState.validations["Consent"]) calculatedScore += 10;
+            if (appState.validations["Bed"]) calculatedScore += 10;
+
+            // Apply specific ceiling logic safeguard constraint rules mapping
+            if (appState.paStatus === "Denied" && appState.admissionType === "ICU") {
+                if (calculatedScore > 65) calculatedScore = 65; // Hard constraint bar safeguard limit
+            }
+
+            appState.readinessScore = calculatedScore;
+
+            // Dynamic progression updates mapping markers
+            if (appState.readinessScore >= 30) appState.milestoneIndex = Math.max(appState.milestoneIndex, 1);
+            if (appState.validations["Insurance"]) appState.milestoneIndex = Math.max(appState.milestoneIndex, 2);
+            if (appState.validations["Bed"]) appState.milestoneIndex = Math.max(appState.milestoneIndex, 3);
+            if (appState.validations["Documentation"]) appState.milestoneIndex = Math.max(appState.milestoneIndex, 4);
+            if (appState.readinessScore >= 90) appState.milestoneIndex = 8; // Full complete lifecycle path
+
+            renderHUDComponents();
+        }
+
+        // DOM Elements Render Synchronizer pipeline
+        function renderHUDComponents() {
+            // 1. Update scoreboard elements
+            document.getElementById('scoreDisplay').textContent = `${appState.readinessScore}%`;
+            
+            // 2. Map risk thresholds descriptors profile text
+            const riskDisplay = document.getElementById('riskProfileDisplay');
+            const totalRisk = Object.values(appState.risks).reduce((a,b)=>a+b, 0);
+            if(totalRisk > 60) {
+                riskDisplay.textContent = "CRITICAL RISK"; riskDisplay.className = "text-sm font-bold mt-2 text-red-500 uppercase tracking-widest cyber-font";
+            } else if (totalRisk > 25) {
+                riskDisplay.textContent = "EVALUATING RISK"; riskDisplay.className = "text-sm font-bold mt-2 text-amber-400 uppercase tracking-widest cyber-font";
+            } else {
+                riskDisplay.textContent = "STABILIZED"; riskDisplay.className = "text-sm font-bold mt-2 text-emerald-400 uppercase tracking-widest cyber-font";
+            }
+
+            // 3. Render dynamic line milestone bar channels tracker
+            const timeline = document.getElementById('timelineRow');
+            timeline.innerHTML = '';
+            TIMELINE_MILESTONES.forEach((ms, idx) => {
+                const item = document.createElement('div');
+                item.className = `flex flex-col items-center flex-1 min-w-[90px] text-[10px] uppercase tracking-wider font-bold ${idx <= appState.milestoneIndex ? 'text-blue-400' : 'text-slate-600'}`;
+                item.innerHTML = `<div class="w-4 h-4 rounded-full mb-1 flex items-center justify-center text-[8px] ${idx <= appState.milestoneIndex ? 'bg-blue-500 text-black shadow-[0_0_8px_#2563eb]' : 'bg-slate-900 border border-white/10 text-slate-500'}">${idx+1}</div><span class="scale-90 text-center">${ms}</span>`;
+                timeline.appendChild(item);
+            });
+
+            // 4. Handle dynamic conditional branches panel rendering for prior authorization status variations
+            const paSection = document.getElementById('paControlSection');
+            if (appState.paStatus === "Pending") {
+                paSection.classList.remove('hidden'); paSection.classList.add('flex');
+                document.getElementById('paSectionMsg').textContent = "Payer network logs flag authentication status fields as PENDING. Administrative follow-up required.";
+                injectPAControls([
+                    { label: "📞 Follow Up with Payer", penalty: 0 },
+                    { label: "📤 Upload Addendum Docs", penalty: 0 },
+                    { label: "🤝 Contact Referring Physician", penalty: 0 }
+                ], true);
+            } else if (appState.paStatus === "Denied") {
+                paSection.classList.remove('hidden'); paSection.classList.add('flex');
+                document.getElementById('paSectionMsg').textContent = "StarCare plan review has DENIED coverage due to alternative clinical paths guidance rules metrics.";
+                injectPAControls([
+                    { label: "🔍 Review Denial Reason", penalty: 0 },
+                    { label: "☎️ Contact Insurance Director", penalty: 0 },
+                    { label: "⚖️ Submit Formal Appeal Pack", convert: true }
+                ], false);
+            } else {
+                paSection.classList.add('hidden');
+            }
+
+            // 5. Render standard verification grid matrices modules components fields
+            const matrix = document.getElementById('matrixContainer');
+            matrix.innerHTML = '';
+            Object.keys(appState.validations).forEach(key => {
+                const val = appState.validations[key];
+                const box = document.createElement('div');
+                box.className = `p-3 rounded-xl border text-center transition-all ${val ? 'bg-emerald-950/20 border-emerald-500/30 text-emerald-400' : 'bg-slate-900/40 border-white/5 text-slate-500'}`;
+                box.innerHTML = `<div class="text-[10px] uppercase tracking-widest text-slate-400 font-medium">${key}</div><div class="text-xs font-bold mt-1 cyber-font">${val ? '✓ VERIFIED' : '⏳ PENDING'}</div>`;
+                matrix.appendChild(box);
+            });
+
+            // 6. Conditional benchmarking layer display logic bounds
+            const govBanner = document.getElementById('governanceBanner');
+            if(appState.readinessScore >= 75) { govBanner.classList.remove('hidden'); govBanner.classList.add('flex'); }
+            else { govBanner.classList.add('hidden'); }
+
+            // 7. Render contextual configuration professional team cards structures
+            renderTeamCards();
+
+            // 8. Render tracked risk sliders metrics
+            renderRiskSliders();
+
+            // 9. Process final disposition metrics
+            renderFinalDisposition();
+        }
+
+        function injectPAControls(actions, isPending) {
+            const btnWrap = document.getElementById('paActionButtons');
+            btnWrap.innerHTML = '';
+            actions.forEach(act => {
+                const b = document.createElement('button');
+                b.className = `px-3 py-1.5 rounded-lg text-[11px] font-bold tracking-wide uppercase transition-all border cursor-pointer ${act.convert ? 'bg-purple-900/40 hover:bg-purple-800 border-purple-500/30 text-purple-300' : 'bg-slate-950/60 hover:bg-slate-900 border-white/5 text-slate-400'}`;
+                b.textContent = act.label;
+                b.onclick = () => {
+                    if(act.convert) {
+                        appState.paStatus = "Approved";
+                        appState.validations["PA"] = true;
+                        appState.risks["Insurance Risk"] = 0;
+                        alert("Appeal processed successfully! Prior Authorization status converted to APPROVED.");
+                    } else {
+                        alert(`Action initiated: ${act.label}. Gateway status metrics updated.`);
+                    }
+                    recalculateTelemetry();
+                };
+                btnWrap.appendChild(b);
+            });
+        }
+
+        function renderTeamCards() {
+            const container = document.getElementById('coordinationCards');
+            container.innerHTML = '';
+
+            const teams = [
+                { role: "Attending Physician", desc: appState.attending },
+                { role: "Case Manager", desc: "Monitors cross-functional system checkpoints and metrics lifecycle updates." },
+                { role: "Nursing Team", desc: "Coordinates dynamic bed parameters configuration buffers." },
+                { role: "Utilization Review (UR)", desc: "Performs concurrent review, denial risk identification, matching criteria validation via InterQual / Milliman guidelines." },
+                { role: "Discharge Planner", desc: "Evaluates matching downstream system eligibility paths." }
+            ];
+
+            teams.forEach(t => {
+                const card = document.createElement('div');
+                card.className = "p-3 rounded-xl bg-slate-950/40 border border-white/5 text-xs flex flex-col gap-0.5";
+                card.innerHTML = `<span class="font-bold text-slate-300">${t.role}</span><span class="text-slate-400 text-[11px] leading-relaxed">${t.desc}</span>`;
+                container.appendChild(card);
+            });
+        }
+
+        function renderRiskSliders() {
+            const container = document.getElementById('riskGrid');
+            container.innerHTML = '';
+
+            Object.keys(appState.risks).forEach(rk => {
+                const val = appState.risks[rk];
+                const block = document.createElement('div');
+                block.className = "flex flex-col gap-1 text-[11px]";
+                block.innerHTML = `
+                    <div class="flex justify-between font-medium text-slate-400"><span>${rk}</span><span class="cyber-font font-bold ${val > 30 ? 'text-red-400': 'text-emerald-400'}">${val}%</span></div>
+                    <div class="w-full h-1 bg-slate-950 rounded-full overflow-hidden"><div class="h-full ${val > 30 ? 'bg-red-500': 'bg-emerald-500'} transition-all duration-300" style="width: ${val}%"></div></div>
+                `;
+                container.appendChild(block);
+            });
+        }
+
+        function renderFinalDisposition() {
+            const section = document.getElementById('finalDecisionSection');
+            section.innerHTML = '';
+
+            if (appState.readinessScore >= 90) {
+                section.className = "glass-panel p-6 rounded-2xl border border-emerald-500/30 bg-emerald-950/10 flex flex-col text-center items-center justify-center min-h-[160px] animate-fade-in";
+                section.innerHTML = `
+                    <h3 class="text-xl font-bold text-emerald-400 cyber-font uppercase tracking-wider mb-2">✅ Admit Case Ready</h3>
+                    <p class="text-xs text-slate-300 max-w-xl leading-relaxed">
+                        All transaction verification parameters have crossed the required threshold bar safely. Patient <strong>${appState.provider}</strong> entry workflow pipeline has reached completion clearance successfully under <strong>${appState.attending}</strong> directives.
+                    </p>
+                    <button onclick="resetSimulator()" class="mt-4 bg-slate-900 hover:bg-slate-800 text-slate-300 border border-white/10 px-4 py-2 rounded-xl text-xs font-bold uppercase cursor-pointer">Start Another Intake Session</button>
+                `;
+            } else {
+                section.className = "glass-panel p-6 rounded-2xl border border-amber-500/20 bg-amber-950/5 flex flex-col text-center items-center justify-center min-h-[160px]";
+                
+                // Construct required parameters log alerts array
+                let missingList = [];
+                Object.keys(appState.validations).forEach(k => {
+                    if(!appState.validations[k]) missingList.push(k);
+                });
+
+                section.innerHTML = `
+                    <h3 class="text-base font-bold text-amber-400 cyber-font uppercase tracking-wider mb-1">⚠ Admission Clearance Hold</h3>
+                    <p class="text-xs text-slate-400 max-w-lg mb-3">Case validation score requires at least 90% clearance parameters to authorize patient clinical transfer arrivals.</p>
+                    <div class="text-[11px] text-left bg-slate-950/40 p-3 rounded-xl border border-white/5 max-w-md w-full flex flex-col gap-1">
+                        <span class="font-bold text-slate-300 block mb-1">⏳ Required Clearance Operations:</span>
+                        ${missingList.map(m => `• Finalize configuration updates to verify <strong>${m}</strong> channel metrics`).join('<br>')}
+                    </div>
+                `;
+            }
+        }
+
+        function resetSimulator() {
+            document.getElementById('workspaceStage').classList.add('hidden');
+            document.getElementById('setupStage').classList.remove('hidden');
+            
+            // Clear selections values input models back
+            document.getElementById('paStatus').value = "Approved";
+            checkTriggers();
+        }
+
+        window.onload = () => { checkTriggers(); };
+    </script>
+</body>
+</html>
