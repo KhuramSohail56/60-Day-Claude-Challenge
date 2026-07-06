@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Think Like a Marketing Strategist: Grow This Brand</title>
+    <!-- React and Babel CDNs -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-main: radial-gradient(circle at 50% 0%, #0f142c 0%, #04060f 80%);
+            --card-bg: rgba(15, 22, 42, 0.75);
+            --border-color: rgba(59, 130, 246, 0.15);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-blue: #3b82f6;
+            --accent-purple: #a855f7;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            min-height: screen;
+            padding: 20px;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-w: 900px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            padding-bottom: 60px;
+        }
+
+        .cyber-font {
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        /* High-Level Modern Glassmorphic Dashboard Design */
+        .glass-panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .header-banner {
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-top: 2px solid var(--accent-blue);
+        }
+
+        .heading-glow {
+            background: linear-gradient(to right, #60a5fa, #c084fc, #34d399);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Input Controls */
+        .input-field, .select-field {
+            width: 100%;
+            background: rgba(5, 7, 18, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 14px;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+            margin-top: 6px;
+        }
+
+        .input-field:focus, .select-field:focus {
+            border-color: var(--accent-blue);
+        }
+
+        /* Buttons & Interactions */
+        .btn-primary {
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 28px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--text-secondary);
+        }
+
+        /* Grid Frameworks */
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+
+        /* Meta Explainer Badges */
+        .explainer-box {
+            background: rgba(59, 130, 246, 0.05);
+            border-left: 3px solid var(--accent-blue);
+            padding: 12px 16px;
+            border-radius: 0 12px 12px 0;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        /* Claude Prompt Engineering Cards */
+        .claude-card {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.04) 0%, rgba(124, 58, 237, 0.04) 100%);
+            border: 1px dashed rgba(245, 158, 11, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 24px;
+            position: relative;
+        }
+
+        .prompt-text {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #fcd34d;
+            margin-top: 8px;
+            border: 1px solid rgba(245, 158, 11, 0.1);
+            white-space: pre-wrap;
+        }
+
+        /* Milestone Tracker Component */
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+            transition: width 0.4s ease;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .badge-blue { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .badge-purple { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+        .badge-amber { background: rgba(245, 158, 11, 0.15); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.3); }
+
+        .selectable-card {
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 14px;
+            padding: 16px;
+            transition: all 0.2s;
+        }
+
+        .selectable-card:hover {
+            border-color: rgba(59, 130, 246, 0.4);
+            background: rgba(59, 130, 246, 0.02);
+        }
+
+        .selectable-card.selected {
+            border-color: var(--accent-emerald);
+            background: rgba(16, 185, 129, 0.05);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // Client Randomizer Bank Data Sets
+        const RANDOM_CLIENTS = [
+            {
+                name: "Solvify Tech", type: "business", industry: "SaaS Platform",
+                audience: "Remote managers struggling with administrative team overheads.",
+                budget: "$2,500/month", competitors: "ClickUp, Monday.com",
+                challenge: "High website traffic but extremely low sign-up conversions."
+            },
+            {
+                name: "Bean & Brew Co.", type: "business", industry: "Artisanal Coffee Chain",
+                audience: "Gen-Z professional remote workers looking for community spaces.",
+                budget: "$1,200/month", competitors: "Starbucks, local hipster cafes",
+                challenge: "Strong morning foot traffic but completely empty afternoon sales."
+            },
+            {
+                name: "FitPulse Online", type: "business", industry: "Digital Fitness Coaching",
+                audience: "Busy executives needing 15-minute home high-intensity workout routines.",
+                budget: "$800/month", competitors: "Peloton App, YouTube fitness creators",
+                challenge: "High initial social media followers but zero premium subscriptions."
+            }
+        ];
+
+        function App() {
+            const [stage, setStage] = useState('welcome'); // welcome, intake, audience, platforms, pillars, roadmap, event, report
+            const [brandMode, setBrandMode] = useState(''); // business, personal
+            const [brandData, setBrandData] = useState({
+                name: '', industry: '', audience: '', budget: '', competitors: '', challenge: ''
+            });
+
+            // Selections State Memory Trackers
+            const [selectedPlatform, setSelectedPlatform] = useState('');
+            const [platformFeedback, setPlatformFeedback] = useState('');
+            const [selectedPillars, setSelectedPillars] = useState([]);
+            const [eventChoice, setEventChoice] = useState(null);
+            const [decisionsLog, setDecisionsLog] = useState({ bestDecision: '', biggestMistake: '' });
+
+            // Initialize Form Handlers
+            const handleModeSelect = (mode) => {
+                setBrandMode(mode);
+                if (mode === 'random') {
+                    const client = RANDOM_CLIENTS[Math.floor(Math.random() * RANDOM_CLIENTS.length)];
+                    setBrandData(client);
+                    setBrandMode(client.type);
+                    setStage('audience');
+                } else {
+                    setStage('intake');
+                }
+            };
+
+            const handleIntakeSubmit = (e) => {
+                e.preventDefault();
+                setStage('audience');
+            };
+
+            const togglePillar = (id) => {
+                if (selectedPillars.includes(id)) {
+                    setSelectedPillars(selectedPillars.filter(p => p !== id));
+                } else if (selectedPillars.length < 3) {
+                    setSelectedPillars([...selectedPillars, id]);
+                }
+            };
+
+            // Dynamic Asset Parameters configuration structures Mapping
+            const getPlatformsList = () => {
+                if (brandMode === 'personal') {
+                    return [
+                        { id: 'linkedin', name: 'LinkedIn', weight: 'High', reasoning: 'Perfect for professional personal positioning, expert stories, and B2B authority building.' },
+                        { id: 'x', name: 'X / Twitter', weight: 'High', reasoning: 'Excellent for real-time networking, quick technical POV insights, and niche community growth.' },
+                        { id: 'instagram', name: 'Instagram', weight: 'Medium', reasoning: 'Good for highly visual behind-the-scenes aesthetics, but conversion links are highly limited.' },
+                        { id: 'youtube', name: 'YouTube / Newsletters', weight: 'High', reasoning: 'The ultimate compounding channel to showcase long-form mastery and lock down deep loyalty.' }
+                    ];
+                } else {
+                    return [
+                        { id: 'linkedin', name: 'LinkedIn', weight: 'Medium', reasoning: 'Highly valuable if target buyers are B2B managers, otherwise expensive conversion ads.' },
+                        { id: 'instagram', name: 'Instagram / Reels', weight: 'High', reasoning: 'Essential to drive massive customer visual interest and leverage viral consumer video trends.' },
+                        { id: 'tiktok', name: 'TikTok', weight: 'High', reasoning: 'Unbeatable for massive organic reach algorithms, but demands ultra-consistent creative production.' },
+                        { id: 'facebook', name: 'Facebook Ads', weight: 'Medium', reasoning: 'Great for laser-focused older demographic retargeting campaigns, but organic reach is near zero.' }
+                    ];
+                }
+            };
+
+            const getPillarsList = () => {
+                if (brandMode === 'personal') {
+                    return [
+                        { id: 'leadership', title: 'Thought Leadership', desc: 'Deconstruct expert frameworks, system tools, and industry trends to prove deep niche mastery.' },
+                        { id: 'story', title: 'Personal Story Journey', desc: 'Share raw failures, breakthrough real-world metrics, and pivot events to build authentic validation.' },
+                        { id: 'bts', title: 'Behind The Scenes (BTS)', desc: 'Showcase your real daily research setup, ongoing projects, and unfiltered work style.' },
+                        { id: 'education', title: 'Audience Education', desc: 'Provide step-by-step simple action guides solving exact immediate pain points for free.' }
+                    ];
+                } else {
+                    return [
+                        { id: 'product', title: 'Product Authority', desc: 'Highlight proprietary feature benefits, software parameters, and conversion validation proofs.' },
+                        { id: 'social', title: 'Social Proof Ledger', desc: 'Publish full customer transformation case summaries and user review logs.' },
+                        { id: 'culture', title: 'Brand Culture & Purpose', desc: 'Tell the core company vision journey, founder values, and internal operational philosophies.' },
+                        { id: 'education', title: 'Industry Education', desc: 'Teach macro topics related to your product market sector to naturally capture target buyers.' }
+                    ];
+                }
+            };
+
+            const getRandomEvent = () => {
+                if (brandMode === 'personal') {
+                    return {
+                        title: "⚡ A Podcast Invite Arrives!",
+                        scenario: "A highly respected mid-tier industry podcast invites you to discuss your exact niche insights live next week. However, some connections warn you the host loves asking intense, controversial filter questions.",
+                        options: [
+                            { text: "Accept immediately, fully embracing your authentic raw perspectives.", feedback: "Excellent! Strategic visibility drives compounding trust. Your bold authenticity causes a follower spike.", isBest: true },
+                            { text: "Decline safely to focus purely on creating independent written text loops.", feedback: "Safe choice, but missing high-level networking loops can slow down authority velocity.", isBest: false }
+                        ]
+                    };
+                } else {
+                    return {
+                        title: "⚡ A Negative Competitor Ad Appears!",
+                        scenario: "A primary market rival launches a direct campaign directly highlighting your product challenge vector as their primary software advantage.",
+                        options: [
+                            { text: "Launch a transparent educational case study proving your real updates metrics.", feedback: "Masterclass response! Turning a critique into an educational proof engine builds massive premium trust.", isBest: true },
+                            { text: "Start a defensive price discount model across ad channels.", feedback: "Risky. Price wars destroy premium positioning margins and indicate panic to target markets.", isBest: false }
+                        ]
+                    };
+                }
+            };
+
+            // Global Progress Percentage Bar Calculation
+            const stagesIndexMap = { welcome: 0, intake: 15, audience: 30, platforms: 50, pillars: 70, roadmap: 85, event: 95, report: 100 };
+            const progressPercent = stagesIndexMap[stage] || 0;
+
+            return (
+                <div class="container">
+                    {/* PROGRESS HEADER METRIC */}
+                    <div class="glass-panel header-banner">
+                        <h1 class="text-xl md:text-2xl font-black cyber-font heading-glow uppercase">Think Like a Marketing Strategist</h1>
+                        <p class="text-[11px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Grow This Brand Simulator</p>
+                        <div class="progress-bar mt-4"><div class="progress-fill" style={{ width: `${progressPercent}%` }}></div></div>
+                    </div>
+
+                    {/* STAGE CONTAINER CHANNELS */}
+                    {stage === 'welcome' && (
+                        <div class="glass-panel">
+                            <span class="badge badge-blue">Introduction</span>
+                            <h2 class="cyber-font text-lg font-bold mb-3">Learn How Great Marketers Think Before They Create</h2>
+                            <p class="text-sm text-slate-400 mb-4 leading-relaxed">
+                                Successful marketing isn't about throwing random content into algorithms or creating catchy slogans. It begins with clear, cold observation—understanding mechanics, target profiles, platform architectures, and content frameworks.
+                            </p>
+                            <div class="explainer-box">
+                                <strong>What is this simulator?</strong> It is an interactive, step-by-step sandbox designed to teach beginners the exact core logic of high-level brand building, positioning, and organic audience scaling strategy.
+                            </div>
+                            
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-3">Select a Simulation Entry Mode:</h3>
+                            <div class="grid-3">
+                                <div class="selectable-card text-center" onClick={() => handleModeSelect('business')}>
+                                    <div class="text-xl mb-1">🏢</div>
+                                    <div class="text-xs font-bold text-blue-400 uppercase">My Own Business</div>
+                                </div>
+                                <div class="selectable-card text-center" onClick={() => handleModeSelect('personal')}>
+                                    <div class="text-xl mb-1">🙋</div>
+                                    <div class="text-xs font-bold text-purple-400 uppercase">Personal Brand Track</div>
+                                </div>
+                                <div class="selectable-card text-center" onClick={() => handleModeSelect('random')}>
+                                    <div class="text-xl mb-1">🎲</div>
+                                    <div class="text-xs font-bold text-emerald-400 uppercase">New Client Assignment</div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {stage === 'intake' && (
+                        <div class="glass-panel">
+                            <span class="badge badge-purple">Configuration Input</span>
+                            <h2 class="cyber-font text-lg font-bold mb-4">Initialize Brand Architecture Parameters</h2>
+                            <form onSubmit={handleIntakeSubmit} class="grid-2">
+                                <div class="flex flex-col gap-1">
+                                    <label class="text-xs font-bold text-slate-300 uppercase tracking-wide">Brand/Identity Name:</label>
+                                    <input type="text" required value={brandData.name} onChange={e => setBrandData({...brandData, name: e.target.value})} placeholder={brandMode === 'personal' ? 'e.g., Khuram Sohail' : 'e.g., Alpha Cleaners'} class="input-field" />
+                                </div>
+                                <div class="flex flex-col gap-1">
+                                    <label class="text-xs font-bold text-slate-300 uppercase tracking-wide">Market Niche / Industry:</label>
+                                    <input type="text" required value={brandData.industry} onChange={e => setBrandData({...brandData, industry: e.target.value})} placeholder={brandMode === 'personal' ? 'e.g., Software Engineering Expert' : 'e.g., Eco-friendly Laundry SaaS'} class="input-field" />
+                                </div>
+                                <div class="flex flex-col gap-1 md:span-2" style={{ gridColumn: '1 / -1' }}>
+                                    <label class="text-xs font-bold text-slate-300 uppercase tracking-wide">Target Ideal Audience Profile:</label>
+                                    <input type="text" required value={brandData.audience} onChange={e => setBrandData({...brandData, audience: e.target.value})} placeholder="Describe who needs this exact solution immediately..." class="input-field" />
+                                </div>
+                                <div class="flex flex-col gap-1">
+                                    <label class="text-xs font-bold text-slate-300 uppercase tracking-wide">Monthly Operational Budget:</label>
+                                    <input type="text" required value={brandData.budget} onChange={e => setBrandData({...brandData, budget: e.target.value})} placeholder="e.g., $500 or $0 (Organic only)" class="input-field" />
+                                </div>
+                                <div class="flex flex-col gap-1">
+                                    <label class="text-xs font-bold text-slate-300 uppercase tracking-wide">{brandMode === 'personal' ? 'Spaces / Peers You Admire:' : 'Key Competitors Market Space:'}</label>
+                                    <input type="text" required value={brandData.competitors} onChange={e => setBrandData({...brandData, competitors: e.target.value})} placeholder="e.g., Tech experts, industry players..." class="input-field" />
+                                </div>
+                                <div class="flex flex-col gap-1" style={{ gridColumn: '1 / -1' }}>
+                                    <label class="text-xs font-bold text-slate-300 uppercase tracking-wide">Primary Growth / Marketing Bottleneck Challenge:</label>
+                                    <input type="text" required value={brandData.challenge} onChange={e => setBrandData({...brandData, challenge: e.target.value})} placeholder="e.g., High views but nobody clicks links or signs up..." class="input-field" />
+                                </div>
+                                <button type="submit" class="btn-primary mt-4" style={{ gridColumn: '1 / -1' }}>Generate Strategic Mapping</button>
+                            </form>
+                        </div>
+                    )}
+
+                    {stage === 'audience' && (
+                        <div class="glass-panel">
+                            <span class="badge badge-emerald">Step 1: Brand Anatomy</span>
+                            <h2 class="cyber-font text-lg font-bold mb-2">Analyzing Brand Assets & Core Audience Drivers</h2>
+                            <p class="text-xs text-slate-400 uppercase tracking-widest mb-4">Target: {brandData.name} ({brandData.industry})</p>
+                            
+                            <div class="explainer-box">
+                                <strong>What is this step?</strong> Marketers analyze the target audience profile and core asset vectors before spending ad budgets or writing text outlines.<br/>
+                                <strong>Why does it matter?</strong> If you do not isolate the core target driver group, your content remains generic, confusing your baseline conversion goals.
+                            </div>
+
+                            <div class="grid-2 mt-4" style={{ gap: '16px' }}>
+                                <div style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                    <h4 class="text-xs font-bold text-blue-400 uppercase mb-1">🎯 Core Product / Core Value Offer</h4>
+                                    <p class="text-xs text-slate-300">{brandMode === 'personal' ? 'Your specific technical expertise, point-of-view frameworks, and lived performance story.' : `Proprietary industry solutions tailored to neutralize: ${brandData.challenge}`}</p>
+                                </div>
+                                <div style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                    <h4 class="text-xs font-bold text-purple-400 uppercase mb-1">👥 Target Market Psychology Block</h4>
+                                    <p class="text-xs text-slate-300">{brandData.audience}</p>
+                                </div>
+                            </div>
+
+                            {/* CLAUDE PROMPT ENGINEERING CARD */}
+                            <div class="claude-card">
+                                <span class="badge badge-amber text-[9px]">Prompt Engineering Card</span>
+                                <h4 class="text-xs font-bold text-amber-400 mt-1">🗣️ How to Ask Claude for Deep Persona Mapping</h4>
+                                <div class="prompt-text">
+{brandMode === 'personal' 
+? `Act as an expert brand strategist. Deeply map out an audience avatar profiles matrix for a Personal Brand named "${brandData.name}" specializing in "${brandData.industry}". Identify their top 3 hidden fears, daily processing overheads, and write a high-converting positioning bio tag statement.` 
+: `Act as a senior B2B/B2C marketer. Build a comprehensive buyer persona matrix for "${brandData.name}" in the "${brandData.industry}" space. Analyze the conversion bottleneck where customers face: "${brandData.challenge}". Outline exact target friction objections.`}
+                                </div>
+                            </div>
+
+                            <button onClick={() => setStage('platforms')} class="btn-primary mt-6">Advance to Platform Strategy</button>
+                        </div>
+                    )}
+
+                    {stage === 'platforms' && (
+                        <div class="glass-panel">
+                            <span class="badge badge-blue">Step 2: Platform Selection Matrix</span>
+                            <h2 class="cyber-font text-lg font-bold mb-2">Deploying Channel Architecture Focus</h2>
+                            
+                            <div class="explainer-box">
+                                <strong>What is this?</strong> Evaluating where your exact buyers consume information.<br/>
+                                <strong>Why does it matter?</strong> Trying to push professional services via entertainment-first short feeds or vice versa will burn assets without returns.
+                            </div>
+
+                            <p class="text-xs font-bold text-slate-300 uppercase mb-3">Select the primary channel below to evaluate strategy parameters:</p>
+                            <div class="grid-2">
+                                {getPlatformsList().map(p => (
+                                    <div key={p.id} class={`selectable-card ${selectedPlatform === p.id ? 'selected' : ''}`} onClick={() => { setSelectedPlatform(p.id); setPlatformFeedback(p.reasoning); }}>
+                                        <div class="flex justify-between items-center font-bold text-sm text-slate-200">
+                                            <span>{p.name}</span>
+                                            <span class={`text-[10px] uppercase font-black tracking-widest ${p.weight === 'High' ? 'text-emerald-400' : 'text-amber-400'}`}>Priority: {p.weight}</span>
+                                        </div>
+                                        <p class="text-xs text-slate-400 mt-2">{p.reasoning}</p>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {selectedPlatform && (
+                                <div style={{ background: 'rgba(16, 185, 129, 0.04)', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '15px', borderRadius: '12px', marginTop: '20px', fontSize: '13px' }}>
+                                    🚀 <strong>Strategic Target Confirmed:</strong> Platform choice updated into system pipeline configuration ledger.
+                                </div>
+                            )}
+
+                            {/* CLAUDE PROMPT ENGINEERING CARD */}
+                            <div class="claude-card">
+                                <span class="badge badge-amber text-[9px]">Prompt Engineering Card</span>
+                                <h4 class="text-xs font-bold text-amber-400 mt-1">📊 How to Ask Claude for an Omni-channel Distribution Strategy</h4>
+                                <div class="prompt-text">
+{brandMode === 'personal'
+? `Analyze the platform dynamic weights for "${brandData.name}" targeting "${brandData.industry}". Write a native cross-posting distribution playbook to break one long-form core insight down into 3 short text points optimized for LinkedIn and X algorithm loops.`
+: `Build a highly focused social media distribution playbook for "${brandData.name}" to counter competitors like "${brandData.competitors}". Map organic discovery channels versus high-efficiency low-budget paid ad test matrices.`}
+                                </div>
+                            </div>
+
+                            <button onClick={() => { 
+                                if(!selectedPlatform) { alert('Please choose a primary channel matrix platform first.'); return; }
+                                setDecisionsLog({...decisionsLog, bestDecision: `Focused primary activation efforts channel into ${selectedPlatform} system structures.`});
+                                setStage('pillars'); 
+                            }} class="btn-primary mt-6">Advance to Content Strategy</button>
+                        </div>
+                    )}
+
+                    {stage === 'pillars' && (
+                        <div class="glass-panel">
+                            <span class="badge badge-purple">Step 3: Messaging Architecture</span>
+                            <h2 class="cyber-font text-lg font-bold mb-2">Isolating Core Message Pillars Framework</h2>
+                            
+                            <div class="explainer-box">
+                                <strong>What is this?</strong> Broad themes that keep your messaging focused, recognizable, and authoritative.<br/>
+                                <strong>Why does it matter?</strong> Without explicit pillars, you end up posting mismatched insights daily, diluting your brand's authority.
+                            </div>
+
+                            <h4 class="text-xs font-black uppercase tracking-widest text-slate-300 mb-2">Select exactly THREE pillars below (Selected: {selectedPillars.length} / 3):</h4>
+                            <div class="grid-2">
+                                {getPillarsList().map(pil => (
+                                    <div key={pil.id} class={`selectable-card ${selectedPillars.includes(pil.id) ? 'selected' : ''}`} onClick={() => togglePillar(pil.id)}>
+                                        <div class="font-bold text-sm text-slate-200">{pil.title}</div>
+                                        <p class="text-xs text-slate-400 mt-1.5">{pil.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* CLAUDE PROMPT ENGINEERING CARD */}
+                            <div class="claude-card">
+                                <span class="badge badge-amber text-[9px]">Prompt Engineering Card</span>
+                                <h4 class="text-xs font-bold text-amber-400 mt-1">🏗️ How to Ask Claude for Content Matrix Expansion</h4>
+                                <div class="prompt-text">
+{brandMode === 'personal'
+? `Act as an elite copywriter. Use the content pillars framework to expand a 3-part matrix model for "${brandData.name}". For each pillar, generate 5 raw, high-converting thought hooks that challenge conventional wisdom in the "${brandData.industry}" sector.`
+: `Generate a structured messaging matrix framework for "${brandData.name}" targeting our specific market problem: "${brandData.challenge}". Break the themes down into clear educational vectors that directly counter objections to our solution.`}
+                                </div>
+                            </div>
+
+                            <button onClick={() => {
+                                if(selectedPillars.length !== 3) { alert('Please select exactly 3 content pillars to stabilize your messaging balance.'); return; }
+                                setStage('roadmap');
+                            }} class="btn-primary mt-6">Generate 30-Day Strategic Roadmap</button>
+                        </div>
+                    )}
+
+                    {stage === 'roadmap' && (
+                        <div class="glass-panel">
+                            <span class="badge badge-emerald">Step 4: Strategic Roadmap Execution</span>
+                            <h2 class="cyber-font text-lg font-bold mb-2">The 30-Day High-Level Macro Campaign Roadmap</h2>
+                            
+                            <div class="explainer-box">
+                                <strong>What is this?</strong> A macro view mapping weekly strategic milestones and directional target setups rather than individual, micro-managed posts.<br/>
+                                <strong>Why does it matter?</strong> This high-level outlook allows you to measure growth trends accurately over a month instead of guessing from day to day.
+                            </div>
+
+                            <div class="flex flex-col gap-4 mt-4">
+                                <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', borderLeft: '3px solid var(--accent-blue)' }}>
+                                    <h4 class="text-xs font-bold text-blue-400 uppercase">📅 Week 1: Foundation Calibration & Core Positioning</h4>
+                                    <p class="text-xs text-slate-300 mt-1">{brandMode === 'personal' ? 'Optimize profiles, fix profile tags bio frameworks, and isolate your distinct niche point-of-view statement.' : `Audit internal conversion points to fix: ${brandData.challenge} before driving ad traffic.`}</p>
+                                </div>
+                                <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', borderLeft: '3px solid var(--accent-purple)' }}>
+                                    <h4 class="text-xs font-bold text-purple-400 uppercase">📅 Week 2: Trust Inoculation & Asset Seeding</h4>
+                                    <p class="text-xs text-slate-300 mt-1">Launch high-value free guides, framework breakdowns, and proof engines to validate capability directly into your core target pool.</p>
+                                </div>
+                                <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', borderLeft: '3px solid var(--accent-amber)' }}>
+                                    <h4 class="text-xs font-bold text-amber-400 uppercase">📅 Week 3: Conversion Gateway Activation</h4>
+                                    <p class="text-xs text-slate-300 mt-1">Introduce premium case summaries, clear lead magnets, and direct CTA prompts to safely turn casual readers into premium prospects.</p>
+                                </div>
+                                <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', borderLeft: '3px solid var(--accent-emerald)' }}>
+                                    <h4 class="text-xs font-bold text-emerald-400 uppercase">📅 Week 4: Retrospective Scaling & Loop Optimization</h4>
+                                    <p class="text-xs text-slate-300 mt-1">Analyze metrics parameters logs, identify high-performing pillars, double-down on the winning hooks, and prune out low-engagement styles.</p>
+                                </div>
+                            </div>
+
+                            {/* CLAUDE PROMPT ENGINEERING CARD */}
+                            <div class="claude-card">
+                                <span class="badge badge-amber text-[9px]">Prompt Engineering Card</span>
+                                <h4 class="text-xs font-bold text-amber-400 mt-1">📅 How to Ask Claude to Output a Granular Editorial Calendar</h4>
+                                <div class="prompt-text">
+{brandMode === 'personal'
+? `Act as a senior content manager. Build a detailed 30-day editorial calendar calendar grid for "${brandData.name}" based on the 3 chosen pillars. Map exact daily caption structures, formatting rules, and include an optimization system checklist.`
+: `Build a highly focused conversion-first 30-day social content calendar system block for "${brandData.name}". Focus explicitly on solving our product sector friction challenge: "${brandData.challenge}".`}
+                                </div>
+                            </div>
+
+                            <button onClick={() => setStage('event')} class="btn-primary mt-6">Trigger Market Dynamic Scenario Event</button>
+                        </div>
+                    )}
+
+                    {stage === 'event' && (
+                        <div class="glass-panel">
+                            <span class="badge badge-amber">Step 5: Dynamic Market Event Response</span>
+                            <h2 class="cyber-font text-lg font-bold mb-2">{getRandomEvent().title}</h2>
+                            <p class="text-xs text-slate-400 mb-4 leading-relaxed">{getRandomEvent().scenario}</p>
+
+                            <div class="explainer-box">
+                                <strong>What is this step?</strong> Real marketing strategy means adapting quickly to market changes, sudden viral shifts, crises, or unexpected competitors' moves.<br/>
+                                <strong>Why does it matter?</strong> How you respond under pressure fixes either a permanent brand trust advantage or an operational loss loop.
+                            </div>
+
+                            <div class="flex flex-col gap-3 mt-4">
+                                {getRandomEvent().options.map((opt, idx) => (
+                                    <button key={idx} class="bg-slate-900/60 hover:bg-slate-800 border border-white/5 p-4 rounded-xl text-left text-xs transition-all text-slate-200 cursor-pointer active:scale-[0.99]" onClick={() => {
+                                        setEventChoice(opt);
+                                        setDecisionsLog({
+                                            ...decisionsLog,
+                                            biggestMistake: opt.isBest ? 'Initially focusing on safe administrative setup tasks rather than deploying bold POV insights loops.' : 'Choosing defensive discount/retreat pathways instead of launching transparent validation proofs.'
+                                        });
+                                    }}>
+                                        ➔ {opt.text}
+                                    </button>
+                                ))}
+                            </div>
+
+                            {eventChoice && (
+                                <div style={{ marginTop: '20px', padding: '16px', background: 'rgba(168, 85, 247, 0.05)', border: '1px solid rgba(168, 85, 247, 0.2)', borderRadius: '12px', fontSize: '13px' }}>
+                                    🎯 <strong>Consequences Log Tracker:</strong> {eventChoice.feedback}
+                                </div>
+                            )}
+
+                            <button onClick={() => {
+                                if(!eventChoice) { alert('Please choose an operational pathway to respond to the dynamic scenario change.'); return; }
+                                setStage('report');
+                            }} class="btn-primary mt-6">Generate Final Comprehensive Growth Report</button>
+                        </div>
+                    )}
+
+                    {stage === 'report' && (
+                        <div class="glass-panel">
+                            <span class="badge badge-emerald">Final Stage: Growth Strategy Ledger</span>
+                            <h2 class="cyber-font text-xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400 bg-clip-text text-transparent mb-1 uppercase">Strategic Growth Execution Report</h2>
+                            <p class="text-xs text-slate-400 mb-4 uppercase tracking-widest">Client Identity: {brandData.name} · Space: {brandData.industry}</p>
+
+                            <div class="grid-2" style={{ gap: '16px', marginBottom: '24px' }}>
+                                <div style={{ background: 'rgba(0,0,0,0.15)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                    <h4 class="text-xs font-bold text-blue-400 uppercase mb-1">👥 Audience Understanding Profile</h4>
+                                    <p class="text-xs text-slate-300">{brandData.audience}</p>
+                                </div>
+                                <div style={{ background: 'rgba(0,0,0,0.15)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                    <h4 class="text-xs font-bold text-purple-400 uppercase mb-1">🏁 Platform Distribution Target</h4>
+                                    <p class="text-xs text-slate-300">Primary core focus tracking localized into selected channel architecture loop.</p>
+                                </div>
+                                <div style={{ background: 'rgba(0,0,0,0.15)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', gridColumn: '1 / -1' }}>
+                                    <h4 class="text-xs font-bold text-amber-400 uppercase mb-1">🎯 Selected Core Content Pillars</h4>
+                                    <p class="text-xs text-slate-300">Stabilized messaging framework targeted directly against baseline friction: <strong>{brandData.challenge}</strong></p>
+                                </div>
+                            </div>
+
+                            <hr style={{ borderColor: 'rgba(255,255,255,0.05)', margin: '20px 0' }} />
+
+                            <div class="flex flex-col gap-4">
+                                <div style={{ background: 'rgba(16, 185, 129, 0.03)', padding: '16px', borderRadius: '12px', borderLeft: '3px solid var(--accent-emerald)' }}>
+                                    <h4 class="text-xs font-bold text-emerald-400 uppercase">🌟 Verified Best Strategic Decision</h4>
+                                    <p class="text-xs text-slate-300 mt-1">{decisionsLog.bestDecision}</p>
+                                </div>
+                                <div style={{ background: 'rgba(239, 68, 68, 0.03)', padding: '16px', borderRadius: '12px', borderLeft: '3px solid #ef4444' }}>
+                                    <h4 class="text-xs font-bold text-red-400 uppercase">⚠️ Biggest Pitfall / Risk Overcome</h4>
+                                    <p class="text-xs text-slate-300 mt-1">{decisionsLog.biggestMistake}</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 p-5 rounded-xl bg-slate-950/80 border border-white/5">
+                                <h3 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-3 cyber-font">🧠 3 Invaluable Marketing Lessons Extracted:</h3>
+                                <ul class="text-xs text-slate-300 flex flex-col gap-2.5 list-none pl-1">
+                                    <li>🛡️ <strong>1. Audience Over Tactics:</strong> Never write a single caption hook before fully mapping the psychological objections and friction points of your target profile.</li>
+                                    <li>🔄 <strong>2. Content Pillars Guarantee Longevity:</strong> Sticking to exactly three core pillars prevents brand identity diluting, forcing the market to recognize you as a distinct niche expert.</li>
+                                    <li>⚡ <strong>3. Agility Defines Domination:</strong> When unexpected changes or disruptions happen, transparent case proof summaries outperform defensive panic pricing discounts every single time.</li>
+                                </ul>
+                            </div>
+
+                            <button onClick={() => {
+                                setStage('welcome'); setBrandMode(''); setBrandData({ name:'', industry:'', audience:'', budget:'', competitors:'', challenge:'' });
+                                setSelectedPlatform(''); setPlatformFeedback(''); setSelectedPillars([]); setEventChoice(null);
+                            }} class="btn-primary w-full mt-6">↺ Replay Simulator / Test Alternate Brand Path</button>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
