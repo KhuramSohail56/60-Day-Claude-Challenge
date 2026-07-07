@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="orange">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Integrity Analyzer</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+        /* Theme Configurations */
+        [data-theme="orange"] {
+            --accent: #d97706;
+            --accent-glow: rgba(217, 119, 6, 0.15);
+            --accent-border: rgba(217, 119, 6, 0.4);
+        }
+        [data-theme="cyan"] {
+            --accent: #06b6d4;
+            --accent-glow: rgba(6, 182, 212, 0.15);
+            --accent-border: rgba(6, 182, 212, 0.4);
+        }
+        [data-theme="purple"] {
+            --accent: #a855f7;
+            --accent-glow: rgba(168, 85, 247, 0.15);
+            --accent-border: rgba(168, 85, 247, 0.4);
+        }
+
+        :root {
+            --bg-deep: #05060f;
+            --bg-card: rgba(13, 17, 33, 0.85);
+            --border-subtle: rgba(255, 255, 255, 0.07);
+            --text-title: #f8fafc;
+            --text-body: #cbd5e1;
+            --text-muted: #64748b;
+            --red-alert: #ef4444;
+            --green-safe: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-deep);
+            background-image: radial-gradient(circle at 50% 0%, #111633 0%, #05060f 80%);
+            color: var(--text-body);
+            min-height: 100vh;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .app-container {
+            max-w: 840px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        header {
+            text-align: center;
+            padding: 24px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            position: relative;
+        }
+
+        header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.2rem;
+            color: var(--text-title);
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        header p {
+            font-size: 0.8rem;
+            font-family: 'Space Mono', monospace;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .theme-select-panel {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+
+        .theme-dot {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .theme-dot.active {
+            border-color: var(--text-title);
+            transform: scale(1.15);
+        }
+
+        /* Metrics Display */
+        .telemetry-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            width: 100%;
+        }
+
+        .metric-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            font-family: 'Space Mono', monospace;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .metric-val {
+            font-size: 11px;
+            font-family: 'Space Mono', monospace;
+            color: var(--text-title);
+            font-weight: bold;
+        }
+
+        .metric-wrapper {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .metric-fill {
+            height: 100%;
+            background: var(--accent);
+            width: 50%;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Editorial Cards Framework */
+        .editorial-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-top: 3px solid var(--accent);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .concept-guide {
+            background: rgba(255, 255, 255, 0.01);
+            border-left: 2px solid var(--accent);
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .concept-guide h3 {
+            font-size: 14px;
+            color: var(--text-title);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        .concept-guide p {
+            font-size: 13px;
+            color: var(--text-body);
+            line-height: 1.6;
+        }
+
+        /* Analysis Display Panel */
+        .news-frame {
+            background: rgba(5, 6, 15, 0.5);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+        }
+
+        .news-headline {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            color: var(--text-title);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .news-body {
+            font-size: 14px;
+            color: var(--text-body);
+            line-height: 1.7;
+        }
+
+        .interactive-text {
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+        .highlight-phrase {
+            cursor: pointer;
+            border-bottom: 2px dashed var(--text-muted);
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            display: inline-block;
+            margin: 2px 0;
+        }
+
+        .highlight-phrase:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom-color: var(--text-title);
+        }
+
+        .highlight-phrase.selected {
+            border-bottom-style: solid;
+            border-bottom-color: var(--accent);
+            background: var(--accent-glow);
+            color: var(--text-title);
+        }
+
+        /* Choices Grid Components */
+        .choices-matrix {
+            display: flex;
+            gap: 12px;
+            margin: 16px 0;
+            flex-wrap: wrap;
+        }
+
+        .choice-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-body);
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .choice-btn:hover {
+            border-color: var(--accent-border);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .choice-btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        .action-btn {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--text-title);
+            padding: 14px 28px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: 'Space Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+            margin-top: 16px;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        /* Reveal Presentation Layers */
+        .reveal-section {
+            margin-top: 28px;
+            border-top: 1px dashed var(--border-subtle);
+            padding-top: 24px;
+            display: none;
+            animation: cardSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .reveal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin: 16px 0;
+        }
+
+        .reveal-box {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--border-subtle);
+            padding: 18px;
+            border-radius: 12px;
+        }
+
+        .reveal-box h4 {
+            font-size: 11px;
+            font-family: 'Space Mono', monospace;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        .reveal-box p {
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .dash-score {
+            font-family: 'Cinzel', serif;
+            font-size: 3.8rem;
+            color: var(--accent);
+            text-align: center;
+            margin: 12px 0;
+        }
+
+        @keyframes cardSlide {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- COLOR THEME SWITCH PANEL -->
+        <div class="theme-select-panel">
+            <div class="theme-dot active" style="background: #d97706;" onclick="switchTheme('orange')" id="dot-orange"></div>
+            <div class="theme-dot" style="background: #06b6d4;" onclick="switchTheme('cyan')" id="dot-cyan"></div>
+            <div class="theme-dot" style="background: #a855f7;" onclick="switchTheme('purple')" id="dot-purple"></div>
+        </div>
+
+        <header>
+            <h1>Media Integrity Analyzer</h1>
+            <p>Guided Media Literacy Framework</p>
+        </header>
+
+        <!-- LIVE TELEMETRY LOG DISPLAY -->
+        <section class="telemetry-row">
+            <div class="metric-box">
+                <div class="metric-header">
+                    <span class="metric-label">Headline Accuracy</span>
+                    <span class="metric-val" id="val-headline">100%</span>
+                </div>
+                <div class="metric-wrapper"><div class="metric-fill" id="m-headline" style="width: 100%"></div></div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-header">
+                    <span class="metric-label">Source Reliability</span>
+                    <span class="metric-val" id="val-source">100%</span>
+                </div>
+                <div class="metric-wrapper"><div class="metric-fill" id="m-source" style="width: 100%"></div></div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-header">
+                    <span class="metric-label">Emotional Manipulation</span>
+                    <span class="metric-val" id="val-emotional">0%</span>
+                </div>
+                <div class="metric-wrapper"><div class="metric-fill" id="m-emotional" style="width: 0%"></div></div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-header">
+                    <span class="metric-label">Audience Targeting</span>
+                    <span class="metric-val" id="val-audience">0%</span>
+                </div>
+                <div class="metric-wrapper"><div class="metric-fill" id="m-audience" style="width: 0%"></div></div>
+            </div>
+        </section>
+
+        <!-- CHALLENGE 1: HEADLINE DETECTIVE -->
+        <article class="editorial-card" id="stage-challenge1">
+            <div class="concept-guide">
+                <h3>Challenge 1: Headline Detective</h3>
+                <p><strong>The Concept:</strong> Sensationalism isolates shocking phrases to catch clicks, often decoupling the real core context from the article completely.<br><strong>Why it matters:</strong> Reading only exaggerated headers builds flawed data biases before you even review factual realities.</p>
+            </div>
+
+            <div class="news-frame">
+                <div class="news-headline" id="c1-headline-text"></div>
+                <div class="news-body" id="c1-body-text"></div>
+            </div>
+
+            <h4 class="metric-label" style="margin-bottom: 8px;">Would you click or share this narrative wire?</h4>
+            <div class="choices-matrix" id="c1-click-matrix">
+                <button class="choice-btn" onclick="evaluateC1Click('Yes', this)">Yes, looks urgent</button>
+                <button class="choice-btn" onclick="evaluateC1Click('Maybe', this)">Maybe, out of curiosity</button>
+                <button class="choice-btn" onclick="evaluateC1Click('No', this)">No, looks suspicious</button>
+            </div>
+
+            <h4 class="metric-label" style="margin-bottom: 8px; margin-top: 20px;">Interactive Discovery: Click on fields you suspect are exaggerated:</h4>
+            <div class="interactive-text" id="c1-phrases-box"></div>
+
+            <button class="action-btn" onclick="revealChallenge1()">Analyze Headline Authenticity</button>
+
+            <!-- REVEAL CONTENT PANEL -->
+            <div class="reveal-section" id="c1-reveal">
+                <div class="reveal-grid">
+                    <div class="reveal-box">
+                        <h4>Headline Accuracy Score</h4>
+                        <p style="font-size: 20px; font-weight: bold; color: var(--red-alert);" id="c1-score-lbl"></p>
+                    </div>
+                    <div class="reveal-box">
+                        <h4>Fair Clarified Rewrite</h4>
+                        <p style="font-style: italic; color: var(--green-safe);" id="c1-rewrite-lbl"></p>
+                    </div>
+                </div>
+                <div class="reveal-box" style="margin-top: 12px;">
+                    <h4>Key Takeaway Explanation</h4>
+                    <p id="c1-takeaway-lbl"></p>
+                </div>
+                <button class="action-btn" style="border-color: var(--green-safe);" onclick="transitionToChallenge2()">Advance to Challenge 2</button>
+            </div>
+        </article>
+
+        <!-- CHALLENGE 2: EMOTION DETECTOR -->
+        <article class="editorial-card hidden" id="stage-challenge2">
+            <div class="concept-guide">
+                <h3>Challenge 2: Emotion Detector</h3>
+                <p><strong>The Concept:</strong> Manipulative content bypasses logic and targets emotional vulnerabilities (anger, fear, or outrage) to spark immediate sharing updates.<br><strong>Why it matters:</strong> Algorithmic distribution networks favor outrage, meaning unbiased items require intentional verification steps.</p>
+            </div>
+
+            <div class="news-frame" style="border-left: 3px solid var(--accent);">
+                <div class="news-body" style="font-size: 15px; font-style: italic;" id="c2-post-text"></div>
+            </div>
+
+            <h4 class="metric-label" style="margin-bottom: 8px;">How does this text excerpt alter your emotional state?</h4>
+            <div class="choices-matrix" id="c2-emotion-matrix">
+                <button class="choice-btn" onclick="evaluateC2Emotion('Anger', this)">Anger & Indignation</button>
+                <button class="choice-btn" onclick="evaluateC2Emotion('Fear', this)">Fear & Uncertainty</button>
+                <button class="choice-btn" onclick="evaluateC2Emotion('Neutral', this)">Calm & Indifferent</button>
+            </div>
+
+            <h4 class="metric-label" style="margin-bottom: 8px; margin-top: 20px;">Isolate words weaponized to drive bias:</h4>
+            <div class="interactive-text" id="c2-phrases-box"></div>
+
+            <button class="action-btn" onclick="revealChallenge2()">Examine Emotional Integrity</button>
+
+            <!-- REVEAL 2 CONTENT PANEL -->
+            <div class="reveal-section" id="c2-reveal">
+                <div class="reveal-grid">
+                    <div class="reveal-box">
+                        <h4>Intended Audience & Strategy</h4>
+                        <p id="c2-target-lbl"></p>
+                    </div>
+                    <div class="reveal-box">
+                        <h4>Neutral Factual Rewrite</h4>
+                        <p style="font-style: italic; color: var(--green-safe);" id="c2-rewrite-lbl"></p>
+                    </div>
+                </div>
+                <div class="reveal-box" style="margin-top: 12px;">
+                    <h4>Manipulation Technique Analysis</h4>
+                    <p id="c2-takeaway-lbl"></p>
+                </div>
+                <button class="action-btn" style="border-color: var(--green-safe);" onclick="transitionToDashboard()">Generate Final Integrity Scorecard</button>
+            </div>
+        </article>
+
+        <!-- FINAL MEDIA INTEGRITY DASHBOARD -->
+        <main class="editorial-card hidden" id="stage-dashboard">
+            <h2 class="cyber-font" style="text-align: center; font-size: 1.4rem; letter-spacing: 1px;">Media Integrity Registry Analysis</h2>
+            
+            <div class="dash-score" id="dash-score-display">0 / 100</div>
+            <p class="metric-label" style="text-align: center; margin-bottom: 24px;">Evaluated Framework Index: Critical Literacy Quotient</p>
+
+            <div class="reveal-grid">
+                <div class="reveal-box">
+                    <h4>Biggest Red Flag Identified</h4>
+                    <p id="dash-flag-lbl"></p>
+                </div>
+                <div class="reveal-box">
+                    <h4>Core Lesson Acquired</h4>
+                    <p>Dynamic emotional amplification indicates weaponized narrative framing rather than objective delivery loops.</p>
+                </div>
+            </div>
+
+            <div class="reveal-box" style="margin-top: 16px; background: rgba(255, 255, 255, 0.01);">
+                <h4>⚙️ Three Practical Media Literacy Habits</h4>
+                <p style="margin-top: 8px; font-size: 13px; line-height: 1.8; color: var(--text-body);">
+                    • <strong>1. Context Neutralization:</strong> Strip away loaded adjectives ("corrupt", "secretive") to isolate the core underlying verifiable action items.<br>
+                    • <strong>2. Outrage Validation Circuits:</strong> When an article triggers rapid indignation, pause for a moment to evaluate the publisher's monetization/traffic incentives.<br>
+                    • <strong>3. Verify Primary Repositories:</strong> Trace scientific assertions directly back to original peer-reviewed source documentation rather than aggregated social headlines.
+                </p>
+            </div>
+
+            <button class="action-btn" style="border-color: var(--accent);" onclick="relaunchSimulationEngine()">↺ Replay with New Scenarios</button>
+        </main>
+
+    </div>
+
+    <script>
+        // Randomized Scenario Banks for Unlimited Replayability
+        const HEADLINE_SCENARIOS = [
+            {
+                headline: "COMMON ENERGY CONVERSION UTILITY EMITS SILENT TOXIC CLOUD ACROSS MAJOR URBAN CENTERS",
+                body: "A technical documentation tracking summary from an unverified regional coalition highlights that household refrigeration units release structural heat signatures during intensive continuous compressor cycles. Although no clinical health implications match these data lines, online discussion feeds are demanding aggressive policy bans.",
+                phrases: ["SILENT TOXIC CLOUD", "EMITS SILENT TOXIC", "AGGRESSIVE POLICY BANS"],
+                score: "30%",
+                rewrite: "Refrigeration Compressor Units Generate Expected Heat Outputs During Normal Performance Intervals",
+                takeaway: "This wire leverages alarmist ecosystem imagery ('Toxic Cloud') to make common household thermodynamics look like a structural disaster, aiming to capture clicks from environmentally anxious cohorts."
+            },
+            {
+                headline: "CRITICAL NEW FINANCIAL ADVISORY REPORT WARNS SAVINGS VALUES WILL BE WIPED OUT TOMORROW",
+                body: "A boutique financial strategy newsletter indicates that baseline inflationary pressure will cause minor purchasing power refactoring adjustments on fixed fiat cash deposits over the current fiscal decade. While market returns show typical volatility distributions, video network headlines are advising immediate cash liquidations.",
+                phrases: ["WIPED OUT TOMORROW", "CRITICAL NEW FINANCIAL ADVISORY", "IMMEDIATE CASH LIQUIDATIONS"],
+                score: "20%",
+                rewrite: "Long-Term Monetary Volatility Gradually Moderates Fixed Cash Purchasing Power Assets over a Decade",
+                takeaway: "The headline converts a standard macroeconomic adjustment cycle into an immediate overnight crisis, weaponizing financial panic to collect fast newsletter traffic signups."
+            }
+        ];
+
+        const EMOTION_SCENARIOS = [
+            {
+                post: "This corrupt public transport update is a calculated sabotage project built to intentionally line the pockets of corporate lobbyists while hardworking local citizens lose their jobs and freeze on empty train platforms!",
+                phrases: ["corrupt public transport", "calculated sabotage project", "intentionally line the pockets"],
+                target: "Daily rail commuters and taxpayer cohorts vulnerable to governance friction profiles.",
+                rewrite: "The municipal transit agency revised its operational schedule layout to accommodate track maintenance requirements.",
+                takeaway: "Polarization Framework: Uses adversarial profiling models ('corrupt lobbyists' vs. 'hardworking citizens') to bypass data checking and provoke instant political outrage loops."
+            },
+            {
+                post: "Secretive laboratory testing centers are quietly putting hazardous artificial chemical compounds directly into our child development resources, blindingly prioritizing corporate profit targets over human lives!",
+                phrases: ["Secretive laboratory testing", "hazardous artificial chemical", "quietly putting"],
+                target: "Parents and family-centric cohorts concerned with health and protective tracking safety channels.",
+                rewrite: "Manufacturing groups standardized safe plastic stabilizer parameters in compliance with safety standards.",
+                takeaway: "Conspiracy Amplification: Weaponizes fear using invisible threat descriptors ('Secretive testing', 'quietly putting') to drive sharing metrics across community parenting forums."
+            }
+        ];
+
+        let stateMemory = {
+            activeHeadlineIndex: 0,
+            activeEmotionIndex: 0,
+            c1ClickSelected: '',
+            c2EmotionSelected: '',
+            currentTheme: 'orange'
+        };
+
+        // Theme Configuration Switcher
+        function switchTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            stateMemory.currentTheme = theme;
+            document.querySelectorAll('.theme-dot').forEach(d => d.classList.remove('active'));
+            document.getElementById(`dot-${theme}`).classList.add('active');
+        }
+
+        // Initialize Randomized Scenario Parameters
+        function bootScenarios() {
+            stateMemory.activeHeadlineIndex = Math.floor(Math.random() * HEADLINE_SCENARIOS.length);
+            stateMemory.activeEmotionIndex = Math.floor(Math.random() * EMOTION_SCENARIOS.length);
+
+            const hData = HEADLINE_SCENARIOS[stateMemory.activeHeadlineIndex];
+            document.getElementById('c1-headline-text').textContent = hData.headline;
+            document.getElementById('c1-body-text').textContent = hData.body;
+
+            // Generate interactive interactive text boxes components
+            const pBox = document.getElementById('c1-phrases-box');
+            pBox.innerHTML = '';
+            hData.phrases.forEach(phrase => {
+                const sp = document.createElement('span');
+                sp.className = "highlight-phrase";
+                sp.textContent = phrase;
+                sp.onclick = () => sp.classList.toggle('selected');
+                pBox.appendChild(sp);
+                pBox.appendChild(document.createTextNode('  '));
+            });
+
+            const eData = EMOTION_SCENARIOS[stateMemory.activeEmotionIndex];
+            document.getElementById('c2-post-text').textContent = `"${eData.post}"`;
+
+            const pBox2 = document.getElementById('c2-phrases-box');
+            pBox2.innerHTML = '';
+            eData.phrases.forEach(phrase => {
+                const sp = document.createElement('span');
+                sp.className = "highlight-phrase";
+                sp.textContent = phrase;
+                sp.onclick = () => sp.classList.toggle('selected');
+                pBox2.appendChild(sp);
+                pBox2.appendChild(document.createTextNode('  '));
+            });
+        }
+
+        // Update Sync Metrics Telemetry Bar Displays
+        function updateMetricUI(id, val) {
+            document.getElementById(`m-${id}`).style.width = `${val}%`;
+            document.getElementById(`val-${id}`).textContent = `${val}%`;
+        }
+
+        // Challenge 1 Event Handlers
+        function evaluateC1Click(val, el) {
+            stateMemory.c1ClickSelected = val;
+            const matrix = document.getElementById('c1-click-matrix');
+            matrix.querySelectorAll('.choice-btn').forEach(btn => btn.classList.remove('active'));
+            el.classList.add('active');
+
+            if(val === 'No') {
+                updateMetricUI('headline', 90);
+                updateMetricUI('source', 85);
+            } else if(val === 'Maybe') {
+                updateMetricUI('headline', 50);
+                updateMetricUI('source', 55);
+            } else {
+                updateMetricUI('headline', 20);
+                updateMetricUI('source', 30);
+            }
+        }
+
+        function revealChallenge1() {
+            if(!stateMemory.c1ClickSelected) {
+                alert("Please declare your initial click reaction to analyze parameters.");
+                return;
+            }
+            const data = HEADLINE_SCENARIOS[stateMemory.activeHeadlineIndex];
+            document.getElementById('c1-score-lbl').textContent = `${data.score} / Critical Distortion`;
+            document.getElementById('c1-rewrite-lbl').textContent = data.rewrite;
+            document.getElementById('c1-takeaway-lbl').textContent = data.takeaway;
+
+            document.getElementById('c1-reveal').style.display = "block";
+        }
+
+        function transitionToChallenge2() {
+            document.getElementById('stage-challenge1').classList.add('hidden');
+            document.getElementById('stage-challenge2').classList.remove('hidden');
+
+            // Set initial stage baseline telemetry metrics updates
+            updateMetricUI('emotional', 80);
+            updateMetricUI('audience', 75);
+        }
+
+        // Challenge 2 Event Handlers
+        function evaluateC2Emotion(val, el) {
+            stateMemory.c2EmotionSelected = val;
+            const matrix = document.getElementById('c2-emotion-matrix');
+            matrix.querySelectorAll('.choice-btn').forEach(btn => btn.classList.remove('active'));
+            el.classList.add('active');
+
+            if(val === 'Neutral') {
+                updateMetricUI('emotional', 15);
+                updateMetricUI('audience', 30);
+            } else {
+                updateMetricUI('emotional', 85);
+                updateMetricUI('audience', 90);
+            }
+        }
+
+        function revealChallenge2() {
+            if(!stateMemory.c2EmotionSelected) {
+                alert("Isolate the target emotional response to generate evaluation loops.");
+                return;
+            }
+            const data = EMOTION_SCENARIOS[stateMemory.activeEmotionIndex];
+            document.getElementById('c2-target-lbl').textContent = data.target;
+            document.getElementById('c2-rewrite-lbl').textContent = data.rewrite;
+            document.getElementById('c2-takeaway-lbl').textContent = data.takeaway;
+
+            document.getElementById('c2-reveal').style.display = "block";
+        }
+
+        // Generate Dashboard Final Layout Metrics Matrix
+        function transitionToDashboard() {
+            document.getElementById('stage-challenge2').classList.add('hidden');
+            document.getElementById('stage-dashboard').classList.remove('hidden');
+
+            let runningScore = 40;
+            if (stateMemory.c1ClickSelected === 'No') runningScore += 30;
+            if (stateMemory.c2EmotionSelection === 'Neutral') runningScore += 25;
+
+            document.getElementById('dash-score-display').textContent = `${runningScore} / 100`;
+            
+            const flagBox = document.getElementById('dash-flag-lbl');
+            if (runningScore < 70) {
+                flagBox.textContent = "Susceptible to sensationalized click thresholds. Initial cognitive confirmation filters demand tighter regulation safeguards.";
+            } else {
+                flagBox.textContent = "High objectivity resistance confirmed. Bypasses loaded messaging framing cleanly across data interfaces.";
+            }
+        }
+
+        // Replay/Relaunch Loop Purges
+        function relaunchSimulationEngine() {
+            stateMemory.c1ClickSelected = '';
+            stateMemory.c2EmotionSelected = '';
+
+            document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('c1-reveal').style.display = "none";
+            document.getElementById('c2-reveal').style.display = "none";
+
+            // Roll back status display parameters tracking meters
+            updateMetricUI('headline', 100);
+            updateMetricUI('source', 100);
+            updateMetricUI('emotional', 0);
+            updateMetricUI('audience', 0);
+
+            bootScenarios();
+
+            document.getElementById('stage-dashboard').classList.add('hidden');
+            document.getElementById('stage-challenge1').classList.remove('hidden');
+        }
+
+        window.onload = function() {
+            switchTheme('orange');
+            bootScenarios();
+        };
+    </script>
+</body>
+</html>
