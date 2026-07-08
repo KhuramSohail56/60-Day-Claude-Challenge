@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operation Lifeline: Supply Chain Crisis Lab</title>
+    <!-- React and Babel CDNs -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-base: radial-gradient(circle at 50% 0%, #0d1527 0%, #030712 80%);
+            --panel-bg: rgba(17, 24, 39, 0.8);
+            --border-glow: rgba(59, 130, 246, 0.2);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --clr-blue: #3b82f6;
+            --clr-purple: #8b5cf6;
+            --clr-emerald: #10b981;
+            --clr-rose: #f43f5e;
+            --clr-amber: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .wrapper {
+            max-w: 960px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .cyber-title {
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .glass-card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .header-widget {
+            text-align: center;
+            border-bottom: 2px solid var(--clr-blue);
+            padding: 24px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-glow {
+            background: linear-gradient(90deg, #60a5fa, #a78bfa, #34d399);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Top Bar Badges */
+        .challenge-badge-container {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .top-badge {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            font-weight: 900;
+            padding: 4px 12px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .badge-day {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.1);
+        }
+
+        .badge-challenge {
+            background: rgba(139, 92, 246, 0.15);
+            color: #c084fc;
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.1);
+        }
+
+        /* Metrics Progress Display */
+        .metrics-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+        }
+
+        .metric-tile {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+        .metric-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--clr-blue);
+            transition: width 0.5s ease;
+        }
+
+        /* Layout Frameworks */
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+
+        /* Instructional Explainer Elements */
+        .why-box {
+            background: rgba(59, 130, 246, 0.04);
+            border-left: 3px solid var(--clr-blue);
+            padding: 12px 16px;
+            border-radius: 0 12px 12px 0;
+            font-size: 13px;
+            color: var(--text-body);
+            margin: 12px 0;
+            line-height: 1.5;
+        }
+
+        /* Control Input Systems */
+        .action-btn {
+            background: linear-gradient(90deg, var(--clr-blue), var(--clr-purple));
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 28px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
+        }
+
+        .interactive-card {
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            padding: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .interactive-card:hover {
+            border-color: rgba(59, 130, 246, 0.4);
+            background: rgba(59, 130, 246, 0.02);
+        }
+
+        .interactive-card.selected {
+            border-color: var(--clr-emerald);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+        .badge-rose { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
+        .badge-blue { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .badge-amber { background: rgba(245, 158, 11, 0.15); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.3); }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // Fictional Base Banks
+        const INDUSTRIES = [
+            { name: "AeroDrive Automotive", industry: "Automotive Parts", revenue: "$450M", factories: 4, warehouses: 8, suppliers: 24, inventoryDays: 14, leadTime: "35 Days", countries: "Germany, Mexico, US" },
+            { name: "MediPulse Tech", industry: "Medical Devices", revenue: "$280M", factories: 2, warehouses: 5, suppliers: 12, inventoryDays: 30, leadTime: "60 Days", countries: "Japan, Ireland, Singapore" },
+            { name: "ElectroCore Systems", industry: "Consumer Electronics", revenue: "$620M", factories: 6, warehouses: 12, suppliers: 45, inventoryDays: 8, leadTime: "21 Days", countries: "China, Vietnam, South Korea" }
+        ];
+
+        const CRISES = [
+            { type: "Port Strike lockout", title: "🚢 Global Maritime Port Blockade", urgency: "Critical", impact: "High Delivery Lag", desc: "Major transport hubs lock down workers. Outbound marine vessels are marooned indefinitely off the coastline, cutting off shipping container access routes." },
+            { type: "Factory Fire hazard", title: "🔥 Secondary Tier-1 Manufacturing Facility Fire", urgency: "High", impact: "Severe Component Shortage", desc: "A key sub-component cleanroom facility experiences severe system failure, destroying specialized custom equipment sets instantly." },
+            { type: "Cyberattack hijack", title: "🔒 Enterprise Ransomware Network Hijack", urgency: "Critical", impact: "Complete Visibility Blackout", desc: "An aggressive tracking ledger injection locks distribution inventory visibility controls, halting global warehouse dispatch orders." }
+        ];
+
+        const WAR_ROOM_OPTIONS = [
+            { id: 1, text: "Activate Alternate Air Freight Lanes", cost: 30, inv: -10, delivery: 40, sat: 20, desc: "Bypass maritime bottlenecks completely by securing commercial cargo air volume blocks." },
+            { id: 2, text: "Execute Safety Stock Buffers Integration", cost: 10, inv: -40, delivery: 5, sat: 15, desc: "Draw down stockpiled local sub-assemblies to feed factory processing assembly lines." },
+            { id: 3, text: "Onshore Secondary Micro-Suppliers Team", cost: 25, inv: 20, delivery: -10, sat: 5, desc: "Contract nearshore component facilities immediately to bypass international container pipelines." },
+            { id: 4, text: "Implement Demand-Rationing Optimization", cost: -5, inv: 5, delivery: -15, sat: -25, desc: "Restrict ordering options to Tier-1 wholesale clients, letting smaller consumer accounts drop." },
+            { id: 5, text: "Establish Direct Carrier Expedited Premium Contracts", cost: 35, inv: 0, delivery: 30, sat: 25, desc: "Pay double-premium freight margins to step to the front of dispatch lines." }
+        ];
+
+        const NEGOTIATION_ROUNDS = [
+            { text: "Round 1: Initial Volume Allocation Commitment", choices: [
+                { text: "Guarantee 100% long-term volume lock in exchange for prioritized delivery.", trust: 20, price: 10, lead: -15 },
+                { text: "Demand spot-market allocation pricing without committing to future cycles.", trust: -15, price: 25, lead: 5 }
+            ]},
+            { text: "Round 2: Payment Gateway Refactoring Terms", choices: [
+                { text: "Offer 30-day early cash advancements to support vendor operational liquidity.", trust: 25, price: -5, lead: -10 },
+                { text: "Enforce net-90 payment terms to protect internal working capital ratios.", trust: -20, price: 5, lead: 15 }
+            ]},
+            { text: "Round 3: Dispute Resolution Liability Splitting", choices: [
+                { text: "Accept shared financial accountability for container transit delays.", trust: 15, price: 5, lead: -5 },
+                { text: "Demand total financial penalty enforcement for any missed shipment slots.", trust: -25, price: -10, lead: 20 }
+            ]},
+            { text: "Round 4: Proprietary Blueprint Integration Channel", choices: [
+                { text: "Open real-time internal software system logs with the supplier team.", trust: 30, price: -10, lead: -10 },
+                { text: "Restrict access to clean PDF instruction manuals sent via email chains.", trust: -10, price: 0, lead: 5 }
+            ]}
+        ];
+
+        const BOARDROOM_QUESTIONS = [
+            { q: "During an active inventory visibility blackout, your customer support center is flooded with tracking complaints. What strategy do you deploy?", options: [
+                { text: "Issue standard, scripted auto-responses while your data teams audit logs.", score: 10 },
+                { text: "Proactively communicate data limitations, sharing expected resolution milestones transparently.", score: 25 }
+            ]},
+            { q: "A nearshore component facility offers to fill supply gaps but asks you to sign a multi-year premium container margin clause. How do you respond?", options: [
+                { text: "Sign immediately to secure customer satisfaction levels regardless of financial impact.", score: 15 },
+                { text: "Negotiate a mid-term volume bridge contract, keeping long-term options flexible.", score: 25 }
+            ]}
+        ];
+
+        const AI_INVESTMENTS = [
+            { id: "predict", title: "Predictive Demand Forecasting Systems", impact: "Reduces buffer costs by mapping real-world retail purchasing indicators." },
+            { id: "inventory", title: "Multi-Echelon Inventory Optimization Nodes", impact: "Balances raw stock safety caps dynamically across multiple warehouses." },
+            { id: "risk", title: "Autonomous Supplier Risk Tracking Monitors", impact: "Scans weather and geopolitical parameters logs to flag sub-tier threats early." }
+        ];
+
+        function App() {
+            const [stage, setStage] = useState('welcome'); // welcome, warroom, negotiation, boardroom, ai, dashboard
+            const [company, setCompany] = useState(null);
+            const [crisis, setCrisis] = useState(null);
+
+            // Simulation Metrics Telemetry States
+            const [metrics, setMetrics] = useState({ cost: 40, inventory: 60, profit: 70, delivery: 50, satisfaction: 55 });
+            const [selectedActions, setSelectedActions] = useState([]);
+            const [negotiationStep, setNegotiationStep] = useState(0);
+            const [negotiationScores, setNegotiationScores] = useState({ trust: 50, price: 50, leadTime: 50 });
+            const [boardroomStep, setBoardroomStep] = useState(0);
+            const [leadershipScore, setLeadershipScore] = useState(0);
+            const [selectedAI, setSelectedAI] = useState([]);
+
+            const startSimulation = () => {
+                const randCompany = INDUSTRIES[Math.floor(Math.random() * INDUSTRIES.length)];
+                const randCrisis = CRISES[Math.floor(Math.random() * CRISES.length)];
+                setCompany(randCompany);
+                setCrisis(randCrisis);
+                setStage('warroom');
+            };
+
+            const toggleAction = (act) => {
+                if (selectedActions.some(a => a.id === act.id)) {
+                    setSelectedActions(selectedActions.filter(a => a.id !== act.id));
+                } else if (selectedActions.length < 3) {
+                    setSelectedActions([...selectedActions, act]);
+                }
+            };
+
+            const processWarRoom = () => {
+                if (selectedActions.length !== 3) {
+                    alert("Please evaluate and select exactly three operational mitigation tracks.");
+                    return;
+                }
+                let c = metrics.cost; let i = metrics.inventory; let p = metrics.profit; let d = metrics.delivery; let s = metrics.satisfaction;
+                selectedActions.forEach(a => {
+                    c += a.cost; i += a.inv; d += a.delivery; s += a.sat;
+                });
+                p = Math.max(10, p - (c - 40) * 0.4);
+                setMetrics({
+                    cost: Math.min(100, Math.max(10, c)),
+                    inventory: Math.min(100, Math.max(10, i)),
+                    profit: Math.min(100, Math.max(10, p)),
+                    delivery: Math.min(100, Math.max(10, d)),
+                    satisfaction: Math.min(100, Math.max(10, s))
+                });
+                setStage('negotiation');
+            };
+
+            const handleNegotiationChoice = (ch) => {
+                setNegotiationScores({
+                    trust: Math.min(100, Math.max(0, negotiationScores.trust + ch.trust)),
+                    price: Math.min(100, Math.max(0, negotiationScores.price + ch.price)),
+                    leadTime: Math.min(100, Math.max(0, negotiationScores.leadTime + ch.lead))
+                });
+                if (negotiationStep + 1 < NEGOTIATION_ROUNDS.length) {
+                    setNegotiationStep(negotiationStep + 1);
+                } else {
+                    setStage('boardroom');
+                }
+            };
+
+            const handleBoardroomChoice = (score) => {
+                setLeadershipScore(leadershipScore + score);
+                if (boardroomStep + 1 < BOARDROOM_QUESTIONS.length) {
+                    setBoardroomStep(boardroomStep + 1);
+                } else {
+                    setStage('ai');
+                }
+            };
+
+            const toggleAI = (id) => {
+                if (selectedAI.includes(id)) {
+                    setSelectedAI(selectedAI.filter(x => x !== id));
+                } else if (selectedAI.length < 2) {
+                    setSelectedAI([...selectedAI, id]);
+                }
+            };
+
+            const calculateFinalScore = () => {
+                const negPerformance = Math.floor((negotiationScores.trust + (100 - negotiationScores.price) + (100 - negotiationScores.leadTime)) / 3);
+                const leadPerf = Math.floor((leadershipScore / 50) * 100);
+                const overall = Math.floor((metrics.satisfaction + metrics.profit + negPerformance + leadPerf) / 4);
+                return { overall, negPerformance, leadPerf };
+            };
+
+            const resetEngine = () => {
+                setStage('welcome');
+                setCompany(null); setCrisis(null);
+                setMetrics({ cost: 40, inventory: 60, profit: 70, delivery: 50, satisfaction: 55 });
+                setSelectedActions([]); setNegotiationStep(0);
+                setNegotiationScores({ trust: 50, price: 50, leadTime: 50 });
+                setBoardroomStep(0); setLeadershipScore(0); setSelectedAI([]);
+            };
+
+            return (
+                <div class="wrapper">
+                    {/* GLOBAL STATUS HUD BAR WITH EXPERT CHALLENGE BADGES */}
+                    <div class="glass-card header-widget">
+                        <div class="challenge-badge-container">
+                            <span class="top-badge badge-day">DAY 29 TASK</span>
+                            <span class="top-badge badge-challenge">CLAUDE AI CHALLENGE</span>
+                        </div>
+                        <h1 class="cyber-title header-glow text-xl">Operation Lifeline</h1>
+                        <p class="text-[11px] font-bold tracking-widest text-slate-400 mt-1 uppercase">Supply Chain Crisis Lab Simulation</p>
+                    </div>
+
+                    {stage === 'welcome' && (
+                        <div class="glass-card text-center">
+                            <span class="badge badge-blue">Executive Overview</span>
+                            <h2 class="cyber-title text-lg font-bold mb-3">Navigate International Supply Disruption Logs</h2>
+                            <p class="text-sm text-slate-400 leading-relaxed mb-4">
+                                Welcome, Supply Chain Director. In this simulation workshop, you will navigate an unexpected global disruption matrix. You must stabilize inventory days, balance supplier relationships, and protect your company's revenue margins.
+                            </p>
+                            <div class="why-box">
+                                <strong>Why this matters:</strong> Modern logistics networks span continents. A localized delay at a shipping lane or tier-1 factory causes cascading failures downstream if safety margins are mismanaged.
+                            </div>
+                            <button onClick={startSimulation} class="action-btn mt-4">Start Crisis Simulation</button>
+                        </div>
+                    )}
+
+                    {stage !== 'welcome' && (
+                        <section class="metrics-panel">
+                            <div class="metric-tile">
+                                <div class="metric-meta"><span>Cost Strain</span><span>{Math.floor(metrics.cost)}%</span></div>
+                                <div class="progress-container"><div class="progress-bar" style={{ width: `${metrics.cost}%`, background: 'var(--clr-rose)' }}></div></div>
+                            </div>
+                            <div class="metric-tile">
+                                <div class="metric-meta"><span>Inventory Load</span><span>{Math.floor(metrics.inventory)}%</span></div>
+                                <div class="progress-container"><div class="progress-bar" style={{ width: `${metrics.inventory}%`, background: 'var(--clr-amber)' }}></div></div>
+                            </div>
+                            <div class="metric-tile">
+                                <div class="metric-meta"><span>Profit Level</span><span>{Math.floor(metrics.profit)}%</span></div>
+                                <div class="progress-container"><div class="progress-bar" style={{ width: `${metrics.profit}%`, background: 'var(--clr-emerald)' }}></div></div>
+                            </div>
+                            <div class="metric-tile">
+                                <div class="metric-meta"><span>Customer Sat</span><span>{Math.floor(metrics.satisfaction)}%</span></div>
+                                <div class="progress-container"><div class="progress-bar" style={{ width: `${metrics.satisfaction}%`, background: 'var(--clr-blue)' }}></div></div>
+                            </div>
+                        </section>
+                    )}
+
+                    {stage === 'warroom' && (
+                        <div class="glass-card">
+                            <span class="badge badge-rose">Phase 1: Incident Assessment</span>
+                            <h2 class="cyber-title text-base font-bold mb-2">Threat Vector: {crisis.title}</h2>
+                            <p class="text-xs text-slate-400 italic mb-4">{crisis.desc}</p>
+
+                            <div class="grid-3 mb-4">
+                                <div class="interactive-card" style={{ cursor: 'default' }}>
+                                    <div class="text-[10px] uppercase font-bold text-slate-400">Assigned Asset</div>
+                                    <div class="text-sm font-bold text-blue-400 mt-1">{company.name}</div>
+                                </div>
+                                <div class="interactive-card" style={{ cursor: 'default' }}>
+                                    <div class="text-[10px] uppercase font-bold text-slate-400">Operational Track</div>
+                                    <div class="text-sm font-bold text-purple-400 mt-1">{company.industry} ({company.revenue})</div>
+                                </div>
+                                <div class="interactive-card" style={{ cursor: 'default' }}>
+                                    <div class="text-[10px] uppercase font-bold text-slate-400">Current Lead Time</div>
+                                    <div class="text-sm font-bold text-amber-400 mt-1">{company.leadTime}</div>
+                                </div>
+                            </div>
+
+                            <div class="why-box">
+                                <strong>Your Directive:</strong> Review the War Room response paths. Select exactly <strong>THREE</strong> mitigation strategies to counter the immediate disruption trends.
+                            </div>
+
+                            <div class="flex flex-col gap-2">
+                                {WAR_ROOM_OPTIONS.map(opt => {
+                                    const isSelected = selectedActions.some(a => a.id === opt.id);
+                                    return (
+                                        <div key={opt.id} class={`interactive-card ${isSelected ? 'selected' : ''}`} onClick={() => toggleAction(opt)}>
+                                            <div class="text-xs font-bold text-slate-200">{opt.text}</div>
+                                            <p class="text-[11px] text-slate-400 mt-1">{opt.desc}</p>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            <button onClick={processWarRoom} class="action-btn w-full mt-6">Lock Mitigation Measures</button>
+                        </div>
+                    )}
+
+                    {stage === 'negotiation' && (
+                        <div class="glass-card">
+                            <span class="badge badge-amber">Phase 2: Vendor Re-alignment</span>
+                            <h2 class="cyber-title text-base font-bold mb-2">{NEGOTIATION_ROUNDS[negotiationStep].text}</h2>
+                            
+                            <div class="why-box">
+                                <strong>Strategic Context:</strong> Securing secondary allocation capacity requires vendor concessions. Aggressive bargaining protects profit metrics but runs the risk of degrading critical partnership trust values.
+                            </div>
+
+                            <div class="grid-2 mt-4 mb-4">
+                                <div class="metric-tile text-center">
+                                    <span class="text-[10px] uppercase font-bold text-slate-400">Supplier Trust Meter</span>
+                                    <div class="text-base font-black text-emerald-400 mt-1">{negotiationScores.trust}%</div>
+                                </div>
+                                <div class="metric-tile text-center">
+                                    <span class="text-[10px] uppercase font-bold text-slate-400">Contract Cost Index</span>
+                                    <div class="text-base font-black text-rose-400 mt-1">{negotiationScores.price}%</div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col gap-2">
+                                {NEGOTIATION_ROUNDS[negotiationStep].choices.map((ch, idx) => (
+                                    <button key={idx} class="action-btn" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-glow)', textAlign: 'left', textTransform: 'none', fontFamily: 'inherit' }} onClick={() => handleNegotiationChoice(ch)}>
+                                        ➔ {ch.text}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {stage === 'boardroom' && (
+                        <div class="glass-card">
+                            <span class="badge badge-blue">Phase 3: Executive Leadership</span>
+                            <h2 class="cyber-title text-base font-bold mb-3">CEO Briefing: Scenario Checkpoint</h2>
+                            
+                            <div class="why-box">
+                                <strong>Scenario Framework:</strong> Corporate governance during crisis environments tests communication protocols and short-term capital deployment tradeoffs.
+                            </div>
+
+                            <p class="text-xs text-slate-300 font-semibold mb-4">{BOARDROOM_QUESTIONS[boardroomStep].q}</p>
+
+                            <div class="flex flex-col gap-3">
+                                {BOARDROOM_QUESTIONS[boardroomStep].options.map((opt, idx) => (
+                                    <button key={idx} class="action-btn" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-glow)', textAlign: 'left', textTransform: 'none', fontFamily: 'inherit' }} onClick={() => handleBoardroomChoice(opt.score)}>
+                                        💡 {opt.text}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {stage === 'ai' && (
+                        <div class="glass-card">
+                            <span class="badge badge-purple">Phase 4: Digital Transformation</span>
+                            <h2 class="cyber-title text-base font-bold mb-2">Targeted Smart System Investments</h2>
+                            
+                            <div class="why-box">
+                                <strong>Why this matters:</strong> Long-term supply chain resilience depends on automation data infrastructure, which eliminates manual tracking blind spots.
+                            </div>
+
+                            <p class="text-xs text-slate-400 uppercase tracking-wider mb-3">Select exactly <strong>TWO</strong> automation modules to deploy:</p>
+                            
+                            <div class="flex flex-col gap-2">
+                                {AI_INVESTMENTS.map(ai => {
+                                    const isSelected = selectedAI.includes(ai.id);
+                                    return (
+                                        <div key={ai.id} class={`interactive-card ${isSelected ? 'selected' : ''}`} onClick={() => toggleAI(ai.id)}>
+                                            <div class="text-xs font-bold text-slate-200">{ai.title}</div>
+                                            <p class="text-[11px] text-slate-400 mt-1">{ai.impact}</p>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            <button onClick={() => {
+                                if(selectedAI.length !== 2) { alert('Please select exactly two long-term digital architecture modules.'); return; }
+                                setStage('dashboard');
+                            }} class="btn-primary action-btn w-full mt-6">Generate Final Operational Scorecard</button>
+                        </div>
+                    )}
+
+                    {stage === 'dashboard' && (() => {
+                        const scoreData = calculateFinalScore();
+                        return (
+                            <div class="glass-card">
+                                <span class="badge badge-emerald">Final Report Ledger</span>
+                                <h2 class="cyber-title text-lg font-bold text-center header-glow mb-1">Operational Performance Review</h2>
+                                <p class="text-[10px] tracking-widest uppercase text-center text-slate-400 mb-6">Asset Under Review: {company.name}</p>
+
+                                <div class="text-center mb-6">
+                                    <div class="text-4xl font-black cyber-title text-blue-400">{scoreData.overall} / 100</div>
+                                    <span class="text-[10px] text-slate-500 uppercase font-bold">Overall Supply Chain Resilience Index</span>
+                                </div>
+
+                                <div class="grid-2 gap-4 mb-6">
+                                    <div class="metric-tile">
+                                        <h4 class="text-xs font-bold text-purple-400 uppercase mb-1">💼 Boardroom Strategy Index</h4>
+                                        <p class="text-xs text-slate-300">Executive decision score reached: <strong>{scoreData.leadPerf}%</strong> alignment accuracy.</p>
+                                    </div>
+                                    <div class="metric-tile">
+                                        <h4 class="text-xs font-bold text-amber-400 uppercase mb-1">🤝 Vendor Relationship Alignment</h4>
+                                        <p class="text-xs text-slate-300">Supplier negotiation score tracked at: <strong>{scoreData.negPerformance}%</strong> efficiency.</p>
+                                    </div>
+                                </div>
+
+                                <div class="why-box" style={{ background: 'rgba(16, 185, 129, 0.02)', borderColor: 'var(--clr-emerald)' }}>
+                                    <h4 class="text-xs font-bold text-emerald-400 uppercase mb-1">🧠 Invaluable Logistics Lessons Extracted</h4>
+                                    <ul class="text-xs text-slate-300 list-none mt-2 flex flex-col gap-2">
+                                        <li>🚀 <strong>1. Redundancy Over Single Sourcing:</strong> Maintaining verified sub-tier distribution options eliminates delivery delays during global maritime blockades.</li>
+                                        <li>📊 <strong>2. Information Openness Controls Lead Time:</strong> Opening data access channels with suppliers stabilizes lead times far better than implementing strict Net-90 payment penalties.</li>
+                                    </ul>
+                                </div>
+
+                                <button onClick={resetEngine} class="action-btn w-full mt-6">↺ Deploy Alternate Scenario Test Run</button>
+                            </div>
+                        );
+                    })()}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
