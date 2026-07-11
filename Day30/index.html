@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supply Chain Builder - Immersive High GUI Dashboard</title>
+    <!-- React & Babel CDNs -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+
+        :root {
+            --bg-base: radial-gradient(circle at 50% 20%, #080d1a 0%, #010205 100%);
+            --panel-bg: rgba(6, 11, 25, 0.9);
+            --border-neon: rgba(59, 130, 246, 0.4);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --clr-blue: #2563eb;
+            --clr-purple: #7c3aed;
+            --clr-emerald: #059669;
+            --clr-rose: #dc2626;
+            --clr-amber: #d97706;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 40px 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* Full Screen Screen Maximizer to Neutralize Empty Corners */
+        .wrapper {
+            max-width: 1380px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .cyber-title {
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* High GUI Canvas with Heavy Neon Ambient Shadowing */
+        .glass-card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 2px solid var(--border-neon);
+            border-radius: 24px;
+            padding: 45px;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8), 0 0 40px rgba(59, 130, 246, 0.1);
+            position: relative;
+        }
+
+        /* Active State Switch Animations */
+        .step-slide-enter {
+            animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .header-widget {
+            text-align: center;
+            border-bottom: 3px solid var(--clr-blue);
+            padding: 28px;
+            background: linear-gradient(180deg, rgba(59, 130, 246, 0.1) 0%, transparent 100%);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .header-glow {
+            background: linear-gradient(90deg, #3b82f6, #a855f7, #10b981);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 2.5rem;
+            font-weight: 900;
+        }
+
+        .top-badge {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            font-weight: 900;
+            padding: 6px 16px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+            background: rgba(124, 58, 237, 0.2);
+            color: #c084fc;
+            border: 1px solid rgba(124, 58, 237, 0.5);
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 12px;
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+        }
+
+        /* Real-Time Scaled Telemetry Metrics */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            width: 100%;
+        }
+
+        .metric-tile {
+            background: rgba(10, 15, 30, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.02);
+        }
+
+        .metric-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--text-title);
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--clr-blue);
+            transition: width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-radius: 10px;
+        }
+
+        .grid-2 { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); 
+            gap: 24px; 
+        }
+
+        /* Large Readability Text Blocks */
+        .explain-box {
+            background: rgba(124, 58, 237, 0.06);
+            border-left: 5px solid var(--clr-purple);
+            padding: 24px 28px;
+            border-radius: 0 20px 20px 0;
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 32px;
+            color: #f1f5f9;
+        }
+
+        /* High-GUI Control Action Triggers */
+        .action-btn {
+            background: linear-gradient(90deg, #2563eb, #7c3aed);
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            padding: 20px 40px;
+            font-size: 15px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-family: 'Orbitron', sans-serif;
+            width: 100%;
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(124, 58, 237, 0.6);
+        }
+
+        /* Choice Cards Framework */
+        .choice-card {
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 28px;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .choice-card:hover {
+            border-color: var(--clr-blue);
+            background: rgba(37, 99, 235, 0.05);
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        .choice-card.selected {
+            border-color: var(--clr-emerald);
+            background: rgba(5, 150, 105, 0.08);
+            box-shadow: 0 0 30px rgba(5, 150, 105, 0.25);
+        }
+
+        .choice-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .choice-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .step-indicator {
+            font-size: 13px;
+            color: var(--clr-emerald);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const BUSINESS_PRESETS = [
+            { industry: "EcoTech Electronics", products: "Smartphones & Tablets", countries: "North America, EU", demand: "Extremely High" },
+            { industry: "Nova Garments", products: "Organic Cotton Apparel", countries: "Global", demand: "Seasonal Spikes" },
+            { industry: "BioNutra Labs", products: "Plant-Based Supplements", countries: "Asia-Pacific", demand: "Steady & Growing" }
+        ];
+
+        const DECISION_STEPS = [
+            {
+                key: "suppliers",
+                title: "Supplier Allocation Strategy",
+                what: "Choosing whether you buy parts from a Single Supplier or spread orders across Multiple Suppliers.",
+                why: "A single supplier offers cheaper bulk discounts but represents a massive point of failure if they go out of business. Multiple suppliers cost more to manage but keep operations safe.",
+                options: [
+                    { name: "Single Supplier", cost: -15, speed: 5, risk: 25, sat: -5, sustain: -5, desc: "Lower administrative overhead and high volume discounts, but extreme vulnerability to disruptions." },
+                    { name: "Multiple Suppliers", cost: 15, speed: -5, risk: -20, sat: 5, sustain: 10, desc: "Built-in operational backups. If one source fails, the others absorb the demand burden easily." }
+                ]
+            },
+            {
+                key: "factory",
+                title: "Manufacturing Plant Location",
+                what: "Deciding where your primary assembly plant will be constructed.",
+                why: "Offshore production reduces labor costs significantly but adds long overseas transport times. Nearshore production is expensive but brings your production line right next to your buyers.",
+                options: [
+                    { name: "Offshore Factory", cost: -20, speed: -15, risk: 15, sat: -10, sustain: -10, desc: "Massive labor savings paired with extended global transport delays and customs visibility risks." },
+                    { name: "Nearshore Factory", cost: 20, speed: 20, risk: -15, sat: 15, sustain: 10, desc: "Highly agile distribution capacity, lower carbon footprints, but vastly increased operational overhead." }
+                ]
+            },
+            {
+                key: "warehouse",
+                title: "Warehousing Architecture Strategy",
+                what: "Choosing between one centralized massive inventory hub or decentralized localized micro-hubs.",
+                why: "Centralized systems keep rent and facility management costs exceptionally low. Decentralized regional facilities ensure products are stored physically closer to buyers, unlocking lightning-fast deliveries.",
+                options: [
+                    { name: "Centralized Hub", cost: -10, speed: -10, risk: 10, sat: -5, sustain: -5, desc: "Simplified storage management profiles, but longer regional shipping times to distant customers." },
+                    { name: "Decentralized Micro-Hubs", cost: 20, speed: 25, risk: -10, sat: 20, sustain: 5, desc: "Products are pre-staged near high-demand regions, optimizing local courier dispatch legs." }
+                ]
+            },
+            {
+                key: "transport",
+                title: "Primary Freight Transportation Method",
+                what: "Selecting how goods travel across your fulfillment legs (Sea, Rail, Road, Air).",
+                why: "Sea freight handles bulk scaling efficiently with low costs but moves slowly. Air cargo drops delivery times to hours but carries massive premium pricing and heavy carbon emissions.",
+                options: [
+                    { name: "Sea & Rail Freight", cost: -15, speed: -20, risk: 10, sat: -10, sustain: 20, desc: "Highly economical and carbon-efficient, but highly vulnerable to port congestion blocks." },
+                    { name: "Road & Air Cargo", cost: 30, speed: 30, risk: -15, sat: 25, sustain: -25, desc: "Premium expedited fulfillment framework that keeps shelves stocked but destroys green margins." }
+                ]
+            },
+            {
+                key: "inventory",
+                title: "Fulfillment Inventory Strategy",
+                what: "Setting how much raw safety stock buffer you maintain in storage.",
+                why: "Low Inventory (Just-in-Time) minimizes capital tied up in warehouses but leaves you vulnerable to stockouts. High Inventory keeps customers happy during supply shocks but incurs steep holding costs.",
+                options: [
+                    { name: "Just-In-Time (Low)", cost: -15, speed: 5, risk: 25, sat: -15, sustain: 5, desc: "Zero wasted storage space, but operations freeze if a single supplier shipment is delayed." },
+                    { name: "Safety Stock Buffer (High)", cost: 20, speed: -5, risk: -25, sat: 20, sustain: -5, desc: "Deep operational resilience buffers that survive supply shocks, but ties up working capital." }
+                ]
+            }
+        ];
+
+        function App() {
+            const [stage, setStage] = useState('welcome'); 
+            const [company, setCompany] = useState(null);
+            const [currentStep, setCurrentStep] = useState(0);
+            const [metrics, setMetrics] = useState({ cost: 50, speed: 50, risk: 30, sat: 50, sustain: 50 });
+            const [selectedOption, setSelectedOption] = useState(null);
+            const [history, setHistory] = useState([]);
+            const [animKey, setAnimKey] = useState(0); // For forcing transitions refresh
+
+            const initSimulation = () => {
+                const randomBiz = BUSINESS_PRESETS[Math.floor(Math.random() * BUSINESS_PRESETS.length)];
+                setCompany(randomBiz);
+                setMetrics({ cost: 50, speed: 50, risk: 30, sat: 50, sustain: 50 });
+                setCurrentStep(0);
+                setSelectedOption(null);
+                setHistory([]);
+                setAnimKey(prev => prev + 1);
+                setStage('building');
+            };
+
+            const handleSelectOption = (opt) => {
+                setSelectedOption(opt);
+            };
+
+            const advanceStep = () => {
+                if (!selectedOption) {
+                    alert("Please select a strategic pathway to continue building your infrastructure.");
+                    return;
+                }
+
+                setMetrics(prev => ({
+                    cost: Math.min(100, Math.max(10, prev.cost + selectedOption.cost)),
+                    speed: Math.min(100, Math.max(10, prev.speed + selectedOption.speed)),
+                    risk: Math.min(100, Math.max(10, prev.risk + selectedOption.risk)),
+                    sat: Math.min(100, Math.max(10, prev.sat + selectedOption.sat)),
+                    sustain: Math.min(100, Math.max(10, prev.sustain + selectedOption.sustain))
+                }));
+
+                const newHistory = [...history, { step: DECISION_STEPS[currentStep].title, selected: selectedOption.name }];
+                setHistory(newHistory);
+
+                if (currentStep + 1 < DECISION_STEPS.length) {
+                    setCurrentStep(currentStep + 1);
+                    setSelectedOption(null);
+                    setAnimKey(prev => prev + 1); // Trigger refresh slide state animation
+                } else {
+                    setStage('dashboard');
+                }
+            };
+
+            const evaluateFinalScore = () => {
+                const costScore = 100 - metrics.cost;
+                const riskScore = 100 - metrics.risk;
+                return Math.floor((costScore + metrics.speed + riskScore + metrics.sat + metrics.sustain) / 5);
+            };
+
+            return (
+                <div class="wrapper">
+                    <div class="glass-card header-widget">
+                        <div class="top-badge">Day 30 Optimization Lab</div>
+                        <h1 class="cyber-title header-glow">Supply Chain Builder</h1>
+                    </div>
+
+                    {stage !== 'welcome' && (
+                        <div class="metrics-grid">
+                            <div class="metric-tile">
+                                <div class="metric-meta"><span>Operational Cost</span><span>{metrics.cost}%</span></div>
+                                <div class="progress-container"><div class="progress-bar" style={{ width: `${metrics.cost}%`, background: 'var(--clr-rose)' }}></div></div>
+                            </div>
+                            <div class="metric-tile">
+                                <div class="metric-meta"><span>Delivery Speed</span><span>{metrics.speed}%</span></div>
+                                <div class="progress-container"><div class="progress-bar" style={{ width: `${metrics.speed}%`, background: 'var(--clr-blue)' }}></div></div>
+                            </div>
+                            <div class="metric-tile">
+                                <div class="metric-meta"><span>Disruption Risk</span><span>{metrics.risk}%</span></div>
+                                <div class="progress-container"><div class="progress-bar" style={{ width: `${metrics.risk}%`, background: 'var(--clr-amber)' }}></div></div>
+                            </div>
+                            <div class="metric-tile">
+                                <div class="metric-meta"><span>Customer Sat</span><span>{metrics.sat}%</span></div>
+                                <div class="progress-container"><div class="progress-bar" style={{ width: `${metrics.sat}%`, background: 'var(--clr-purple)' }}></div></div>
+                            </div>
+                            <div class="metric-tile">
+                                <div class="metric-meta"><span>Sustainability</span><span>{metrics.sustain}%</span></div>
+                                <div class="progress-container"><div class="progress-bar" style={{ width: `${metrics.sustain}%`, background: 'var(--clr-emerald)' }}></div></div>
+                            </div>
+                        </div>
+                    )}
+
+                    {stage === 'welcome' && (
+                        <div class="glass-card text-center step-slide-enter">
+                            <h2 class="cyber-title font-bold mb-4" style={{fontSize: '1.6rem'}}>Demystifying Global Operations</h2>
+                            <p class="text-muted mb-4" style={{fontSize: '18px', lineHeight: '1.7'}}>
+                                A supply chain is the entire journey a product takes—from raw material sourcing to factory assembly and final doorstep delivery. Managing it effectively requires balancing complex operational trade-offs between speed, cost, and logistics risks.
+                            </p>
+                            <div class="explain-box text-left">
+                                <strong style={{fontSize: '18px', color: '#fff', display: 'block', marginBottom: '4px'}}>Why this matters:</strong> Poorly designed networks lead to unexpected stockouts, high transportation costs, or vulnerability to shipping delays, directly impacting a company's bottom line.
+                            </div>
+                            <button onClick={initSimulation} class="action-btn mt-2">Initialize Sourcing Matrix</button>
+                        </div>
+                    )}
+
+                    {stage === 'building' && (() => {
+                        const currentStepData = DECISION_STEPS[currentStep];
+                        return (
+                            <div class="glass-card step-slide-enter" key={animKey}>
+                                <div class="step-indicator">Node Deployment: Phase {currentStep + 1} of 5</div>
+                                <h3 class="cyber-title font-bold text-slate-100 mb-4" style={{fontSize: '1.5rem'}}>{currentStepData.title}</h3>
+                                
+                                <div class="explain-box">
+                                    <div class="mb-2"><strong>What is this?</strong> {currentStepData.what}</div>
+                                    <div><strong>Why it matters:</strong> {currentStepData.why}</div>
+                                </div>
+
+                                <div class="text-[13px] font-bold uppercase text-slate-400 tracking-wider mb-2">Target Enterprise Profile:</div>
+                                <div class="grid-2 mb-6 bg-slate-950/60 p-5 rounded-xl border border-white/10 style-large text-sm">
+                                    <div>🏢 <strong>Enterprise:</strong> {company.industry}</div>
+                                    <div>📦 <strong>Product Core:</strong> {company.products}</div>
+                                    <div>🌐 <strong>Markets Served:</strong> {company.countries}</div>
+                                    <div>⚡ <strong>Demand Density:</strong> {company.demand}</div>
+                                </div>
+
+                                <div class="text-[13px] font-bold uppercase text-slate-400 tracking-wider mb-3">Select Infrastructure Pathway:</div>
+                                <div class="grid-2">
+                                    {currentStepData.options.map((opt, idx) => {
+                                        const isSelected = selectedOption?.name === opt.name;
+                                        return (
+                                            <div key={idx} class={`choice-card ${isSelected ? 'selected' : ''}`} onClick={() => handleSelectOption(opt)}>
+                                                <div class="choice-title">{opt.name}</div>
+                                                <p class="choice-desc">{opt.desc}</p>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                <button onClick={advanceStep} class="action-btn w-full mt-8">Confirm & Next Step ➔</button>
+                            </div>
+                        );
+                    })()}
+
+                    {stage === 'dashboard' && (() => {
+                        const finalScore = evaluateFinalScore();
+                        return (
+                            <div class="glass-card step-slide-enter">
+                                <h2 class="cyber-title font-bold text-center header-glow mb-2">Logistics Performance Scorecard</h2>
+                                <p class="text-[12px] tracking-widest uppercase text-center text-slate-400 mb-4">Enterprise Target: {company.industry}</p>
+
+                                <div class="text-center mb-8">
+                                    <div class="text-6xl font-black cyber-title text-blue-400">{finalScore} / 100</div>
+                                    <span class="text-[12px] text-slate-400 uppercase font-bold tracking-wider">Network Efficiency Quotient</span>
+                                </div>
+
+                                <div class="grid-2 gap-4 mb-6">
+                                    <div class="metric-tile">
+                                        <h4 class="text-base font-bold text-emerald-400 uppercase mb-2">✓ Core Network Strength</h4>
+                                        <p class="text-sm text-slate-300 leading-relaxed">
+                                            {metrics.sat > 60 ? "Exceptional customer fulfillment parameters. Localized nodes keep delivery speed consistent." : "Conservative cost mitigation frameworks protect direct financial margins."}
+                                        </p>
+                                    </div>
+                                    <div class="metric-tile">
+                                        <h4 class="text-base font-bold text-rose-400 uppercase mb-2">⚠ Strategic Network Vulnerability</h4>
+                                        <p class="text-sm text-slate-300 leading-relaxed">
+                                            {metrics.risk > 50 ? "High disruption risk index. Relying on lean infrastructure models creates extreme single-point vulnerabilities." : "Elevated asset strains reduce net profit margins during stable demand periods."}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="explain-box" style={{ background: 'rgba(16, 185, 129, 0.02)', borderColor: 'var(--clr-emerald)' }}>
+                                    <h4 class="text-base font-bold text-emerald-400 uppercase mb-2">💡 Actionable Optimization Roadmap</h4>
+                                    <ul class="text-sm text-slate-300 list-none mt-2 flex flex-col gap-3">
+                                        <li>• <strong>1. Dual Sourcing Buffers:</strong> Introduce backup components to insulate assembly lines from unpredictable port delays.</li>
+                                        <li>• <strong>2. Regional Decoupling:</strong> Transition fixed bulk warehousing networks into dynamic localized micro-fulfillment hubs.</li>
+                                        <li>• <strong>3. Balance Freight Speeds:</strong> Blend slower sea lanes with air freight to protect green margins without causing stockouts.</li>
+                                    </ul>
+                                </div>
+
+                                <button onClick={initSimulation} class="action-btn w-full mt-4">↺ Reconstruct Alternative Network Matrix</button>
+                            </div>
+                        );
+                    })()}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
